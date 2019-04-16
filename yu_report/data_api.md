@@ -30,9 +30,9 @@
 1. 서비스 유형 : REST
 2. 활용기간: 2019-04-12 ~ 2021-04-12
 3. End Point: http://openapi.animal.go.kr:80/openapi/service/rest/abandonmentPublicSrvc?_wadl&type=xml
-4. 데이터포맷: XML이라고 써있으나 샘플데이터로 확인했을때 json도 가능
+4. 데이터포맷: 표준은 XML이고 미리보기시 XML로 확인, 샘플데이터로는 JSON파일도 다운로드 가능
 5. 참고문서: 동물보호관리시스템\_OpenAPI활용가이드.docx
-6. 일일 트래픽: 1000
+6. 일일 트래픽: 각 1000
 7. 요청변수 (항목명, 항목설명)
     - bgnde 유기날짜(검색 시작일)(YYYYMMDD)
     - endde 유기날짜(검색 종료일)(YYYYMMDD)
