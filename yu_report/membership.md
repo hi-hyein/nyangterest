@@ -38,3 +38,8 @@
 ### 회원정보 (검색중)
 
 1. 개인 정보들을 DB에 잘 암호화 처리해서 저장하기, encryption decryption
+
+암호화해주는 수학공식 = 단방향 해시함수
+암호화된 패스워드 = 다이제스트
+BKDF2나 bcrypt와 같이 널리 알려진 방법(Adaptive Key Derivation Functions)들을 사용
+(임시작성)
