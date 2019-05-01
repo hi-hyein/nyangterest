@@ -1,27 +1,49 @@
 import React, { Component } from "react";
-// import XMLParser from "react-xml-parser";
-import axios from "axios";
 import Box02 from "./Box02";
 
+// class App extends Component {
+// 	state = { apiResponse: "" };
+
+// 	callAPI() {
+// 		fetch("http://localhost:8080")
+// 			.then(res => res.text())
+// 			.then(res => this.setState({ apiResponse: res }))
+// 			.catch(err => err);
+// 	}
+
+// 	componentDidMount() {
+// 		this.callAPI();
+// 	}
+
+// 	render() {
+// 		return (
+// 			<div className="App">
+// 				<header className="App-header">
+// 					<h1 className="App-title">Welcome to React</h1>
+// 				</header>
+// 				<p className="App-intro">{this.state.apiResponse}</p>
+// 			</div>
+// 		);
+// 	}
+// }
+
+// json깊이가 길때 어떻게 받아와야 할 지 모르겠음.
 class App extends Component {
-	state = {
-		fields: [],
-		records: []
-	};
+	state = {};
 
 	componentDidMount() {
 		this.getInfo();
 	}
 
 	renderInfo = () => {
-		const cats = this.state.records.map((box02, key) => {
-			console.log(cats);
+		const { catsApi } = this.state;
+		const cats = catsApi.map((info, index) => {
 			return (
 				<Box02
-					key={key}
-					kindCd={box02.kindCd}
-					popfile={box02.popfile}
-					happenDt={box02.happenDt}
+					key={index}
+					kindCd={info.kindCd}
+					popfile={info.popfile}
+					happenDt={info.happenDt}
 				/>
 			);
 		});
@@ -29,44 +51,26 @@ class App extends Component {
 	};
 
 	getInfo = async () => {
-		try {
-			const response = await axios.get(
-				"http://openapi.animal.go.kr/openapi/service/rest/abandonmentPublicSrvc/abandonmentPublic?serviceKey=P3gvH0LsdoPkxFnZU2Ee98hGDDEwVTJndJFa8NDUhznSLlZG6OOxBopFWLBmiCPOfWXsF8Wz8LFHJguz41qJvA%3D%3D&bgnde=20190401&endde=20190430&upkind=422400&state=notice&pageNo=1&numOfRows=10&neuter_yn=Y"
-			);
-
-			// "http://openapi.animal.go.kr/openapi/service/rest/abandonmentPublicSrvc/abandonmentPublic?serviceKey=P3gvH0LsdoPkxFnZU2Ee98hGDDEwVTJndJFa8NDUhznSLlZG6OOxBopFWLBmiCPOfWXsF8Wz8LFHJguz41qJvA%3D%3D&bgnde=20190401&endde=20190430&upkind=422400&state=notice&pageNo=1&numOfRows=10&neuter_yn=Y"
-
-			// "http://d1bj4sto4aozbg.cloudfront.net/cats-info04.json"
-			// "https://s3.ap-northeast-2.amazonaws.com/web1-html-internet-yu/cats-info04.json"
-
-			this.setState({ cats: response.text() });
-			console.log({ response });
-		} catch (error) {
-			console.log(error);
-		}
+		const catsApi = await this.callApi();
+		this.setState({
+			catsApi
+		});
 	};
 
-	// callApi = () => {
-	// 	return axios(
-
-	// 	)
-	// 		// .then(response => response.text())
-	// 		// // .then(xmlText => console.log(xmlText))
-	// 		// .then(response => (response.json()))
-	// 		.then(response => (response.json()))
-	// 		// .then(stringToXml =>
-	// 		// 	new XMLParser().parseFromString(stringToXml)
-	// 		// )
-	// 		.then(json => json.data.cats)
-	// 		.catch(err => console.log("error omg!"))
-	// };
+	callApi = () => {
+		return (
+			fetch("http://localhost:8080")
+				.then(res => res.json())
+				.then(json => json.response)
+				// .then(json => console.log(json.response.body.items.item[0].age))
+				.catch(err => console.log(err))
+		);
+	};
 
 	render() {
-		const { cats } = this.state;
+		const { catsApi } = this.state;
 		return (
-			<div className={cats ? "App" : "App--loading"}>
-				{cats ? this.renderInfo() : "Loading"}
-			</div>
+			<div className="App">{catsApi ? this.renderInfo() : "nothing"}</div>
 		);
 	}
 }
