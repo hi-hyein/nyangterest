@@ -12,8 +12,7 @@ class App extends Component {
 		const { catsApi } = this.state;
 
 		//객체 key값을 변수로 어떻게 받아올것인가?
-
-		const cats = catsApi.body.items.item.map((info, index) => {
+		const cats = catsApi.map((info, index) => {
 			return (
 				<Box02
 					key={index}
@@ -37,8 +36,7 @@ class App extends Component {
 		return (
 			fetch("http://localhost:8080")
 				.then(res => res.json())
-				.then(json => json.response)
-				// .then(json => console.log(json.response.body.items.item[0].age))
+				.then(json => json.response.body.items.item)
 				.catch(err => console.log(err))
 		);
 	};
