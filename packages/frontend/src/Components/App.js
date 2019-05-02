@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import Box02 from "./Box02";
+import List from "./List";
 
 class App extends Component {
 	state = {};
@@ -10,11 +10,9 @@ class App extends Component {
 
 	renderInfo = () => {
 		const { catsApi } = this.state;
-
-		//객체 key값을 변수로 어떻게 받아올것인가?
 		const cats = catsApi.map((info, index) => {
 			return (
-				<Box02
+				<List
 					key={index}
 					kindCd={info.kindCd}
 					popfile={info.popfile}
@@ -33,12 +31,10 @@ class App extends Component {
 	};
 
 	callApi = () => {
-		return (
-			fetch("http://localhost:8080")
-				.then(res => res.json())
-				.then(json => json.response.body.items.item)
-				.catch(err => console.log(err))
-		);
+		return fetch("http://localhost:8080")
+			.then(res => res.json())
+			.then(json => json.response.body.items.item)
+			.catch(err => console.log(err));
 	};
 
 	render() {
