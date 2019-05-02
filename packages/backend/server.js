@@ -9,11 +9,12 @@ const PORT = 8080;
 router.get("/", (req, res) => {
 	// res.send("Hello");
 	fetch(
-		"http://openapi.animal.go.kr/openapi/service/rest/abandonmentPublicSrvc/abandonmentPublic?bgnde=20140301&endde=20140430&pageNo=1&numOfRows=10&ServiceKey=P3gvH0LsdoPkxFnZU2Ee98hGDDEwVTJndJFa8NDUhznSLlZG6OOxBopFWLBmiCPOfWXsF8Wz8LFHJguz41qJvA%3D%3D&_type=json"
+		"http://openapi.animal.go.kr/openapi/service/rest/abandonmentPublicSrvc/abandonmentPublic?serviceKey=P3gvH0LsdoPkxFnZU2Ee98hGDDEwVTJndJFa8NDUhznSLlZG6OOxBopFWLBmiCPOfWXsF8Wz8LFHJguz41qJvA%3D%3D&_type=json&bgnde=20180101&endde=20190531&upkind=422400&state=notice&pageNo=1&numOfRows=10&neuter_yn=Y"
 	)
 		.then(response => response.json())
 		.then(json => {
 			res.send(json);
+			console.log(json);
 		})
 		.catch(() => {
 			res.send(JSON.stringify({ message: "System Error" }));

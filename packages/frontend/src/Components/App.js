@@ -1,33 +1,6 @@
 import React, { Component } from "react";
 import Box02 from "./Box02";
 
-// class App extends Component {
-// 	state = { apiResponse: "" };
-
-// 	callAPI() {
-// 		fetch("http://localhost:8080")
-// 			.then(res => res.text())
-// 			.then(res => this.setState({ apiResponse: res }))
-// 			.catch(err => err);
-// 	}
-
-// 	componentDidMount() {
-// 		this.callAPI();
-// 	}
-
-// 	render() {
-// 		return (
-// 			<div className="App">
-// 				<header className="App-header">
-// 					<h1 className="App-title">Welcome to React</h1>
-// 				</header>
-// 				<p className="App-intro">{this.state.apiResponse}</p>
-// 			</div>
-// 		);
-// 	}
-// }
-
-// json깊이가 길때 어떻게 받아와야 할 지 모르겠음.
 class App extends Component {
 	state = {};
 
@@ -37,7 +10,10 @@ class App extends Component {
 
 	renderInfo = () => {
 		const { catsApi } = this.state;
-		const cats = catsApi.map((info, index) => {
+
+		//객체 key값을 변수로 어떻게 받아올것인가?
+
+		const cats = catsApi.body.items.item.map((info, index) => {
 			return (
 				<Box02
 					key={index}
@@ -69,6 +45,7 @@ class App extends Component {
 
 	render() {
 		const { catsApi } = this.state;
+		console.log(catsApi);
 		return (
 			<div className="App">{catsApi ? this.renderInfo() : "nothing"}</div>
 		);
