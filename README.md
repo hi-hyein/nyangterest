@@ -5,7 +5,7 @@
 ## 개발 환경
 * **Database** : mysql(version은 cloud service 셋팅 후 기록예정)
 * **Framewrok** : Node.js(>=10.13.0) / React
-* **Language** : javaScrip
+* **Language** : javaScript
 
 ## Open API
 * [공공데이터포털](https://www.data.go.kr/) > **동물보호관리시스템 유기동물 조회 서비스**에서 받아온 Data 사용 중 
