@@ -7,13 +7,16 @@ const app = express();
 const PORT = 8080;
 
 router.get("/", (req, res) => {
-	// res.send("Hello");
-	fetch(
-		"http://openapi.animal.go.kr/openapi/service/rest/abandonmentPublicSrvc/abandonmentPublic?serviceKey=P3gvH0LsdoPkxFnZU2Ee98hGDDEwVTJndJFa8NDUhznSLlZG6OOxBopFWLBmiCPOfWXsF8Wz8LFHJguz41qJvA%3D%3D&_type=json&bgnde=20140101&endde=20190531&upkind=422400&state=notice&neuter_yn=Y"
-	)
+	const numOfRows = req.query.numOfRows;
+	const url = `http://openapi.animal.go.kr/openapi/service/rest/abandonmentPublicSrvc/abandonmentPublic?serviceKey=P3gvH0LsdoPkxFnZU2Ee98hGDDEwVTJndJFa8NDUhznSLlZG6OOxBopFWLBmiCPOfWXsF8Wz8LFHJguz41qJvA%3D%3D&_type=json&bgnde=20170101&endde=20190531&upkind=422400&state=notice`;
+
+	fetch(url)
 		.then(response => response.json())
 		.then(json => {
-			res.send(json);
+			res.send(json.response.body);
+			// res.send("numOfRows" + numOfRows);
+			// res.send(req.params.pageNo);
+			// console.log(numOfRows);
 		})
 		.catch(() => {
 			res.send(JSON.stringify({ message: "System Error" }));
@@ -30,7 +33,7 @@ app.use(express.static(path.join(__dirname, "public")));
 console.log(__dirname);
 
 app.use(cors());
-app.use("/", router);
+app.use("/api", router);
 
 module.exports = app;
 
