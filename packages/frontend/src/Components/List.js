@@ -1,68 +1,78 @@
-import React from "react";
-import styled from "styled-components";
-import PropTypes from "prop-types";
+import React, { Component } from "react";
+import Item from "./Item";
 
-const Container = styled.div`
-	position: relative;
-	background-image: linear-gradient(rgba(0, 0, 0, 0.28), rgba(0, 0, 0, 0.7)),
-		url(${props => props.bgPhoto});
-	background-size: cover;
-	border-radius: 8px;
-	box-shadow: 0 3px 8px 0 rgba(0, 0, 0, 0.08);
-	display: flex;
-	flex-direction: column;
-	background-position: center center;
-	align-items: center;
-	justify-content: space-between;
-	padding: 20px;
-	border-bottom: 5px solid ${props => props.borderBottomColor};
-`;
+class List extends Component {
+	state = {
+		items: [],
+		pageNo: 1,
+		numOfRows: 50,
+		totalCount: null,
+		scrolling: false
+	};
 
-const Content = styled.div`
-	width: 100%;
-	display: flex;
-	justify-content: space-between;
-	align-items: flex-end;
-	color: white;
-	margin-top: 40px;
-	margin-bottom: 20px;
-`;
+	componentDidMount() {
+		this.loadList();
+		this.scrollListener = window.addEventListener("scroll", e => {
+			this.handleScroll(e);
+		});
+	}
 
-const List = ({
-	kindCd,
-	popfile,
-	happenDt,
-	borderBottomColor = "#087264",
-	bgPhoto
-}) => {
-	return (
-		<Container borderBottomColor={borderBottomColor} bgPhoto={bgPhoto}>
-			<Content>
-				<div className="List">
-					<div>
-						<h1>{kindCd}</h1>
-						<p>{happenDt}</p>
-						<CatImage popfile={popfile} alt={kindCd} />
-					</div>
-				</div>
-			</Content>
-		</Container>
-	);
-};
+	handleScroll = () => {
+		// const { scrolling } = this.state;
+		const { scrolling, totalCount, pageNo } = this.state;
+		if (scrolling) return;
+		if (totalCount <= pageNo) return;
+		const lastLi = document.querySelector("ul.List > li:last-child");
+		const lastLiOffset = lastLi.offsetTop + lastLi.clientHeight;
+		const pageOffset = window.pageYOffset + window.innerHeight;
+		const bottomOffset = 20;
+		if (pageOffset > lastLiOffset - bottomOffset) {
+			this.loadMore();
+		}
+	};
 
-const CatImage = ({ popfile, alt }) => {
-	return <img src={popfile} alt={alt} className="CatImage" />;
-};
+	loadList = () => {
+		// const { items } = this.state;
+		const { items, pageNo, numOfRows } = this.state;
+		// const url = "/";
+		const url = `/api?pageNo=${pageNo}&numOfRows=${numOfRows}`;
+		fetch(url)
+			.then(response => response.json())
+			.then(response => console.log(response))
+			.then(json =>
+				this.setState({
+					items: [...items, ...json.items],
+					scrolling: false,
+					numOfRows: json.numOfRows
+				})
+			)
+			.catch(err => console.log(err));
+	};
 
-List.propTypes = {
-	kindCd: PropTypes.string,
-	popfifle: PropTypes.string,
-	happenDt: PropTypes.number
-};
+	loadMore = () => {
+		this.setState(
+			prevState => ({
+				pageNo: prevState.pageNo + 1,
+				scrolling: true
+			}),
+			this.loadList
+		);
+	};
 
-CatImage.propTypes = {
-	popfifle: PropTypes.string,
-	alt: PropTypes.string
-};
+	render() {
+		const { items } = this.state;
+		// console.log(items);
+		return (
+			<ul className="List">
+				<Item />
+				{/* {items.item.map(info => (
+					<li key={info.id}>
+						<Item {...info} />
+					</li>
+				))} */}
+			</ul>
+		);
+	}
+}
 
 export default List;
