@@ -6,18 +6,16 @@ const fetch = require("node-fetch");
 const app = express();
 const PORT = 8080;
 
-router.get("/", (req, res) => {
+router.get("/page/:id", (req, res) => {
 	// const numOfRows = req.query.numOfRows;
-	// const pageNo = req.query.pageNo;
-	let pageNo = req.query.pageNo;
-	console.log("key:" + req.query.pageNo);
+	const pageNo = req.params.id;
 
 	const url = `http://openapi.animal.go.kr/openapi/service/rest/abandonmentPublicSrvc/abandonmentPublic?serviceKey=P3gvH0LsdoPkxFnZU2Ee98hGDDEwVTJndJFa8NDUhznSLlZG6OOxBopFWLBmiCPOfWXsF8Wz8LFHJguz41qJvA%3D%3D&_type=json&bgnde=20170101&endde=20190531&upkind=422400&state=notice&pageNo=${pageNo}`;
 	fetch(url)
 		.then(response => response.json())
 		.then(json => {
 			res.send(json.response.body);
-			// res.send("pageNo" + pageNo);
+			res.send(console.log("key:" + req.params.id));
 			console.log(json.response.body.pageNo);
 		})
 		.catch(() => {
@@ -37,7 +35,7 @@ console.log(__dirname);
 app.use(cors());
 // app.use("/api", router);
 app.use("/", router);
-app.use("/api", router);
+app.use("/page", router);
 
 // // app.get("/", function(req, res, next) {
 // // 	res.json({ msg: "This is CORS-enabled for all origins!" });
