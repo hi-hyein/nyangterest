@@ -33,7 +33,7 @@ class List extends Component {
 	loadList = () => {
 		const { items, pageNo, numOfRows } = this.state;
 		// const url = "/";
-		const url = `/api/pageNo=${pageNo}`;
+		const url = `/api/?pageNo=${pageNo}`;
 		fetch(url)
 			.then(response => response.json())
 			// .then(response => console.log(response))
