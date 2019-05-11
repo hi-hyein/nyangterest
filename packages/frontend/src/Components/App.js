@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import styled from "styled-components";
-import GlobalStyle from "./GlobalStyles";
+// import styled from "styled-components";
+// import GlobalStyle from "./GlobalStyles";
 import List from "./List";
 
 // const Container = styled.div`

@@ -5,8 +5,7 @@ class List extends Component {
 	state = {
 		items: [],
 		pageNo: 1,
-		numOfRows: 50,
-		totalCount: null,
+		numOfRows: null,
 		scrolling: false
 	};
 
@@ -19,9 +18,9 @@ class List extends Component {
 
 	handleScroll = () => {
 		// const { scrolling } = this.state;
-		const { scrolling, totalCount, pageNo } = this.state;
+		const { scrolling, numOfRows, pageNo } = this.state;
 		if (scrolling) return;
-		if (totalCount <= pageNo) return;
+		if (numOfRows <= pageNo) return;
 		const lastLi = document.querySelector("ul.List > li:last-child");
 		const lastLiOffset = lastLi.offsetTop + lastLi.clientHeight;
 		const pageOffset = window.pageYOffset + window.innerHeight;
@@ -34,19 +33,24 @@ class List extends Component {
 	loadList = () => {
 		// const { items } = this.state;
 		const { items, pageNo, numOfRows } = this.state;
+		console.log(items, pageNo, numOfRows);
 		// const url = "/";
-		const url = `/api?pageNo=${pageNo}&numOfRows=${numOfRows}`;
+		const url = `/api/page=${pageNo}`;
 		fetch(url)
 			.then(response => response.json())
-			.then(response => console.log(response))
+			// .then(response => console.log(response))
 			.then(json =>
-				this.setState({
-					items: [...items, ...json.items],
-					scrolling: false,
-					numOfRows: json.numOfRows
-				})
+				this.setState(
+					{
+						items: [...items, ...json.items.item],
+						scrolling: false,
+						numOfRows: json.numOfRows
+					},
+					() => console.log(items, numOfRows)
+				)
 			)
 			.catch(err => console.log(err));
+		// console.log(numOfRows);
 	};
 
 	loadMore = () => {
@@ -60,16 +64,14 @@ class List extends Component {
 	};
 
 	render() {
-		const { items } = this.state;
-		// console.log(items);
 		return (
 			<ul className="List">
-				<Item />
-				{/* {items.item.map(info => (
+				{/* <Item /> */}
+				{this.state.items.map(info => (
 					<li key={info.id}>
 						<Item {...info} />
 					</li>
-				))} */}
+				))}
 			</ul>
 		);
 	}
