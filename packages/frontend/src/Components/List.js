@@ -31,11 +31,9 @@ class List extends Component {
 	};
 
 	loadList = () => {
-		// const { items } = this.state;
 		const { items, pageNo, numOfRows } = this.state;
-		console.log(items, pageNo, numOfRows);
 		// const url = "/";
-		const url = `/api/page=${pageNo}`;
+		const url = `/api/pageNo=${pageNo}`;
 		fetch(url)
 			.then(response => response.json())
 			// .then(response => console.log(response))
@@ -46,7 +44,7 @@ class List extends Component {
 						scrolling: false,
 						numOfRows: json.numOfRows
 					},
-					() => console.log(items, numOfRows)
+					() => console.log(items, numOfRows, pageNo)
 				)
 			)
 			.catch(err => console.log(err));
