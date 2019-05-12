@@ -3,13 +3,27 @@ import React from "react";
 
 class Header extends React.Component {
 	render() {
+		const HeaderStyle = {
+			backgroundColor: 'skyblue'
+		}
+
 		return (
-			<div className="header" >
+			<div className="header" style={HeaderStyle}>
 				<h1>NYANGTEREST</h1>
-				<div className="button-area">
-					<button type="button">LOGIN</button>
-					<button type="button">JOIN</button>
-				</div>
+					{console.log(this)}
+					{/* 로그인 상태 */}
+					{this.props.userState === 'login' &&
+						<div className="button-area">
+							<button type="button" onClick={()=>this.props.onClick()}>LOGIN</button>
+							<button type="button">JOIN</button>
+						</div>
+					}
+					{/* 로그아웃 상태 */}
+					{this.props.userState === 'logout' &&
+						<div className="button-area">
+							<button type="button">MENU</button>
+						</div>
+					}
 			</div>
 		);
 	}
