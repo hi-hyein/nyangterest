@@ -22,12 +22,12 @@ const GlobalStyle = createGlobalStyle`
 	  	padding: 50px;
 		padding-bottom: 100px;
 		display: grid;
-		grid-template-columns: repeat(auto-fill, 200px);
+		grid-template-columns: repeat(auto-fill, 250px);
 		grid-gap: 20px;
-		grid-auto-rows: 300px;
+		// grid-auto-rows: 300px;
 		justify-content: space-around;
 		// grid-template-rows: 260px 400px 400px;
-		& > div {
+		& > li {
 			grid-column: span 1;
 			// &:nth-child(5),
 			// &:nth-child(6) {
@@ -48,6 +48,29 @@ const GlobalStyle = createGlobalStyle`
 			grid-column: span 1 !important;
 		}
 	}
+  }
+  .Item {
+	  width: 100%;
+	  
+	  & > h2 {
+		  padding-bottom: 0.5rem;
+	  }
+
+	  & > p {
+		  padding-bottom: 1rem;
+	  }
+
+	  & > a {
+		  display: flex;
+		  height:200px;
+		  justify-content: center;
+		  align-items: center;
+
+		& > img {
+			max-width:100%;
+			max-height:100%
+		}
+	  }	
   }
 
 `;

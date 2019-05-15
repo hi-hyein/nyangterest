@@ -12,7 +12,6 @@
     "backend": "nodemon packages/backend/server",
     "frontend": "cd packages/frontend && npm start",
     "dev": "concurrently \"npm run backend\" \"npm run frontend\""
-    
   },
   "repository": {
     "type": "git",

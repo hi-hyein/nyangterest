@@ -4,6 +4,8 @@ import PropTypes from "prop-types";
 
 const Container = styled.div`
 	position: relative;
+	max-height: 300px;
+	min-height: 100%;
 	background-image: linear-gradient(rgba(0, 0, 0, 0.28), rgba(0, 0, 0, 0.7));
 	background-size: cover;
 	border-radius: 8px;
@@ -23,15 +25,13 @@ const Content = styled.div`
 	justify-content: space-between;
 	align-items: flex-end;
 	color: white;
-	margin-top: 40px;
-	margin-bottom: 20px;
 `;
 
 const Item = ({ kindCd, happenDt, borderBottomColor = "#087264", popfile }) => (
 	<Container borderBottomColor={borderBottomColor}>
 		<Content>
 			<div className="Item">
-				<h1>{kindCd}</h1>
+				<h2>{kindCd}</h2>
 				<p>{happenDt}</p>
 				<CatImage popfile={popfile} alt={kindCd} />
 			</div>
@@ -40,7 +40,11 @@ const Item = ({ kindCd, happenDt, borderBottomColor = "#087264", popfile }) => (
 );
 
 const CatImage = props => {
-	return <img src={props.popfile} alt={props.alt} className="CatImage" />;
+	return (
+		<a href={"http://naver.com"}>
+			<img src={props.popfile} alt={props.alt} className="CatImage" />
+		</a>
+	);
 };
 
 Item.propTypes = {
