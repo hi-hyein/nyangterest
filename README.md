@@ -27,13 +27,17 @@ https://nodejs.org/ko/
 ~~~sh
 cd packages/backend
 npm install
-npm start
 ~~~
 
 ~~~sh
 cd packages/frontend
 npm install
-npm start
+~~~
+
+~~~sh
+cd nyangterest
+npm install
+npm run dev
 ~~~
 
 ## 작업 브랜치

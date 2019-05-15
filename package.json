@@ -1,0 +1,27 @@
+{
+  "name": "nyangterest",
+  "version": "1.0.0",
+  "description": "🐱😻유기묘를 위한 검색/등록 기능이 추가된 앱만들기 프로젝트😻🐱",
+  "main": "index.js",
+  "dependencies": {
+    "concurrently": "^4.1.0",
+    "nodemon": "^1.19.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "backend": "nodemon packages/backend/server",
+    "frontend": "cd packages/frontend && npm start",
+    "dev": "concurrently \"npm run backend\" \"npm run frontend\""
+    
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/henyy1004/nyangterest.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/henyy1004/nyangterest/issues"
+  },
+  "homepage": "https://github.com/henyy1004/nyangterest#readme"
+}
