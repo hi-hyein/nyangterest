@@ -4,8 +4,9 @@ import Item from "./Item";
 class List extends Component {
 	state = {
 		items: [],
+		numOfRows: 36,
 		pageNo: 1,
-		numOfRows: null,
+		totalCount: null,
 		scrolling: false
 	};
 
@@ -33,7 +34,7 @@ class List extends Component {
 	loadList = () => {
 		const { items, pageNo, numOfRows } = this.state;
 		// const url = "/";
-		const url = `/page/${pageNo}`;
+		const url = `/page/${numOfRows}/${pageNo}`;
 		fetch(url)
 			.then(response => response.json())
 			// .then(response => console.log(response))
@@ -64,7 +65,6 @@ class List extends Component {
 	render() {
 		return (
 			<ul className="List">
-				{/* <Item /> */}
 				{this.state.items.map(info => (
 					<li key={info.id}>
 						<Item {...info} />
