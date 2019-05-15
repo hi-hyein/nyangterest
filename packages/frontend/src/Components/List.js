@@ -31,13 +31,14 @@ class List extends Component {
 		}
 	};
 
+	// async와 await으로 나누고 싶음
+
 	loadList = () => {
 		const { items, pageNo, numOfRows } = this.state;
 		// const url = "/";
 		const url = `/page/${numOfRows}/${pageNo}`;
 		fetch(url)
 			.then(response => response.json())
-			// .then(response => console.log(response))
 			.then(json =>
 				this.setState(
 					{
