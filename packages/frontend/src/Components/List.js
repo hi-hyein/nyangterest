@@ -31,26 +31,24 @@ class List extends Component {
 		}
 	};
 
-	// async와 await으로 나누고 싶음
-
-	loadList = () => {
-		const { items, pageNo, numOfRows } = this.state;
-		// const url = "/";
-		const url = `/page/${numOfRows}/${pageNo}`;
-		fetch(url)
-			.then(response => response.json())
-			.then(json =>
-				this.setState(
-					{
-						items: [...items, ...json.items.item],
-						scrolling: false,
-						numOfRows: json.numOfRows
-					},
-					() => console.log(items, numOfRows, pageNo)
-				)
-			)
-			.catch(err => console.log(err));
-		// console.log(numOfRows);
+	// async , await으로 변경
+	loadList = async () => {
+		try {
+			const { items, pageNo, numOfRows } = this.state;
+			const url = `/page/${numOfRows}/${pageNo}`;
+			const response = await fetch(url);
+			const json = await response.json();
+			this.setState(
+				{
+					items: [...items, ...json.items.item],
+					scrolling: false,
+					numOfRows: json.numOfRows
+				},
+				() => console.log(items, numOfRows, pageNo)
+			);
+		} catch (err) {
+			console.log(err);
+		}
 	};
 
 	loadMore = () => {
@@ -63,14 +61,31 @@ class List extends Component {
 		);
 	};
 
+	// render() {
+	// 	return (
+	// 		<ul className="List">
+	// 			{this.state.items.map(info => (
+	// 				<li key={info.id}>
+	// 					<Item {...info} />
+	// 				</li>
+	// 			))}
+	// 		</ul>
+	// 	);
+	// }
+
 	render() {
+		const IsLoading = false;
 		return (
 			<ul className="List">
-				{this.state.items.map(info => (
-					<li key={info.id}>
-						<Item {...info} />
-					</li>
-				))}
+				{IsLoading === true ? (
+					<li>Loading...</li>
+				) : (
+					this.state.items.map(info => (
+						<li key={info.id}>
+							<Item {...info} />
+						</li>
+					))
+				)}
 			</ul>
 		);
 	}
