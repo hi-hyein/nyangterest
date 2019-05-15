@@ -6,16 +6,17 @@ const fetch = require("node-fetch");
 const app = express();
 const PORT = 8080;
 
-router.get("/page/:id", (req, res) => {
-	// const numOfRows = req.query.numOfRows;
+router.get("/page/:numOfRows/:id/", (req, res) => {
+	const numOfRows = req.params.numOfRows;
 	const pageNo = req.params.id;
 
-	const url = `http://openapi.animal.go.kr/openapi/service/rest/abandonmentPublicSrvc/abandonmentPublic?serviceKey=P3gvH0LsdoPkxFnZU2Ee98hGDDEwVTJndJFa8NDUhznSLlZG6OOxBopFWLBmiCPOfWXsF8Wz8LFHJguz41qJvA%3D%3D&_type=json&bgnde=20170101&endde=20190531&upkind=422400&state=notice&pageNo=${pageNo}`;
+	const url = `http://openapi.animal.go.kr/openapi/service/rest/abandonmentPublicSrvc/abandonmentPublic?serviceKey=P3gvH0LsdoPkxFnZU2Ee98hGDDEwVTJndJFa8NDUhznSLlZG6OOxBopFWLBmiCPOfWXsF8Wz8LFHJguz41qJvA%3D%3D&_type=json&bgnde=20170101&endde=20190531&upkind=422400&state=notice&numOfRows=${numOfRows}&pageNo=${pageNo}`;
 	fetch(url)
 		.then(response => response.json())
 		.then(json => {
 			res.send(json.response.body);
-			res.send(console.log("key:" + req.params.id));
+			console.log("key:" + req.params.id);
+			console.log("key2:" + req.params.numOfRows);
 			console.log(json.response.body.pageNo);
 		})
 		.catch(() => {
@@ -33,7 +34,6 @@ app.use(express.static(path.join(__dirname, "public")));
 console.log(__dirname);
 
 app.use(cors());
-// app.use("/api", router);
 app.use("/", router);
 app.use("/page", router);
 
