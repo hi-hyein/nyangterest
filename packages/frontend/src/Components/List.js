@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, Fragment } from "react";
 import Item from "./Item";
 
 class List extends Component {
@@ -61,34 +61,36 @@ class List extends Component {
 		);
 	};
 
-	// render() {
-	// 	return (
-	// 		<ul className="List">
-	// 			{this.state.items.map(info => (
-	// 				<li key={info.id}>
-	// 					<Item {...info} />
-	// 				</li>
-	// 			))}
-	// 		</ul>
-	// 	);
-	// }
-
 	render() {
-		const IsLoading = false;
 		return (
-			<ul className="List">
-				{IsLoading === true ? (
-					<li>Loading...</li>
-				) : (
-					this.state.items.map(info => (
+			<Fragment>
+				<ul className="List">
+					{this.state.items.map(info => (
 						<li key={info.id}>
 							<Item {...info} />
 						</li>
-					))
-				)}
-			</ul>
+					))}
+				</ul>
+			</Fragment>
 		);
 	}
+
+	// render() {
+	// 	const IsLoading = false;
+	// 	return (
+	// 		<ul className="List">
+	// 			{IsLoading === true ? (
+	// 				<li>Loading...</li>
+	// 			) : (
+	// 				this.state.items.map(info => (
+	// 					<li key={info.id}>
+	// 						<Item {...info} />
+	// 					</li>
+	// 				))
+	// 			)}
+	// 		</ul>
+	// 	);
+	// }
 }
 
 export default List;

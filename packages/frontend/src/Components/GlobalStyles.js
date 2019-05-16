@@ -18,7 +18,7 @@ const GlobalStyle = createGlobalStyle`
   }
 
   img {max-width:100%;}
-  ul {
+  .List {
 	  	padding: 50px;
 		padding-bottom: 100px;
 		display: grid;
@@ -49,6 +49,7 @@ const GlobalStyle = createGlobalStyle`
 		}
 	}
   }
+ 
   .Item {
 	  width: 100%;
 	  
@@ -72,7 +73,50 @@ const GlobalStyle = createGlobalStyle`
 		}
 	  }	
   }
-
+ 
+  $black: #212529;
+  $gray: #868e96;
+  $lgray: #f8f9fa;
+  $keycolor: #e03131;
+  $subcolor: #38d9a9;
+  $bg: #fff9db;
+  .nav {
+		position: fixed;
+		width: 100%;
+		bottom: 0;
+		left: 0;
+		z-index: 100;
+		background: #fff;
+		opacity: 0.8;
+		border-top: 1px solid $lgray;
+		&-list {
+			li {
+				width: 20%;
+				float: left;
+				text-align: center;
+				a,
+				button {
+					width: 100%;
+					display: block;
+					padding: 6px 0;
+					color: $gray;
+					font-size: 2rem;
+					
+					span {
+						display: block;
+						font-size: 1rem;
+						padding: 5px 0 0 0;
+					}
+					&.active {
+					* {
+						color: $subcolor;
+					}
+				}
+				
+				}
+			}
+		}
+	}
 `;
 
 export default GlobalStyle;
