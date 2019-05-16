@@ -3,8 +3,8 @@
 🐱😻유기묘를 위한 검색/등록 기능이 추가된 앱만들기 프로젝트😻🐱
 
 ## 개발 환경
-* **Database** : mysql(version은 cloud service 셋팅 후 기록예정)
-* **Framewrok** : Node.js(>=10.13.0) / React
+* **Database** : mysql(>=8.0) - **host**: nyangterest.cqn96a5xogpk.ap-northeast-2.rds.amazonaws.com  **version**:1.0
+* **Framewrok** : Node.js(>=10.13.0), Express / React
 * **Language** : javaScript
 
 ## Open API
