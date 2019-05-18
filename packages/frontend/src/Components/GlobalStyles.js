@@ -49,29 +49,6 @@ const GlobalStyle = createGlobalStyle`
 		}
 	}
   }
-  .Item {
-	  width: 100%;
-	  
-	  & > h2 {
-		  padding-bottom: 0.5rem;
-	  }
-
-	  & > p {
-		  padding-bottom: 1rem;
-	  }
-
-	  & > a {
-		  display: flex;
-		  height:200px;
-		  justify-content: center;
-		  align-items: center;
-
-		& > img {
-			max-width:100%;
-			max-height:100%
-		}
-	  }	
-  }
 
 `;
 

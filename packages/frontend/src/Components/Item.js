@@ -27,14 +27,37 @@ const Content = styled.div`
 	color: white;
 `;
 
+const Info = styled.div`
+	width: 100%;
+
+	& > h2 {
+		padding-bottom: 0.5rem;
+	}
+
+	& > p {
+		padding-bottom: 1rem;
+	}
+
+	& > a {
+		display: flex;
+		height: 200px;
+		justify-content: center;
+		align-items: center;
+
+		& > img {
+			max-width: 100%;
+			max-height: 100%;
+		}
+	}
+`;
 const Item = ({ kindCd, happenDt, borderBottomColor = "#087264", popfile }) => (
 	<Container borderBottomColor={borderBottomColor}>
 		<Content>
-			<div className="Item">
+			<Info>
 				<h2>품종: {kindCd}</h2>
 				<p>등록일: {happenDt}</p>
 				<CatImage popfile={popfile} alt={kindCd} />
-			</div>
+			</Info>
 		</Content>
 	</Container>
 );
