@@ -5,7 +5,7 @@ import Loading from "./Loading";
 class List extends Component {
 	state = {
 		items: [],
-		numOfRows: 36,
+		numOfRows: 72,
 		pageNo: 1,
 		scrolling: false,
 		hasMore: true,
@@ -15,9 +15,6 @@ class List extends Component {
 
 	componentDidMount() {
 		this.loadList();
-		// this.scrollListener = window.addEventListener("scroll", e => {
-		// 	this.handleScroll(e);
-		// });
 		window.addEventListener("scroll", this.handleScroll);
 	}
 
@@ -26,16 +23,10 @@ class List extends Component {
 	}
 
 	handleScroll = () => {
-		const {
-			scrolling,
-			numOfRows,
-			pageNo,
-			isLoading,
-			hasMore,
-			error
-		} = this.state;
+		const { scrolling, isLoading, hasMore, error } = this.state;
+
 		if (error || isLoading || !hasMore || scrolling) return;
-		if (numOfRows <= pageNo) return;
+		// if (numOfRows <= pageNo) return;
 		const lastLi = document.querySelector("ul.List > li:last-child");
 		const lastLiOffset = lastLi.offsetTop + lastLi.clientHeight;
 		const pageOffset = window.pageYOffset + window.innerHeight;
@@ -46,7 +37,7 @@ class List extends Component {
 		}
 	};
 
-	// async , await으로 변경
+	// async , await
 	loadList = async () => {
 		try {
 			const { items, pageNo, numOfRows } = this.state;
@@ -99,7 +90,7 @@ class List extends Component {
 	// }
 
 	render() {
-		const { isLoading, hasMore, error } = this.state;
+		const { isLoading, hasMore } = this.state;
 		return (
 			<div>
 				<Fragment>
@@ -111,15 +102,16 @@ class List extends Component {
 						))}
 					</ul>
 				</Fragment>
-				{error && <div style={{ color: "#900" }}>{error}</div>}
-				{isLoading && (
+				{/* {error && <div style={{ color: "#900" }}>{error}</div>} */}
+				{isLoading === true || hasMore === true ? (
 					<div>
 						Loading...
 						<Loading />
 					</div>
-				)}
-				{hasMore === false && (
-					<div>You did it! You reached the end!</div>
+				) : (
+					<div>
+						<p>You did it! You reached the end!</p>
+					</div>
 				)}
 			</div>
 		);
