@@ -22,12 +22,12 @@ const GlobalStyle = createGlobalStyle`
 	  	padding: 50px;
 		padding-bottom: 100px;
 		display: grid;
-		grid-template-columns: repeat(auto-fill, 200px);
+		grid-template-columns: repeat(auto-fill, 250px);
 		grid-gap: 20px;
-		grid-auto-rows: 300px;
+		// grid-auto-rows: 300px;
 		justify-content: space-around;
 		// grid-template-rows: 260px 400px 400px;
-		& > div {
+		& > li {
 			grid-column: span 1;
 			// &:nth-child(5),
 			// &:nth-child(6) {
