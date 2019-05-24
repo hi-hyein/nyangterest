@@ -37,7 +37,7 @@ class List extends Component {
 		}
 	};
 
-	// async , await
+	// async , await으로 변경
 	loadList = async () => {
 		try {
 			const { items, pageNo, numOfRows } = this.state;
@@ -74,21 +74,6 @@ class List extends Component {
 		);
 	};
 
-	// render() {
-	// 	return (
-	// 		<Fragment>
-	// 			<Loading />
-	// 			<ul className="List">
-	// 				{this.state.items.map(info => (
-	// 					<li key={info.id}>
-	// 						<Item {...info} />
-	// 					</li>
-	// 				))}
-	// 			</ul>
-	// 		</Fragment>
-	// 	);
-	// }
-
 	render() {
 		const { isLoading, hasMore } = this.state;
 		return (
@@ -102,6 +87,7 @@ class List extends Component {
 						))}
 					</ul>
 				</Fragment>
+
 				{/* {error && <div style={{ color: "#900" }}>{error}</div>} */}
 				{isLoading === true || hasMore === true ? (
 					<div>
