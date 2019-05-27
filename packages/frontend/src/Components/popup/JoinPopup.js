@@ -1,27 +1,29 @@
 import React from "react";
+import Cn from "classnames";
+import "../../JoinPopup.css"; //임시확인용 css
 // 이메일 유효성검사
-const ValidateEmail = (email) => {
-	const mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+// const ValidateEmail = (email) => {
+// 	const mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 
-	if(email.match(mailformat)){
-		// 이메일 주소 형식 맞으면 true
-		return true;
-	}else{
-		// 이메일 주소 형식 틀리면 true
-		return false;
-	}
-}
+// 	if(email.match(mailformat)){
+// 		// 이메일 주소 형식 맞으면 true
+// 		return true;
+// 	}else{
+// 		// 이메일 주소 형식 틀리면 true
+// 		return false;
+// 	}
+// }
 
-const ValidatePassword = (password) => {
-	const passwordformat = /^[a-zA-Z0-9]{10,15}$/;
-	if(password.match(passwordformat)){
-		// 비밀번호 6자이상 맞으면 true
-		return true;
-	}else{
-		// 비밀번호 6자이상 틀리면 true
-		return false;
-	}
-}
+// const ValidatePassword = (password) => {
+// 	const passwordformat = /^[a-zA-Z0-9]{10,15}$/;
+// 	if(password.match(passwordformat)){
+// 		// 비밀번호 6자이상 맞으면 true
+// 		return true;
+// 	}else{
+// 		// 비밀번호 6자이상 틀리면 true
+// 		return false;
+// 	}
+// }
 
 class JoinPopup extends React.Component {
 	constructor(){
@@ -31,73 +33,139 @@ class JoinPopup extends React.Component {
 			password: "",
 			emailValidate: false,
 			emailValidateNot: false,
-			passwordValidate: false,
+			passwordValidate: true,
 		}
+
+		this.emailHandleChange = this.emailHandleChange.bind(this);
+		this.passwordHandleChange = this.passwordHandleChange.bind(this);
+		this.validate = this.validate.bind(this);
 	}
 
-	// 이메일 입력 폼 핸들러
-	emailonChangeHalder = (e)=>{
-		// 입력되 데이터 받아오기
-		const mailValue=e.target.value;
+	//메일 유효성 정규식
+	mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+	// 패스워드 유효성 정규식
+	passwordformat = /^[a-zA-Z0-9]{6,15}$/;
 
-		// 입력된 데이터 state에 담기
-		this.setState({
-			email: mailValue
-		})
+	// 이메일 핸들러
+	emailHandleChange(event) {
+        this.setState({
+			email: event.target.value,
+		});
 
-		// 유효성 검사
-		ValidateEmail(mailValue);
+		const value = event.target.value;
+		const mailValidate = this.validate(this.mailformat,value);
 
-		// 유효성 boolean state에 담기
-		if (ValidateEmail(mailValue)) {
+		if(mailValidate) {
 			this.setState({
 				emailValidate: true,
 				emailValidateNot: false
-			})
+			});
+		}else if(value.length === 0){
+			this.setState({
+				emailValidateNot: false
+			});
 		}else {
-			if(mailValue.length <= 0){
-				this.setState({
-					emailValidateNot: false
-				})
-			}else {
-				this.setState({
-					emailValidate: false,
-					emailValidateNot: true
-				})
-			}
+			this.setState({
+				emailValidate: false,
+				emailValidateNot: true
+			});
 		}
 	}
 
-	// 비밀번호 입력 폼 핸들러
-	passwordChangeHalder = (e)=>{
-		// 입력되 데이터 받아오기
-		const passwordValue=e.target.value;
+	// 패스워드 핸들러
+	passwordHandleChange(event) {
+        this.setState({
+			password: event.target.value
+		});
 
-		// 입력된 데이터 state에 담기
-		this.setState({
-			password: passwordValue
-		})
+		const value = event.target.value;
+		const passwordValidate = this.validate(this.passwordformat,value);
 
-		// 유효성 검사
-		ValidatePassword(passwordValue);
-
-		// 유효성 boolean state에 담기
-		if (ValidateEmail(passwordValue)) {
+		if(passwordValidate || value.length === 0) {
 			this.setState({
 				passwordValidate: true,
-			})
+			});
 		}else {
-			if(passwordValue.length <= 0){
-				this.setState({
-					passwordValidate: false
-				})
-			}else {
-				this.setState({
-					passwordValidate: false,
-				})
+			this.setState({
+				passwordValidate: false
+			});
+			
+			if(value.length > 14) {
+				alert('15자 이상 안됨!')
 			}
 		}
 	}
+	
+	// 유효성 검사
+	validate(format,value) {
+		const reg = format;
+		const validate = reg.test(value);
+		return validate;
+    }
+
+	// 이메일 입력 폼 핸들러
+	// emailonChangeHalder = (e)=>{
+	// 	// 입력되 데이터 받아오기
+	// 	const mailValue=e.target.value;
+
+	// 	// 입력된 데이터 state에 담기
+	// 	this.setState({
+	// 		email: mailValue
+	// 	})
+
+	// 	// 유효성 검사
+	// 	ValidateEmail(mailValue);
+
+	// 	// 유효성 boolean state에 담기
+	// 	if (ValidateEmail(mailValue)) {
+	// 		this.setState({
+	// 			emailValidate: true,
+	// 			emailValidateNot: false
+	// 		})
+	// 	}else {
+	// 		if(mailValue.length <= 0){
+	// 			this.setState({
+	// 				emailValidateNot: false
+	// 			})
+	// 		}else {
+	// 			this.setState({
+	// 				emailValidate: false,
+	// 				emailValidateNot: true
+	// 			})
+	// 		}
+	// 	}
+	// }
+
+	// 비밀번호 입력 폼 핸들러
+	// passwordChangeHalder = (e)=>{
+	// 	// 입력되 데이터 받아오기
+	// 	const passwordValue=e.target.value;
+
+	// 	// 입력된 데이터 state에 담기
+	// 	this.setState({
+	// 		password: passwordValue
+	// 	})
+
+	// 	// 유효성 검사
+	// 	ValidatePassword(passwordValue);
+
+	// 	// 유효성 boolean state에 담기
+	// 	if (ValidateEmail(passwordValue)) {
+	// 		this.setState({
+	// 			passwordValidate: true,
+	// 		})
+	// 	}else {
+	// 		if(passwordValue.length <= 0){
+	// 			this.setState({
+	// 				passwordValidate: false
+	// 			})
+	// 		}else {
+	// 			this.setState({
+	// 				passwordValidate: false,
+	// 			})
+	// 		}
+	// 	}
+	// }
 
 	render() {
 		return (
@@ -110,15 +178,15 @@ class JoinPopup extends React.Component {
 							{this.state.emailValidate && " - 사용 가능한 이메일 주소입니다"}
 							{this.state.emailValidateNot && " - 잘못된 이메일 형식 입니다"}
 						</label>
-						<input type="text" name="email" id="email" placeholder="ex)email@address.com" onChange={this.emailonChangeHalder}
+						<input type="text" name="email" id="email" placeholder="ex)email@address.com" onChange={this.emailHandleChange}
 						/>
 						<div>
 							{this.state.emailValidate && "해당 이메일 주소로 인증링크를 보내드립니다. 메일 확인 후 링크로 접속해주세요!"}
 						</div>
 					</div>
 					<div>
-						<label htmlFor="password">비밀번호 - 6자 이상 입력해 주세요</label>
-						<input type="password" name="password" id="password" placeholder="password" onChange={this.passwordChangeHalder}/>
+						<label htmlFor="password">비밀번호 - <span className={Cn(this.state.passwordValidate ? '' : 'error')}>6자 이상 15자 이하 입력해 주세요</span></label>
+						<input type="password" name="password" id="password" placeholder="password" onChange={this.passwordHandleChange}/>
 					</div>
 					<div className="button-area">
 						<button type="button">계속하기</button>
