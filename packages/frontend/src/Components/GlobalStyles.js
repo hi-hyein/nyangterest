@@ -28,6 +28,12 @@ const GlobalStyle = createGlobalStyle`
 		justify-content: space-around;
 		// grid-template-rows: 260px 400px 400px;
 		& > li {
+			animation: fadeInUp 1s both;
+
+			@keyframes fadeInUp {
+				from {  transform: translate3d(0,40px,0); opacity: 0; }
+				to   { transform: translate3d(0,0,0);opacity: 1; }
+			}
 			grid-column: span 1;
 			// &:nth-child(5),
 			// &:nth-child(6) {
