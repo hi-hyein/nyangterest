@@ -49,7 +49,7 @@ const GlobalStyle = createGlobalStyle`
 		}
 	}
   }
- 
+
   .Item {
 	  width: 100%;
 	  
@@ -111,6 +111,7 @@ const GlobalStyle = createGlobalStyle`
 			}
 		}
 	}
+
 `;
 
 export default GlobalStyle;

@@ -1,4 +1,5 @@
 const fs = require("fs");
+const moment = require("moment");
 const express = require("express");
 const path = require("path");
 const router = express.Router();
@@ -8,10 +9,15 @@ const app = express();
 const PORT = 8080;
 
 router.get("/page/:numOfRows/:id/", (req, res) => {
+	const bgnde = moment()
+		.subtract(3, "month")
+		.format("YYYYMMDD");
+	const endde = moment().format("YYYYMMDD");
 	const numOfRows = req.params.numOfRows;
 	const pageNo = req.params.id;
+	const serviceKey = `P3gvH0LsdoPkxFnZU2Ee98hGDDEwVTJndJFa8NDUhznSLlZG6OOxBopFWLBmiCPOfWXsF8Wz8LFHJguz41qJvA%3D%3D&`;
 
-	const url = `http://openapi.animal.go.kr/openapi/service/rest/abandonmentPublicSrvc/abandonmentPublic?serviceKey=P3gvH0LsdoPkxFnZU2Ee98hGDDEwVTJndJFa8NDUhznSLlZG6OOxBopFWLBmiCPOfWXsF8Wz8LFHJguz41qJvA%3D%3D&_type=json&bgnde=20170101&endde=20190531&upkind=422400&state=notice&numOfRows=${numOfRows}&pageNo=${pageNo}`;
+	const url = `http://openapi.animal.go.kr/openapi/service/rest/abandonmentPublicSrvc/abandonmentPublic?serviceKey=${serviceKey}_type=json&bgnde=${bgnde}&endde=${endde}&upkind=422400&state=notice&numOfRows=${numOfRows}&pageNo=${pageNo}`;
 	fetch(url)
 		.then(response => response.json())
 		.then(json => {
@@ -19,6 +25,8 @@ router.get("/page/:numOfRows/:id/", (req, res) => {
 			console.log("key:" + req.params.id);
 			console.log("key2:" + req.params.numOfRows);
 			console.log(json.response.body.pageNo);
+			console.log("today:" + endde);
+			console.log("3month:" + bgnde);
 		})
 		.catch(() => {
 			res.send(JSON.stringify({ message: "System Error" }));

@@ -12,14 +12,14 @@ class Header extends React.Component {
 				<h1>NYANGTEREST</h1>
 					{console.log(this)}
 					{/* 로그인 상태 */}
-					{this.props.userState === 'login' &&
+					{this.props.userState === 'logout' &&
 						<div className="button-area">
-							<button type="button" onClick={()=>this.props.onClick()}>LOGIN</button>
-							<button type="button">JOIN</button>
+							<button type="button" onClick={this.props.loginOnClick}>LOGIN</button>
+							<button type="button" onClick={this.props.joinOnClick}>JOIN</button>
 						</div>
 					}
 					{/* 로그아웃 상태 */}
-					{this.props.userState === 'logout' &&
+					{this.props.userState === 'login' &&
 						<div className="button-area">
 							<button type="button">MENU</button>
 						</div>
