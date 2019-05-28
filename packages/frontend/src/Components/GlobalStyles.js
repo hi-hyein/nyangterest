@@ -74,12 +74,6 @@ const GlobalStyle = createGlobalStyle`
 	  }	
   }
  
-  $black: #212529;
-  $gray: #868e96;
-  $lgray: #f8f9fa;
-  $keycolor: #e03131;
-  $subcolor: #38d9a9;
-  $bg: #fff9db;
   .nav {
 		position: fixed;
 		width: 100%;
@@ -88,7 +82,7 @@ const GlobalStyle = createGlobalStyle`
 		z-index: 100;
 		background: #fff;
 		opacity: 0.8;
-		border-top: 1px solid $lgray;
+		border-top: 1px solid #f8f9fa;
 		&-list {
 			li {
 				width: 20%;
@@ -99,7 +93,7 @@ const GlobalStyle = createGlobalStyle`
 					width: 100%;
 					display: block;
 					padding: 6px 0;
-					color: $gray;
+					color: #868e96;
 					font-size: 2rem;
 					
 					span {
@@ -109,7 +103,7 @@ const GlobalStyle = createGlobalStyle`
 					}
 					&.active {
 					* {
-						color: $subcolor;
+						color: #38d9a9;
 					}
 				}
 				
