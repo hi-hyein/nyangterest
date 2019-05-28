@@ -83,21 +83,6 @@ class List extends Component {
 		);
 	};
 
-	// render() {
-	// 	return (
-	// 		<Fragment>
-	// 			<Loading />
-	// 			<ul className="List">
-	// 				{this.state.items.map(info => (
-	// 					<li key={info.id}>
-	// 						<Item {...info} />
-	// 					</li>
-	// 				))}
-	// 			</ul>
-	// 		</Fragment>
-	// 	);
-	// }
-
 	render() {
 		const { isLoading, hasMore, error } = this.state;
 		return (
@@ -124,6 +109,23 @@ class List extends Component {
 			</div>
 		);
 	}
+
+	// render() {
+	// 	const IsLoading = false;
+	// 	return (
+	// 		<ul className="List">
+	// 			{IsLoading === true ? (
+	// 				<li>Loading...</li>
+	// 			) : (
+	// 				this.state.items.map(info => (
+	// 					<li key={info.id}>
+	// 						<Item {...info} />
+	// 					</li>
+	// 				))
+	// 			)}
+	// 		</ul>
+	// 	);
+	// }
 }
 
 export default List;

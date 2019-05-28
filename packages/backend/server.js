@@ -1,3 +1,4 @@
+const fs = require("fs");
 const moment = require("moment");
 const express = require("express");
 const path = require("path");
@@ -32,6 +33,29 @@ router.get("/page/:numOfRows/:id/", (req, res) => {
 		});
 });
 
+// db접속
+const data = fs.readFileSync(__dirname + "/db.json");
+const conf = JSON.parse(data);
+const mysql = require("mysql");
+
+// 환경설정 연결 초기화
+const connection = mysql.createConnection({
+	host: conf.host,
+	user: conf.user,
+	password: conf.password,
+	port: conf.port,
+	database: conf.database
+});
+
+connection.connect();
+
+app.get("/admin/member", (req, res) => {
+	connection.query("SELECT * FROM member", (err, rows, fields) => {
+		res.send(rows);
+		// console.log(rows);
+	});
+});
+
 app.use(express.json());
 
 // // 중첩된 객체표현 허용여부
@@ -43,7 +67,8 @@ console.log(__dirname);
 
 app.use(cors());
 app.use("/", router);
-app.use("/page", router);
+// app.use("/page", router);
+// app.use("/admin/member", router);
 
 // // app.get("/", function(req, res, next) {
 // // 	res.json({ msg: "This is CORS-enabled for all origins!" });

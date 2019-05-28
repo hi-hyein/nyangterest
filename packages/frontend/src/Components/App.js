@@ -1,10 +1,13 @@
 import React, { Component, Fragment } from "react";
+import { BrowserRouter as Router, Route } from "react-router-dom";
 import styled from "styled-components";
 import GlobalStyle from "./GlobalStyles";
-import List from "./List";
 import Header from "./layout/Header";
 import LoginPopup from "./popup/LoginPopup";
 import JoinPopup from "./popup/JoinPopup";
+import Nav from "./Nav";
+import List from "./List";
+import MemberList from "./MemberList";
 
 const Wrapper = styled.div`
 	position: relative;
@@ -56,24 +59,28 @@ class App extends Component {
 
 	render() {
 		return (
-			<Fragment>
-				<div id="wrap">
-					{/* 헤더 */}
-					<Header
-						userState={this.state.userState}
-						loginOnClick={this.openLoginPopup}
-						joinOnClick={this.openJoinPopup}
-					/>
-					{/* 로그인 팝업 */}
-					{this.state.loginPopup && <LoginPopup onClick={this.closeLoginPopup}/>}
-					{/* 회원가입 팝업 */}
-					{this.state.joinPopup && <JoinPopup onClick={this.closeJoinPopup}/>}
-					<Wrapper>
-						<List />
-					</Wrapper>
-					<GlobalStyle />
-				</div>
-			</Fragment>
+			<Router>
+				<Fragment>
+					<div id="wrap">
+						{/* 헤더 */}
+						<Header
+							userState={this.state.userState}
+							loginOnClick={this.openLoginPopup}
+							joinOnClick={this.openJoinPopup}
+						/>
+						{/* 로그인 팝업 */}
+						{this.state.loginPopup && <LoginPopup onClick={this.closeLoginPopup} />}
+						{/* 회원가입 팝업 */}
+						{this.state.joinPopup && <JoinPopup onClick={this.closeJoinPopup} />}
+						<Wrapper>{/* <List /> */}</Wrapper>
+						<GlobalStyle />
+						{/* <MemberList /> */}
+						<Nav />
+						<Route exact path="/" component={List} />
+						<Route path="/admin/member" component={MemberList} />
+					</div>
+				</Fragment>
+			</Router>
 		);
 	}
 }
