@@ -4,6 +4,8 @@ import PropTypes from "prop-types";
 
 const Container = styled.div`
 	position: relative;
+	max-height: 300px;
+	min-height: 100%;
 	background-image: linear-gradient(rgba(0, 0, 0, 0.28), rgba(0, 0, 0, 0.7));
 	background-size: cover;
 	border-radius: 8px;
@@ -23,24 +25,49 @@ const Content = styled.div`
 	justify-content: space-between;
 	align-items: flex-end;
 	color: white;
-	margin-top: 40px;
-	margin-bottom: 20px;
 `;
 
+const Info = styled.div`
+	width: 100%;
+
+	& > h2 {
+		padding-bottom: 0.5rem;
+	}
+
+	& > p {
+		padding-bottom: 1rem;
+	}
+
+	& > a {
+		display: flex;
+		height: 200px;
+		justify-content: center;
+		align-items: center;
+
+		& > img {
+			max-width: 100%;
+			max-height: 100%;
+		}
+	}
+`;
 const Item = ({ kindCd, happenDt, borderBottomColor = "#087264", popfile }) => (
 	<Container borderBottomColor={borderBottomColor}>
 		<Content>
-			<div className="Item">
-				<h1>{kindCd}</h1>
-				<p>{happenDt}</p>
+			<Info>
+				<h2>품종: {kindCd}</h2>
+				<p>등록일: {happenDt}</p>
 				<CatImage popfile={popfile} alt={kindCd} />
-			</div>
+			</Info>
 		</Content>
 	</Container>
 );
 
 const CatImage = props => {
-	return <img src={props.popfile} alt={props.alt} className="CatImage" />;
+	return (
+		<a href={"http://naver.com"}>
+			<img src={props.popfile} alt={props.alt} className="CatImage" />
+		</a>
+	);
 };
 
 Item.propTypes = {
