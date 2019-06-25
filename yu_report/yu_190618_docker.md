@@ -64,7 +64,7 @@ disown -h
 <pre>sudo kill -9 28423</pre>
 
 
-### 사설인증서 생성
+#### 사설인증서 생성
 
 * https 적용
 <pre>
@@ -95,77 +95,85 @@ https://52.79.228.93:8888
 * 주피터 노트북 시스템서비스 등록
 
 * 서비스파일 작성
-sudo vim /etc/systemd/system/jupyter.service
+<pre> sudo vim /etc/systemd/system/jupyter.service </pre>
 
+
+```
 [Unit]
 Description=Jupyter Notebook Server
 
-    [Service]
-    Type=simple
-    User=ubuntu
-    ExecStart=/usr/bin/sudo /usr/local/bin/jupyter-notebook --allow-root --config=/home/ubuntu/.jupyter/jupyter_notebook_config.py
+[Service]
+Type=simple
+User=ubuntu
+ExecStart=/usr/bin/sudo /usr/local/bin/jupyter-notebook --allow-root --config=/home/ubuntu/.jupyter/jupyter_notebook_config.py
 
-    [Install]
-    WantedBy=multi-user.target
+[Install]
+WantedBy=multi-user.target
+```
 
-데몬 재로드
-sudo systemctl daemon-reload
+* 데몬 재로드
+<pre> sudo systemctl daemon-reload </pre>
 
-주피터 가능한 상태로
-sudo systemctl enable jupyter
+* 주피터 가능한 상태로
+<pre>sudo systemctl enable jupyter</pre>
 
-항상 주피터 서버 시작
-sudo systemctl start jupyter
+* 항상 주피터 서버 시작
+<pre>sudo systemctl start jupyter</pre>
 
-실행중인 주피터 서비스 확인
-sudo systemctl status jupyter
+* 실행중인 주피터 서비스 확인
+<pre>sudo systemctl status jupyter</pre>
 
-재시작
-sudo systemctl restart jupyter
+* 재시작
+<pre>sudo systemctl restart jupyter</pre>
 
 #### docker설치
 
 (https://docs.docker.com/install/linux/docker-ce/ubuntu/)
 
-\$ sudo apt-get update
+<pre> sudo apt-get update
 Install packages to allow apt to use a repository over HTTPS:
 
-\$ sudo apt-get install \
+sudo apt-get install \
  apt-transport-https \
  ca-certificates \
  curl \
  software-properties-common
 Add Docker’s official GPG key:
 
-\$ curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
 
-\$ sudo add-apt-repository \
+sudo add-apt-repository \
  "deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable"
 
-\$ sudo apt-get update
+sudo apt-get update
 
-\$ sudo apt-cache policy docker-ce
+sudo apt-cache policy docker-ce
 
-\$ sudo apt-get install docker-ce
+sudo apt-get install docker-ce
 
-\$ sudo docker images
+sudo docker images</pre>
 
-\$ sudo docker pull hello-world
+* 헬로우월드 실행
+<pre>  
+sudo docker pull hello-world
 
-\$ sudo docker run hello-world
+sudo docker run hello-world
+</pre>
 
-실행중인 도커 확인
-\$ sudo docker ps -a
+* 실행중인 도커 확인
+<pre>sudo docker ps -a</pre>
 
-도커 삭제
-\$ sudo docker rm {container id}
+* 도커 컨테이너 삭제 (삭제하여도 이미지는 남아서 언제든 다시 실행 가능함)
+<pre>sudo docker rm {container id}</pre>
 
-삭제하여도 이미지는 남아서 언제든 다시 실행 가능함
+<pre>  
+cd home/ubuntu
+mkdir example
+cd example
+sudo vim Dockefile
+</pre>
 
-$  cd home/ubuntu
-$ mkdir example
-$ cd example
-$ sudo vim Dockefile
+```
 FROM ubuntu:18.04
 MAINTAINER Yoonu Cho <tomorrowcho@gmail.com>
 
@@ -175,26 +183,34 @@ MAINTAINER Yoonu Cho <tomorrowcho@gmail.com>
     EXPOSE 80
 
     CMD ["apachectl", "-D","FOREGROUND"]
+```	
 
-\$ ls
+* 도커 빌드 
+<pre>sudo docker build -t example . </pre>
 
-\$ sudo docker build -t example .
+* 도커 실행
+<pre>sudo docker run -p 80:80 example</pre>
 
-\$ sudo docker run -p 80:80 example
+* 보안그룹 인바운드규칙 HTTP 80 추가
 
-보안그룹 인바운드규칙 HTTP 80 추가
+#### PHP 개발환경 구축
 
-\$ sudo docker rm -f `sudo docker ps -a -q`
+<pre>
 
-\$ cd home/ubuntu/example
+sudo docker rm -f `sudo docker ps -a -q`
 
-\$ sudo docker run -p 80:80 -v /home/ubuntu/example/html:/var/www/html example
+cd home/ubuntu/example
 
-\$ sudo docker images
+sudo docker run -p 80:80 -v /home/ubuntu/example/html:/var/www/html example
 
-\$ cd /home/ubuntu/example/html
+sudo docker images
 
-php설치 Dockerfile 추가설정
+cd /home/ubuntu/example/html
+</pre>
+
+* php설치 Dockerfile 추가설정
+
+```
 FROM ubuntu:18.04
 MAINTAINER Yoonu Cho <tomorrowcho@gmail.com>
 
@@ -211,79 +227,98 @@ MAINTAINER Yoonu Cho <tomorrowcho@gmail.com>
     EXPOSE 80
 
     CMD ["apachectl", "-D","FOREGROUND"]
+```
+<pre>sudo docker images</pre>
 
-\$ sudo docker images
+#### MYSQL 컨테이너 생성
 
-필요없는 none 이미지 삭제
-\$ rmi -f image id
+* 컨테이너 , 이미지 모두 삭제
 
-\$ sudo vim index.php
+<pre>sudo docker rm -f `sudo docker ps -a -q`
 
-cd.. cd.. cd..
-\$ sudo docker rm -f `sudo docker ps -a -q`
+sudo docker rmi -f `sudo docker images`</pre>
 
-\$ sudo docker rmi -f `sudo docker images`
+* mysql 설치 시뮬
+<pre>
+sudo docker run -d -p 9876:3306 -e MYSQL_ROOT_PASSWORD=password mysql:5.6
+</pre>
 
-mysql 설치
-\$ sudo docker run -d -p 9876:3306 -e MYSQL_ROOT_PASSWORD=password mysql:5.6
+* mysql 이미지 실행
+<pre>sudo docker exec -it cf7878896acd /bin/bash</pre>
 
-mysql 이미지 실행
-sudo docker exec -it cf7878896acd /bin/bash
+<pre>
+mysql>  CREATE DATABASE TEST;
 
-CREATE DATABASE TEST;
+mysql>  SHOW DATABASES;
 
-SHOW DATABASES;
+mysql>  exit
+</pre>
 
-exit
+* 실행 도커 컨테이너 id확인
+<pre>sudo docker ps -a</pre>
 
-sudo docker ps -a
-sudo docker inspect container id
+* ip address 확인
+<pre>sudo docker inspect container id </pre>
 
-mysql 설치
-sudo apt install mysql-client-core-5.7
+* mysql 설치
+<pre>sudo apt install mysql-client-core-5.7</pre>
 
-mysql -u root -p --host 172.17.0.2 --port 3306
+* mysql 접속
+<pre>
+
+mysql -u root -p --host 172.17.0.2 --port 3306 
+
+or 
 
 mysql -u root -p --host 172.17.0.1 --port 9876
 
-use mysql;
+</pre>
 
-CREATE USER 'test'@'%' IDENTIFIED BY 'password';
+<pre>mysql> use mysql;</pre>
 
-해당유저에게 권한
-\$ GRANT ALL PRIVILEGES ON *.* TO 'test'@'%';
+* 유저 비밀번호 생성 
+mysql> CREATE USER 'test'@'%' IDENTIFIED BY 'password';
 
-외부에서 권한 설정
-FLUSH PRIVILEGES;
+* 해당유저에게 권한
+mysql> GRANT ALL PRIVILEGES ON *.* TO 'test'@'%';
 
+* 외부에서 권한 설정
+mysql> FLUSH PRIVILEGES;
+
+* 종료
 exit
+</pre>
 
-재시작
-sudo docker restart container id
+* 재시작
+<pre >sudo docker restart container id </pre>
 
-HeidiSQL 설정 및 실행
+* HeidiSQL 설정 및 실행
 
-호스트명 /IP : 52.79.228.93
-사용자: test
-암호: password
-포트: 9876
-열기
-쿼리: SELECT VERSION();
+	* 호스트명 /IP : 52.79.228.93
+	* 사용자: test
+	* 암호: password
+	* 포트: 9876
+	* 열기
+	* 쿼리 버전확인: SELECT VERSION();
 
-PHP 컨테이너와 MySQL 컨테이너 연동해보기
+#### PHP 컨테이너와 MySQL 컨테이너 연동해보기
 
+<pre>
 sudo vim Dockerfile 추가 # Connect PHP & MySQL
-RUN apt-get install -y php5.6-mysql
+RUN apt-get install -y php5.6-mysql 
+</pre>
 
-재빌드
-sudo docker build -t example .
+* 다시 빌드
+<pre>sudo docker build -t example .</pre>
 
-서버실행
-sudo docker run -p 80:80 -v /home/ubuntu/example/html:/var/www/html example
+* 서버실행
+<pre>sudo docker run -p 80:80 -v /home/ubuntu/example/html:/var/www/html example</pre>
 
-exaple폴더 접근
-index.php 수정
-
+* example폴더 접근
+<pre> cd example </pre>
+* index.php 수정
+주피터 노트북에서 직접 편집 가능
+```
 <?php
 	$conn = mysqli_connect(
 				'52.79.228.93',
@@ -300,25 +335,12 @@ index.php 수정
     $row = mysqli_fetch_array($result);
     print_r($row["VERSION()"]);
 ?>
+```
 
-<?php 
-	$conn = mysqli_connect( 
-	'{데이터베이스 IP}', 
-	'{사용자 이름}', 
-	'{비밀번호}', 
-	'{데이터베이스 이름}', 
-	'3306'
-	); 
-	if (mysqli_connect_errno()){ 
-		echo "Failed to connect to MySQL: " . mysqli_connect_error(); 
-		} 
-	$sql = "SELECT VERSION()"; 
-	$result = mysqli_query($conn, $sql); 
-	$row = mysqli_fetch_array($result); 
-	print_r($row["VERSION()"]); 
-?>
 
-rds 설정
+#### AWS RDS 설정시 데이터베이스 구축
+
+```
 <?php
 	$conn = mysqli_connect(
 				'docker-mysql-test.cqn96a5xogpk.ap-northeast-2.rds.amazonaws.com',
@@ -336,51 +358,62 @@ rds 설정
     print_r($row["VERSION()"]);
    
 ?>
+```
 
-기존 mysql 컨테이너 삭제
-docker rm -f 컨테이너 id
+* 기존 mysql 컨테이너 삭제
+<pre>docker rm -f 컨테이너 id</pre>
 
-깃허브 배포
-프로젝트 생성 
-git clone https://github.com/yoonucho/Docker-Practice.git
+#### 깃허브 배포
+* 프로젝트 생성 및 aws 환경에 클론
+<pre>git clone https://github.com/yoonucho/Docker-Practice.git
 
 cd Docker-Practice
 sudo vim Dockerfile 
-빈파일 생성후 주피터에서 추가
-Dockerfile, index.php example내의 파일 모두 복수후 깃 커밋 및 푸시
+</pre>
 
-dockerhub 회원가입
+* 빈파일 생성후 주피터에서 추가
+Dockerfile, index.php example내의 파일 모두 복사 후 깃 커밋 및 푸시
+
+
+#### DockerHub와 GitHub 연동하기
+
+* dockerhub 회원가입
 레파지토리 생성후 github Docker-Practice 연결 저장및 빌드 클릭
 
-기존서버에서 docker 모든 컨테이너 지우기
- docker rm -f `sudo docker ps -a -q`
+* 기존 서버에서 docker 모든 컨테이너 지우기
+ <pre>docker rm -f `sudo docker ps -a -q`</pre>
 
-기존서버에서 docker 모든이미지 지우기
-docker rmi -f `docker images`
+* 기존 서버에서 docker 모든이미지 지우기
+<pre>docker rmi -f `docker images`</pre>
 
-Docker-Practice폴더에서 Project 폴더생성
+* Docker-Practice폴더에서 Project 폴더생성
+<pre>
 mkdir Project
 index.php 위치이동
 mv index.php ./Project/index.php
+</pre>
 
-git 커밋 및 푸시
+* git 커밋 및 푸시
 
-사용자 입장에서 리드미 안내따라 설치해보기
-기존 Docker-Practice폴더 삭제
-rm -r -f Docker-Practice
+#### README 파일 생성
 
+* README.md
 
+<pre>
+Docker 실전 연습 예제입니다.
+Installation
+cd /home
+git clone https://github.com/yoonucho/Docker-Practice.git
+cd Docker-Practice
+Run
+# Login For Private Docer Repository
+docker login
+docker pull tomorrowcho/docker-practice
+docker run -p 80:80 -v /home/Docker-Practice/Project:/var/www/html  tomorrowcho/docker-practice
+</pre>
 
+#### 사용자 입장에서 README 따라서 설치해보기
 
+* 기존 Docker-Practice폴더 삭제
+<pre> rm -r -f Docker-Practice </pre>
 
-
-
-
-
-
-
-
-연동이 왜안되는건지
-
-AWS  파라미터 그룹 생성
-docker-mysql-test 생성
