@@ -1,17 +1,11 @@
 import React, { Component, Fragment } from "react";
 import Item from "./Item";
 import Loading from "./Loading";
+import { observer, inject } from "mobx-react";
 
+@inject('list')
+@observer
 class List extends Component {
-	state = {
-		items: [],
-		numOfRows: 72,
-		pageNo: 1,
-		scrolling: false,
-		hasMore: true,
-		isLoading: false,
-		error: false
-	};
 
 	componentDidMount() {
 		this.loadList();
@@ -37,43 +31,6 @@ class List extends Component {
 		}
 	};
 
-	// async , await으로 변경
-	loadList = async () => {
-		try {
-			const { items, pageNo, numOfRows } = this.state;
-			const url = `/page/${numOfRows}/${pageNo}`;
-			const response = await fetch(url);
-			const json = await response.json();
-			this.setState(
-				{
-					items: [...items, ...json.items.item],
-					scrolling: false,
-					numOfRows: json.numOfRows,
-					isLoading: false
-					// hasMore: this.state.items.length
-				},
-				() => console.log(items, numOfRows, pageNo)
-			);
-		} catch (err) {
-			// console.log(err);
-			this.setState({
-				error: err.message,
-				isLoading: false
-			});
-		}
-	};
-
-	loadMore = () => {
-		this.setState(
-			prevState => ({
-				pageNo: prevState.pageNo + 1,
-				scrolling: true,
-				isLoading: true
-			}),
-			this.loadList
-		);
-	};
-
 	render() {
 		const { isLoading, hasMore } = this.state;
 		return (
@@ -95,10 +52,10 @@ class List extends Component {
 						<Loading />
 					</div>
 				) : (
-					<div>
-						<p>You did it! You reached the end!</p>
-					</div>
-				)}
+						<div>
+							<p>You did it! You reached the end!</p>
+						</div>
+					)}
 			</div>
 		);
 	}
