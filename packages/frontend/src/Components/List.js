@@ -7,17 +7,17 @@ import { observer, inject } from "mobx-react";
 @observer
 class List extends Component {
 
-	// componentDidMount() {
-	// 	this.loadList();
-	// 	window.addEventListener("scroll", this.handleScroll);
-	// }
+	componentDidMount() {
+		this.props.listStore.loadList();
+		window.addEventListener("scroll", this.handleScroll);
+	}
 
 	componentWillUnmount() {
 		window.removeEventListener("scroll", this.handleScroll);
 	}
 
 	handleScroll = () => {
-		const { scrolling, isLoading, hasMore, error } = this.props.listStore;
+		const { scrolling, isLoading, hasMore, error } = this.props;
 
 		if (error || isLoading || !hasMore || scrolling) return;
 		// if (numOfRows <= pageNo) return;
@@ -27,7 +27,7 @@ class List extends Component {
 		const bottomOffset = 20;
 
 		if (pageOffset > lastLiOffset - bottomOffset) {
-			this.loadMore();
+			this.props.listStore.loadMore();
 		}
 	};
 
