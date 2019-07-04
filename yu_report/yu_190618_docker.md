@@ -344,8 +344,8 @@ RUN apt-get install -y php5.6-mysql
 <?php
 	$conn = mysqli_connect(
 				'docker-mysql-test.cqn96a5xogpk.ap-northeast-2.rds.amazonaws.com',
-				'user',
-				'password',
+				'유저명',
+				'비밀번호',
 				'TEST',
 				'3306'
 	);

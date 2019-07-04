@@ -1,29 +1,6 @@
 import React from "react";
 import Cn from "classnames";
 import "../../JoinPopup.css"; //임시확인용 css
-// 이메일 유효성검사
-// const ValidateEmail = (email) => {
-// 	const mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-
-// 	if(email.match(mailformat)){
-// 		// 이메일 주소 형식 맞으면 true
-// 		return true;
-// 	}else{
-// 		// 이메일 주소 형식 틀리면 true
-// 		return false;
-// 	}
-// }
-
-// const ValidatePassword = (password) => {
-// 	const passwordformat = /^[a-zA-Z0-9]{10,15}$/;
-// 	if(password.match(passwordformat)){
-// 		// 비밀번호 6자이상 맞으면 true
-// 		return true;
-// 	}else{
-// 		// 비밀번호 6자이상 틀리면 true
-// 		return false;
-// 	}
-// }
 
 class JoinPopup extends React.Component {
 	constructor(){
@@ -101,72 +78,23 @@ class JoinPopup extends React.Component {
 		const reg = format;
 		const validate = reg.test(value);
 		return validate;
-    }
+	}
+	
+	handlerSubmit = ()=>{
+		const state = this.state;
+		// state to json
+		const stateTojson = JSON.stringify(state)
+		console.log(state);
+		console.log(stateTojson);
 
-	// 이메일 입력 폼 핸들러
-	// emailonChangeHalder = (e)=>{
-	// 	// 입력되 데이터 받아오기
-	// 	const mailValue=e.target.value;
-
-	// 	// 입력된 데이터 state에 담기
-	// 	this.setState({
-	// 		email: mailValue
-	// 	})
-
-	// 	// 유효성 검사
-	// 	ValidateEmail(mailValue);
-
-	// 	// 유효성 boolean state에 담기
-	// 	if (ValidateEmail(mailValue)) {
-	// 		this.setState({
-	// 			emailValidate: true,
-	// 			emailValidateNot: false
-	// 		})
-	// 	}else {
-	// 		if(mailValue.length <= 0){
-	// 			this.setState({
-	// 				emailValidateNot: false
-	// 			})
-	// 		}else {
-	// 			this.setState({
-	// 				emailValidate: false,
-	// 				emailValidateNot: true
-	// 			})
-	// 		}
-	// 	}
-	// }
-
-	// 비밀번호 입력 폼 핸들러
-	// passwordChangeHalder = (e)=>{
-	// 	// 입력되 데이터 받아오기
-	// 	const passwordValue=e.target.value;
-
-	// 	// 입력된 데이터 state에 담기
-	// 	this.setState({
-	// 		password: passwordValue
-	// 	})
-
-	// 	// 유효성 검사
-	// 	ValidatePassword(passwordValue);
-
-	// 	// 유효성 boolean state에 담기
-	// 	if (ValidateEmail(passwordValue)) {
-	// 		this.setState({
-	// 			passwordValidate: true,
-	// 		})
-	// 	}else {
-	// 		if(passwordValue.length <= 0){
-	// 			this.setState({
-	// 				passwordValidate: false
-	// 			})
-	// 		}else {
-	// 			this.setState({
-	// 				passwordValidate: false,
-	// 			})
-	// 		}
-	// 	}
-	// }
-
+		// state들을... 백으로 넘겨! 어떤..객채화가 필요하겠지!
+		//백에서 받아서..!쿼리로...디비저장!!
+		fetch('/', {
+			method: 'POST',
+			body: stateTojson,
+		});
+	}
+	
 	render() {
 		return (
 			<div className="popup">
@@ -189,7 +117,7 @@ class JoinPopup extends React.Component {
 						<input type="password" name="password" id="password" placeholder="password" onChange={this.passwordHandleChange}/>
 					</div>
 					<div className="button-area">
-						<button type="button">계속하기</button>
+						<button type="button" onClick={this.handlerSubmit}>계속하기</button>
 					</div>
 					<div className="check-area">
 						<label htmlFor="checkAgree">

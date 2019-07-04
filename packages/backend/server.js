@@ -56,6 +56,11 @@ app.get("/admin/member", (req, res) => {
 	});
 });
 
+router.post("/", (req, res) => {
+	const body = req.body;
+	console.log('test',body);
+});
+
 app.use(express.json());
 
 // // 중첩된 객체표현 허용여부
