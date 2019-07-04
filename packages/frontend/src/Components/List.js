@@ -3,21 +3,21 @@ import Item from "./Item";
 import Loading from "./Loading";
 import { observer, inject } from "mobx-react";
 
-@inject('list')
+@inject('listStore')
 @observer
 class List extends Component {
 
-	componentDidMount() {
-		this.loadList();
-		window.addEventListener("scroll", this.handleScroll);
-	}
+	// componentDidMount() {
+	// 	this.loadList();
+	// 	window.addEventListener("scroll", this.handleScroll);
+	// }
 
 	componentWillUnmount() {
 		window.removeEventListener("scroll", this.handleScroll);
 	}
 
 	handleScroll = () => {
-		const { scrolling, isLoading, hasMore, error } = this.state;
+		const { scrolling, isLoading, hasMore, error } = this.props.listStore;
 
 		if (error || isLoading || !hasMore || scrolling) return;
 		// if (numOfRows <= pageNo) return;
@@ -32,12 +32,12 @@ class List extends Component {
 	};
 
 	render() {
-		const { isLoading, hasMore } = this.state;
+		const listStore = this.props.listStore;
 		return (
 			<div>
 				<Fragment>
 					<ul className="List">
-						{this.state.items.map(info => (
+						{listStore.items.map(info => (
 							<li key={info.id}>
 								<Item {...info} />
 							</li>
@@ -46,7 +46,7 @@ class List extends Component {
 				</Fragment>
 
 				{/* {error && <div style={{ color: "#900" }}>{error}</div>} */}
-				{isLoading === true || hasMore === true ? (
+				{listStore.isLoading === true || listStore.hasMore === true ? (
 					<div>
 						Loading...
 						<Loading />
@@ -59,23 +59,6 @@ class List extends Component {
 			</div>
 		);
 	}
-
-	// render() {
-	// 	const IsLoading = false;
-	// 	return (
-	// 		<ul className="List">
-	// 			{IsLoading === true ? (
-	// 				<li>Loading...</li>
-	// 			) : (
-	// 				this.state.items.map(info => (
-	// 					<li key={info.id}>
-	// 						<Item {...info} />
-	// 					</li>
-	// 				))
-	// 			)}
-	// 		</ul>
-	// 	);
-	// }
 }
 
 export default List;

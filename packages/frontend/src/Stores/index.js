@@ -1,8 +1,8 @@
-import ListStore from "./list";
+import ListStore from "./listStore";
 
 class RootStore {
 	constructor() {
-		this.list = new ListStore(this);
+		this.listStore = new ListStore(this);
 	}
 }
 
