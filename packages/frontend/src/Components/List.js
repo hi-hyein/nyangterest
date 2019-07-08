@@ -6,33 +6,19 @@ import { observer, inject } from "mobx-react";
 @inject('listStore')
 @observer
 class List extends Component {
-
 	componentDidMount() {
-		this.props.listStore.loadList();
-		window.addEventListener("scroll", this.handleScroll);
+		const { handleScroll, loadList } = this.props.listStore
+		loadList();
+		window.addEventListener("scroll", handleScroll);
 	}
 
 	componentWillUnmount() {
-		window.removeEventListener("scroll", this.handleScroll);
+		const { handleScroll } = this.props.listStore;
+		window.removeEventListener("scroll", handleScroll);
 	}
 
-	handleScroll = () => {
-		const { scrolling, isLoading, hasMore, error } = this.props;
-
-		if (error || isLoading || !hasMore || scrolling) return;
-		// if (numOfRows <= pageNo) return;
-		const lastLi = document.querySelector("ul.List > li:last-child");
-		const lastLiOffset = lastLi.offsetTop + lastLi.clientHeight;
-		const pageOffset = window.pageYOffset + window.innerHeight;
-		const bottomOffset = 20;
-
-		if (pageOffset > lastLiOffset - bottomOffset) {
-			this.props.listStore.loadMore();
-		}
-	};
-
 	render() {
-		const listStore = this.props.listStore;
+		const { listStore } = this.props;
 		return (
 			<div>
 				<Fragment>
@@ -46,7 +32,7 @@ class List extends Component {
 				</Fragment>
 
 				{/* {error && <div style={{ color: "#900" }}>{error}</div>} */}
-				{listStore.isLoading === true || listStore.hasMore === true ? (
+				{listStore.isLoading === true || !listStore.hasMore === true ? (
 					<div>
 						Loading...
 						<Loading />
