@@ -2,8 +2,9 @@
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^4.16.4",
-    "mysql": "^2.17.1",
+    "hash.js": "^1.1.7",
     "moment": "^2.24.0",
+    "mysql": "^2.17.1",
     "node-fetch": "^2.4.1",
     "path": "^0.12.7",
     "request": "^2.88.0"

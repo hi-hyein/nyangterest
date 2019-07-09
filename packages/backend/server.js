@@ -7,6 +7,7 @@ const cors = require("cors");
 const fetch = require("node-fetch");
 const app = express();
 const PORT = 8080;
+const hash = require('hash.js')
 
 router.get("/page/:numOfRows/:id/", (req, res) => {
 	const bgnde = moment()
@@ -52,13 +53,40 @@ connection.connect();
 app.get("/admin/member", (req, res) => {
 	connection.query("SELECT * FROM member", (err, rows, fields) => {
 		res.send(rows);
-		// console.log(rows);
+		// console.log(rows.id);
 	});
 });
 
 router.post("/", (req, res) => {
 	const body = req.body;
 	console.log('test',body);
+
+	const email = body.email;
+	const password = body.password;
+	const passwordHash = hash.sha256().update(password).digest('hex');
+	const signupdate = moment().format('YYYYMMDD');
+
+	// 패스워드 암호화하여 저장하기 
+	// 암호화 함수는 SHA-256를 일단 사용할 것!(주로권장)
+	const sql = "INSERT INTO member (email,password,signupdate)";
+	const params = [email, passwordHash, signupdate]
+
+	connection.query(sql,params,(err, rows, fields) => {
+		if(err){
+		console.log(err);
+		} else {
+		console.log(rows);
+		}
+	});
+	// const sql = 'INSERT INTO member (email, password, signupdate) VALUES(?, ?, ?)';
+	// var params = [email, passwordHash, signupdate];
+	// connection.query(sql, params, function(err, rows, fields){
+	// 	if(err){
+	// 		console.log(err);
+	// 	} else {
+	// 		console.log(rows);
+	// 	}
+	// });
 });
 
 app.use(express.json());
