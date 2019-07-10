@@ -94,6 +94,42 @@ class JoinPopup extends React.Component {
 			method: 'POST',
 			body: stateTojson
 		});
+		// 이메일 주소, 패스워드가 알맞게 입력했을때 백으로 보내자!
+		if(this.state.emailValidate && !this.state.emailValidateNot && this.state.passwordValidate && this.state.passwordCheckState){
+			const state = this.state;
+			// state to json
+			const stateTojson = JSON.stringify(state)
+			console.log(state);
+			console.log(stateTojson);
+
+			fetch('/', {
+				headers: {
+					'Accept': 'application/json',
+					'Content-Type': 'application/json'
+				},
+				method: 'POST',
+				body: stateTojson,
+			});
+		}else {
+			alert('이메일주소와 패스워드를 바르게 입력해주세요')
+		}
+	}
+
+	// 비밀번호 일치 체크
+	passwordHandleCheck = (event)=>{
+		const value = event.target.value;
+		this.setState({
+			passwordCheck: value
+		})
+		if(this.state.password === value) {
+			this.setState({
+				passwordCheckState: true,
+			});
+		}else {
+			this.setState({
+				passwordCheckState: false,
+			});
+		}
 	}
 	
 	render() {
