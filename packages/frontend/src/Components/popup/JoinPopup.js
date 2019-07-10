@@ -90,8 +90,12 @@ class JoinPopup extends React.Component {
 		// state들을... 백으로 넘겨! 어떤..객채화가 필요하겠지!
 		//백에서 받아서..!쿼리로...디비저장!!
 		fetch('/', {
+			headers: {
+				'Accept': 'application/json',
+				'Content-Type': 'application/json'
+			},
 			method: 'POST',
-			body: stateTojson,
+			body: stateTojson
 		});
 	}
 	
