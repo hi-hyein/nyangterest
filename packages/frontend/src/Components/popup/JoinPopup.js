@@ -11,6 +11,8 @@ class JoinPopup extends React.Component {
 			emailValidate: false,
 			emailValidateNot: false,
 			passwordValidate: true,
+			passwordCheck: "",
+			passwordCheckState: false,
 		}
 
 		this.emailHandleChange = this.emailHandleChange.bind(this);
@@ -25,12 +27,12 @@ class JoinPopup extends React.Component {
 
 	// 이메일 핸들러
 	emailHandleChange(event) {
-        this.setState({
-			email: event.target.value,
-		});
-
 		const value = event.target.value;
 		const mailValidate = this.validate(this.mailformat,value);
+
+		this.setState({
+			email: value,
+		});
 
 		if(mailValidate) {
 			this.setState({
@@ -51,12 +53,12 @@ class JoinPopup extends React.Component {
 
 	// 패스워드 핸들러
 	passwordHandleChange(event) {
-        this.setState({
-			password: event.target.value
-		});
-
 		const value = event.target.value;
 		const passwordValidate = this.validate(this.passwordformat,value);
+
+		this.setState({
+			password: value
+		});
 
 		if(passwordValidate || value.length === 0) {
 			this.setState({
@@ -81,11 +83,6 @@ class JoinPopup extends React.Component {
 	}
 	
 	handlerSubmit = ()=>{
-		const state = this.state;
-		// state to json
-		const stateTojson = JSON.stringify(state)
-		console.log(state);
-		console.log(stateTojson);
 
 		// state들을... 백으로 넘겨! 어떤..객채화가 필요하겠지!
 		//백에서 받아서..!쿼리로...디비저장!!
@@ -120,14 +117,22 @@ class JoinPopup extends React.Component {
 						<label htmlFor="password">비밀번호 - <span className={Cn(this.state.passwordValidate ? '' : 'error')}>6자 이상 15자 이하 입력해 주세요</span></label>
 						<input type="password" name="password" id="password" placeholder="password" onChange={this.passwordHandleChange}/>
 					</div>
-					<div className="button-area">
-						<button type="button" onClick={this.handlerSubmit}>계속하기</button>
+					<div>
+						<label htmlFor="passwordCheck">비밀번호 확인
+							{this.state.passwordCheckState && "- 비밀번호가 일치합니다"}
+							{this.state.passwordCheck.length === 0 && ""}
+							{!this.state.passwordCheckState && this.state.passwordCheck.length > 0 && "- 비밀번호가 일치하지않습니다"}
+						</label>
+						<input type="password" name="passwordCheck" id="passwordCheck" placeholder="password" onChange={this.passwordHandleCheck}/>
 					</div>
 					<div className="check-area">
 						<label htmlFor="checkAgree">
 							<input type="checkbox" id="checkAgree"></input>
 							<a href="#none" target="_blank" title="새창">이용약관</a> & <a href="#none" target="_blank" title="새창">개인정보 처리 방침</a> 동의하기
 						</label>
+					</div>
+					<div className="button-area">
+						<button type="button" onClick={this.handlerSubmit}>계속하기</button>
 					</div>
 					<div className="button-area">
 						<button type="button">카카오 계정으로 가입하기</button>
