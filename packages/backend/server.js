@@ -66,9 +66,12 @@ router.post("/", (req, res) => {
 	const passwordHash = hash.sha256().update(password).digest('hex');
 	const signupdate = moment().format('YYYYMMDD');
 
+	console.log('암호화된 암호:',passwordHash)
+
 	// 패스워드 암호화하여 저장하기 
 	// 암호화 함수는 SHA-256를 일단 사용할 것!(주로권장)
-	const sql = "INSERT INTO member (email,password,signupdate)";
+	// const sql = "INSERT INTO member (email, password, signupdate)";
+	const sql = "INSERT INTO `member` (`email`, `password`, `signupdate`) VALUES ( ?,?,? )";
 	const params = [email, passwordHash, signupdate]
 
 	connection.query(sql,params,(err, rows, fields) => {
@@ -78,15 +81,6 @@ router.post("/", (req, res) => {
 		console.log(rows);
 		}
 	});
-	// const sql = 'INSERT INTO member (email, password, signupdate) VALUES(?, ?, ?)';
-	// var params = [email, passwordHash, signupdate];
-	// connection.query(sql, params, function(err, rows, fields){
-	// 	if(err){
-	// 		console.log(err);
-	// 	} else {
-	// 		console.log(rows);
-	// 	}
-	// });
 });
 
 app.use(express.json());
