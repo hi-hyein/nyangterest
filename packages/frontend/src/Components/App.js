@@ -72,12 +72,13 @@ class App extends Component {
 						{this.state.loginPopup && <LoginPopup onClick={this.closeLoginPopup} />}
 						{/* 회원가입 팝업 */}
 						{this.state.joinPopup && <JoinPopup onClick={this.closeJoinPopup} />}
-						<Wrapper>{/* <List /> */}</Wrapper>
-						<GlobalStyle />
-						{/* <MemberList /> */}
-						<Nav />
-						<Route exact path="/" component={List} />
-						<Route path="/admin/member" component={MemberList} />
+						<Wrapper>
+							<GlobalStyle />
+							{/* <MemberList /> */}
+							<Nav />
+							<Route exact path="/" component={List} />
+							<Route path="/admin/member" component={MemberList} />
+						</Wrapper>
 					</div>
 				</Fragment>
 			</Router>
