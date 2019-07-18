@@ -16,7 +16,7 @@ class Nav extends Component {
 							</NavLink>
 						</li>
 						<li>
-							<NavLink to="/admin/member">
+							<NavLink to="/admin/member" target="_blank">
 								<MdAssignment />
 								<span>멤버리스트</span>
 							</NavLink>
