@@ -8,6 +8,8 @@ import JoinPopup from "./popup/JoinPopup";
 import Nav from "./Nav";
 import List from "./List";
 import MemberList from "./MemberList";
+import TooltipBox from "./TooltipBox";
+
 
 const Wrapper = styled.div`
 	position: relative;
@@ -73,6 +75,7 @@ class App extends Component {
 						{/* 회원가입 팝업 */}
 						{this.state.joinPopup && <JoinPopup onClick={this.closeJoinPopup} />}
 						<Wrapper>
+							<TooltipBox />
 							<GlobalStyle />
 							{/* <MemberList /> */}
 							<Nav />

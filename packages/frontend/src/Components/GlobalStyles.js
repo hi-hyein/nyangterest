@@ -19,9 +19,10 @@ const GlobalStyle = createGlobalStyle`
 
   input[type="checkbox" i] {vertical-align: middle}
 
-  a, button {transition: all 1s linear}
+  a, button {transition: all 0.1s linear}
   
   img {max-width:100%;}
+
   .List {
 	  	padding: 50px;
 		padding-bottom: 100px;
@@ -93,11 +94,12 @@ const GlobalStyle = createGlobalStyle`
 		background: #fff;
 		opacity: 0.8;
 		border-top: 1px solid #f8f9fa;
-		&-list {
-				li {
+			&-list {
+					li {
 					width: 20%;
 					float: left;
 					text-align: center;
+
 					a,
 					button {
 						width: 100%;
@@ -105,21 +107,22 @@ const GlobalStyle = createGlobalStyle`
 						padding: 6px 0;
 						color: #868e96;
 						font-size: 2rem;
-						
+				
 						span {
 							display: block;
 							font-size: 1rem;
 							padding: 5px 0 0 0;
 						}
+
 						&.active {
-						* {
+							* {
 							color: #38d9a9;
 						}
 					}
 				}
 			}
 		}
-	}
+	}	
 
 `;
 
