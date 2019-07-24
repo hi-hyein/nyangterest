@@ -17,6 +17,10 @@ const GlobalStyle = createGlobalStyle`
     	box-sizing:border-box;
   }
 
+  input[type="checkbox" i] {vertical-align: middle}
+
+  a, button {transition: all 1s linear}
+  
   img {max-width:100%;}
   .List {
 	  	padding: 50px;
@@ -90,29 +94,28 @@ const GlobalStyle = createGlobalStyle`
 		opacity: 0.8;
 		border-top: 1px solid #f8f9fa;
 		&-list {
-			li {
-				width: 20%;
-				float: left;
-				text-align: center;
-				a,
-				button {
-					width: 100%;
-					display: block;
-					padding: 6px 0;
-					color: #868e96;
-					font-size: 2rem;
-					
-					span {
+				li {
+					width: 20%;
+					float: left;
+					text-align: center;
+					a,
+					button {
+						width: 100%;
 						display: block;
-						font-size: 1rem;
-						padding: 5px 0 0 0;
+						padding: 6px 0;
+						color: #868e96;
+						font-size: 2rem;
+						
+						span {
+							display: block;
+							font-size: 1rem;
+							padding: 5px 0 0 0;
+						}
+						&.active {
+						* {
+							color: #45B3E0;
+						}
 					}
-					&.active {
-					* {
-						color: #38d9a9;
-					}
-				}
-				
 				}
 			}
 		}

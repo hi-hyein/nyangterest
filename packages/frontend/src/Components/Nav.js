@@ -10,7 +10,7 @@ class Nav extends Component {
 				<nav className="nav">
 					<ul className="nav-list">
 						<li>
-							<NavLink to="/" activeClassName="active">
+							<NavLink exact to="/" activeClassName="active">
 								<MdHome />
 								<span>홈</span>
 							</NavLink>
