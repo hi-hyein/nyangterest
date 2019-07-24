@@ -50,7 +50,7 @@ const Info = styled.div`
 		}
 	}
 `;
-const Item = ({ kindCd, happenDt, borderBottomColor = "#087264", popfile }) => (
+const Item = ({ kindCd, happenDt, borderBottomColor = "#5262bc", popfile }) => (
 	<Container borderBottomColor={borderBottomColor}>
 		<Content>
 			<Info>
