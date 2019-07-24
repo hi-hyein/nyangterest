@@ -115,8 +115,8 @@ const GlobalStyle = createGlobalStyle`
 						}
 
 						&.active {
-							* {
-							color: #38d9a9;
+						* {
+							color: #45B3E0;
 						}
 					}
 				}
