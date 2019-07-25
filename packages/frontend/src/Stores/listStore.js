@@ -24,8 +24,8 @@ export default class ListStore {
 			const json = await response.json();
 
 			runInAction(() => {
-				console.log(this)
-				console.log(`${this}, "numOfRows:" ${numOfRows}, "pageNo:" ${pageNo}`);
+				// console.log(this)
+				// console.log(`${this}, "numOfRows:" ${numOfRows}, "pageNo:" ${pageNo}`);
 				this.setItems([...items, ...json.items.item]);
 			});
 
@@ -40,7 +40,7 @@ export default class ListStore {
 
 		} catch (err) {
 			runInAction(() => {
-				console.log(err);
+				// console.log(err);
 				this.isLoading = false;
 			})
 		}
@@ -63,11 +63,10 @@ export default class ListStore {
 
 	@action
 	handleScroll = () => {
-		const { scrolling, isLoading, hasMore, error } = this;
-
-		if (error || isLoading || !hasMore || scrolling) return;
+		const { isLoading, hasMore, error } = this;
+		if (error || isLoading || !hasMore) return;
 		// if (numOfRows <= pageNo) return;
-		const lastLi = document.querySelector("ul.List > li:last-child");
+		const lastLi = document.querySelector("ul.item-list > li:last-child");
 		const lastLiOffset = lastLi.offsetTop + lastLi.clientHeight;
 		const pageOffset = window.pageYOffset + window.innerHeight;
 		const bottomOffset = 20;
@@ -76,6 +75,7 @@ export default class ListStore {
 			this.loadMore();
 		}
 	};
+
 
 }
 
