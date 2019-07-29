@@ -20,6 +20,8 @@ const GlobalStyle = createGlobalStyle`
   input[type="checkbox" i] {vertical-align: middle}
 
   a, button {transition: all 0.3s linear}
+
+  button {cursor: pointer;}
   
   img {max-width:100%;}
 

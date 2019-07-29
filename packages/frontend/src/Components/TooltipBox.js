@@ -2,24 +2,25 @@ import React, { Fragment } from "react";
 import { MdPets } from "react-icons/md";
 import styled from "styled-components";
 
-const TooltipDiv = styled.div`
-		// position: relative;
-		padding-bottom: 5%;
-`;
+// 툴팁
 
 const IconButton = styled.button`
 	position: absolute;
-	right: 4.2rem;
+	top: 0;
+	right: 2.2rem;
+	width: 3.2rem;
+	height: 3rem;
 	border: none;
 	background: none;
-	font-size: 2rem;
+	font-size: 2.5rem;
 	color: #ccc;
 	transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, box-shadow 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, border 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+	cursor: pointer;
 
 		& + div {
 
 			position: absolute;
-			top: 38px;
+			top: 70px;
 			right: 0;	
 			z-index: 99;
 			display: block;
@@ -55,17 +56,13 @@ const IconButton = styled.button`
 		&:hover + div {
 			display: block;
 		}
-
-
 `;
 
 const TooltipBox = () => {
 	return (
 		<Fragment>
-			<TooltipDiv >
-				<IconButton><MdPets /></IconButton>
-				<div><p>날짜/종류/상태 필터</p></div>
-			</TooltipDiv>
+			<IconButton><MdPets /></IconButton>
+			<div><p>날짜/종류/상태 필터</p></div>
 		</Fragment>
 	);
 };

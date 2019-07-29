@@ -6,7 +6,7 @@ import Header from "./layout/Header";
 import Nav from "./Nav";
 import List from "./List";
 import MemberList from "./MemberList";
-import TooltipBox from "./TooltipBox";
+import SearchBox from "./SearchBox";
 
 
 const Wrapper = styled.div`
@@ -34,7 +34,7 @@ class App extends Component {
 							userState={this.state.userState}
 						/>
 						<Wrapper>
-							<TooltipBox />
+							<SearchBox />
 							<GlobalStyle />
 							{/* <MemberList /> */}
 							<Nav />

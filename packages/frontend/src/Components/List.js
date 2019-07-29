@@ -73,7 +73,7 @@ class List extends Component {
 				</ListWrapper>
 
 				{/* {error && <div style={{ color: "#900" }}>{error}</div>} */}
-				{listStore.isLoading && !listStore.hasMore && (
+				{listStore.isLoading && listStore.hasMore && (
 					<div>
 						Loading...
 							<Loading />
