@@ -36,7 +36,6 @@ class App extends Component {
 						<Wrapper>
 							<SearchBox />
 							<GlobalStyle />
-							{/* <MemberList /> */}
 							<Nav />
 							<Route exact path="/" component={List} />
 							<Route path="/admin/member" component={MemberList} />

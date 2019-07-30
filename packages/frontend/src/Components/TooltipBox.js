@@ -6,7 +6,7 @@ import styled from "styled-components";
 
 const IconButton = styled.button`
 	position: absolute;
-	top: 0;
+	top: 3px;
 	right: 2.2rem;
 	width: 3.2rem;
 	height: 3rem;
@@ -14,14 +14,14 @@ const IconButton = styled.button`
 	background: none;
 	font-size: 2.3rem;
 	color: #ccc;
-	// transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, box-shadow 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, border 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
-	// cursor: pointer;
+	// transition: all 2s ease;
+	transition: all 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, box-shadow 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, border 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
 
 		& + div {
 
 			position: absolute;
-			top: 70px;
-			right: 0;	
+			top: 48px;
+			right: -25px;	
 			z-index: 99;
 			display: block;
 			padding: 11px 15px 10px 13px;
@@ -58,10 +58,10 @@ const IconButton = styled.button`
 		}
 `;
 
-const TooltipBox = () => {
+const TooltipBox = (props) => {
 	return (
 		<Fragment>
-			<IconButton><MdPets /></IconButton>
+			<IconButton onClick={props.onClick}><MdPets /></IconButton>
 			<div><p>날짜/종류/상태 필터</p></div>
 		</Fragment>
 	);

@@ -7,13 +7,23 @@ import InputLabel from '@material-ui/core/InputLabel';
 import Select from '@material-ui/core/Select';
 import { MdSearch } from "react-icons/md";
 import styled from 'styled-components';
+// import { slideIn } from "./Animations";
 
 
 // 셀렉트박스
 const Form = styled.form`
-	// display: flex;
-	// flex-wrap: wrap;
-	display: inline-block;
+	display:inline-block;
+	transform: translateX(-120%);
+	transition: all 0.5s ease
+	
+	&.slide-in{
+		transform: translateX(0);
+	}
+	
+	&.slide-out{
+		transform: translateX(-120%);
+	}
+
 `;
 
 const FormControlDiv = styled(FormControl)`
@@ -50,7 +60,6 @@ const IconButton = styled.button`
 	border: none;
 	font-size: 2rem;
 	color: #ccc;
-	transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, box-shadow 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, border 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
 
 	& svg {
 		display: inline-block;
@@ -98,7 +107,7 @@ class SearchItems extends Component {
 
 		return (
 			<Fragment>
-				<Form autoComplete="off">
+				<Form autoComplete="off" className={this.props.isVisible ? 'slide-in' : 'slide-out'}>
 					<FormControlDiv className="sido" variant="outlined">
 						<InputLabel ref={ref => { this.InputLabelRef = ref; }} htmlFor="outlined-org_cd-simple">
 							시도

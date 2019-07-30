@@ -5,8 +5,7 @@ import { observer, inject } from "mobx-react";
 import styled from "styled-components";
 
 const ListWrapper = styled.ul`
-	  	padding: 50px;
-		padding-bottom: 100px;
+	  	padding: 50px 50px 100px;
 		display: grid;
 		grid-template-columns: repeat(auto-fill, 250px);
 		grid-gap: 20px;
