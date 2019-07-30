@@ -63,3 +63,13 @@ module.exports = router;
 ## 인증링크 메일 발송
 1. 인증링크주소 http://localhost:3000/{경로}+?email="+ email +"&token={암호화된 토큰} 생성 하여 메일 전송
 2. 서버에서 링크의 이메일,토큰을 받아 일치하면 db의 certify값 true로 변경
+
+
+# 작업이슈
+get 으로 인증링크 url 쿼리문 가져오면
+~~~
+Proxy error: Could not proxy request /welcome?email=qwer from localhost:3000 to http://localhost:8080.
+[1] See https://nodejs.org/api/errors.html#errors_common_system_errors for more information (ECONNRESET).
+~~~
+프록시관련 에러가 난다
+

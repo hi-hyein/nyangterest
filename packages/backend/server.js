@@ -7,7 +7,10 @@ const cors = require("cors");
 const fetch = require("node-fetch");
 const app = express();
 const PORT = 8080;
-const hash = require('hash.js')
+const hash = require('hash.js');
+const nodemailer = require('nodemailer');
+const http = require('http');
+const url = require('url');
 
 router.get("/page/:numOfRows/:id/", (req, res) => {
 	const bgnde = moment()
@@ -57,6 +60,7 @@ app.get("/admin/member", (req, res) => {
 	});
 });
 
+
 router.post("/", (req, res) => {
 	const body = req.body;
 	console.log('test',body);
@@ -65,23 +69,57 @@ router.post("/", (req, res) => {
 	const password = body.password;
 	const passwordHash = hash.sha256().update(password).digest('hex');
 	const signupdate = moment().format('YYYYMMDD');
+	const emailLink = `http://localhost:3000/welcome?email=${email}&token=${emailToken}`;
 
-	console.log('암호화된 암호:',passwordHash)
+	let transporter = nodemailer.createTransport({
+		service: 'gmail',
+		auth: {
+			user: '',  // gmail 계정 아이디를 입력
+			pass: ''          // gmail 계정의 비밀번호를 입력
+		}
+	});
 
+	let mailOptions = {
+		from: '',    // 발송 메일 주소 (위에서 작성한 gmail 계정 아이디)
+		to: email ,                     // 수신 메일 주소
+		subject: 'Sending Email using Node.js',   // 제목
+		text: `안녕하세요 회원가입을 축하드립니다. ${emailLink} 해당 링크로 접속해주세요. 그러면 회원가입이 완료됩니다.`  // 내용
+	};
+
+	transporter.sendMail(mailOptions, function(error, info){
+		if (error) {
+		  console.log(error);
+		}
+		else {
+		  console.log('Email sent: ' + info.response);
+		}
+	  });
 	// 패스워드 암호화하여 저장하기 
 	// 암호화 함수는 SHA-256를 일단 사용할 것!(주로권장)
 	// const sql = "INSERT INTO member (email, password, signupdate)";
-	const sql = "INSERT INTO `member` (`email`, `password`, `signupdate`) VALUES ( ?,?,? )";
-	const params = [email, passwordHash, signupdate]
+	// const sql = "INSERT INTO `member` (`email`, `password`, `signupdate`) VALUES ( ?,?,? )";
+	// const params = [email, passwordHash, signupdate]
 
-	connection.query(sql,params,(err, rows, fields) => {
-		if(err){
-		console.log(err);
-		} else {
-		console.log(rows);
-		}
-	});
+	// connection.query(sql,params,(err, rows, fields) => {
+	// 	if(err){
+	// 	console.log(err);
+	// 	} else {
+	// 	console.log(rows);
+	// 	}
+	// });
 });
+
+const emailToken = hash.sha256().update('abcdefg').digest('hex');
+
+router.get("/welcome",(req,res)=>{
+	// let email = req.query.email;
+	// console.log("email", email);
+	const queryEmail = req.query.email
+	const queryToken = req.query.token
+	console.log(queryEmail, queryToken)
+});
+
+
 
 app.use(express.json());
 
@@ -100,6 +138,8 @@ app.use("/", router);
 // // app.get("/", function(req, res, next) {
 // // 	res.json({ msg: "This is CORS-enabled for all origins!" });
 // // });
+
+
 
 app.listen(PORT, function() {
 	console.log("enabled web server listening !");
