@@ -12,10 +12,10 @@ const IconButton = styled.button`
 	height: 3rem;
 	border: none;
 	background: none;
-	font-size: 2.5rem;
+	font-size: 2.3rem;
 	color: #ccc;
-	transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, box-shadow 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, border 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
-	cursor: pointer;
+	// transition: background-color 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, box-shadow 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, border 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+	// cursor: pointer;
 
 		& + div {
 
