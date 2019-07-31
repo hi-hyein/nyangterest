@@ -7,21 +7,21 @@ import InputLabel from '@material-ui/core/InputLabel';
 import Select from '@material-ui/core/Select';
 import { MdSearch } from "react-icons/md";
 import styled from 'styled-components';
-// import { slideIn } from "./Animations";
-
+import Calendar2 from './Calendar2';
 
 // 셀렉트박스
 const Form = styled.form`
 	display:inline-block;
-	transform: translateX(-120%);
+	margin-right: 65px;
+	transform: translateX(-1200%);
 	transition: all 0.5s ease
 	
 	&.slide-in{
 		transform: translateX(0);
 	}
-	
+
 	&.slide-out{
-		transform: translateX(-120%);
+		transform: translateX(-1200%);
 	}
 
 `;
@@ -181,8 +181,9 @@ class SearchItems extends Component {
 							<MenuItem value={30}>Thirty</MenuItem>
 						</Select>
 					</FormControlDiv>
-					<FormControlDiv variant="outlined">
-						<InputLabel ref={ref => { this.InputLabelRef = ref; }} htmlFor="outlined-org_cd-simple">
+					<FormControlDiv>
+						<Calendar2 />
+						{/* <InputLabel ref={ref => { this.InputLabelRef = ref; }} htmlFor="outlined-org_cd-simple">
 							시작일&amp;종료일
 						</InputLabel>
 						<Select
@@ -196,7 +197,7 @@ class SearchItems extends Component {
 							<MenuItem value={1}>Ten</MenuItem>
 							<MenuItem value={2}>Twenty</MenuItem>
 							<MenuItem value={3}>Thirty</MenuItem>
-						</Select>
+						</Select> */}
 					</FormControlDiv>
 					<FormControlDiv variant="outlined">
 						<InputLabel ref={ref => { this.InputLabelRef = ref; }} htmlFor="outlined-org_cd-simple">

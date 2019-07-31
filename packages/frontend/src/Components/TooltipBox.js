@@ -7,7 +7,7 @@ import styled from "styled-components";
 const IconButton = styled.button`
 	position: absolute;
 	top: 3px;
-	right: 2.2rem;
+	right: 3.8rem;
 	width: 3.2rem;
 	height: 3rem;
 	border: none;
