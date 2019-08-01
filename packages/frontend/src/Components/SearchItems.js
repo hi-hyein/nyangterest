@@ -12,27 +12,61 @@ import Calendar2 from './Calendar2';
 // 셀렉트박스
 const Form = styled.form`
 	display:inline-block;
-	margin-right: 65px;
-	transform: translateX(-1200%);
-	transition: all 0.5s ease
+	margin-top: -150px
+	height: 0;
+	text-align: left;
+	transform: translate(-500%);
+	transition: all 0.5s ease-in-out
 	
 	&.slide-in{
+		margin-top: 24px;
+		height: 100%;
 		transform: translateX(0);
 	}
 
 	&.slide-out{
-		transform: translateX(-1200%);
+		transform: translateX(-500%);
 	}
+
 
 `;
 
 const FormControlDiv = styled(FormControl)`
 	&& {
 		min-width: 120px;
-		margin-right: 10px;
+		margin: 2% 10px 0;
 
 	}
 `;
+
+const Fieldset = styled.fieldset`
+    position: relative;
+	top: -6px;
+	min-width: 265px;
+	height: 100%;
+    min-height: 1.1875em;
+	padding: 11px 14px 10px;
+    border: 1px solid rgba(0, 0, 0, 0.23);
+	border-radius: 4px;
+	transition: padding-left 200ms cubic-bezier(0.0, 0, 0.2, 1) 0ms,border-color 200ms cubic-bezier(0.0, 0, 0.2, 1) 0ms,border-width 200ms cubic-bezier(0.0, 0, 0.2, 1) 0ms;
+	cursor: pointer;
+
+	&:hover {
+		border: 1px solid #000
+	}
+
+	& legend {	
+				color: rgba(0, 0, 0, 0.54);
+				padding: 0;
+				font-size: 12px;
+				line-height: 1;
+				text-align: left;
+				transition: width 200ms cubic-bezier(0.0, 0, 0.2, 1) 0ms;
+			
+			}
+	
+`;
+
 
 const OutlinedInputDiv = styled(OutlinedInput)`
 	&& {
@@ -54,7 +88,7 @@ const MenuItemDiv = styled(MenuItem)`
 // 검색아이콘
 const IconButton = styled.button`
 	position: relative;
-	top: 3px;
+	top: 25px;
 	width: 3rem;
 	height: 3rem;
 	border: none;
@@ -159,7 +193,7 @@ class SearchItems extends Component {
 							<MenuItem value="">
 								<em>None</em>
 							</MenuItem>
-							<MenuItem value={10}>Ten</MenuItem>
+							<MenuItem value={10}>보호소이름이얼마나길려나모르겠다.</MenuItem>
 							<MenuItem value={20}>Twenty</MenuItem>
 							<MenuItem value={30}>Thirty</MenuItem>
 						</Select>
@@ -181,23 +215,14 @@ class SearchItems extends Component {
 							<MenuItem value={30}>Thirty</MenuItem>
 						</Select>
 					</FormControlDiv>
-					<FormControlDiv>
-						<Calendar2 />
+					<FormControlDiv variant="outlined">
+						<Fieldset>
+							<legend>시작일 &amp; 종료일 </legend>
+							<Calendar2 />
+						</Fieldset>
 						{/* <InputLabel ref={ref => { this.InputLabelRef = ref; }} htmlFor="outlined-org_cd-simple">
 							시작일&amp;종료일
-						</InputLabel>
-						<Select
-							value={this.state.bgAnden}
-							onChange={this.handleChange}
-							input={<OutlinedInput labelWidth={this.state.labelWidth} name="bgAnden" id="outlined-age-simple" />}
-						>
-							<MenuItem value="">
-								<em>None</em>
-							</MenuItem>
-							<MenuItem value={1}>Ten</MenuItem>
-							<MenuItem value={2}>Twenty</MenuItem>
-							<MenuItem value={3}>Thirty</MenuItem>
-						</Select> */}
+						</InputLabel> */}
 					</FormControlDiv>
 					<FormControlDiv variant="outlined">
 						<InputLabel ref={ref => { this.InputLabelRef = ref; }} htmlFor="outlined-org_cd-simple">
@@ -211,7 +236,7 @@ class SearchItems extends Component {
 							<MenuItem value="">
 								<em>None</em>
 							</MenuItem>
-							<MenuItem value={1}>Ten</MenuItem>
+							<MenuItem value={1}>[고양이] 한국 고양이</MenuItem>
 							<MenuItem value={2}>Twenty</MenuItem>
 							<MenuItem value={3}>Thirty</MenuItem>
 						</Select>

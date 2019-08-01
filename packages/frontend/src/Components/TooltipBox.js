@@ -1,27 +1,44 @@
-import React, { Fragment } from "react";
+import React from "react";
 import { MdPets } from "react-icons/md";
 import styled from "styled-components";
 
 // 툴팁
 
+
+const TooltipBoxWrapper = styled.div`
+	position: relative;
+	top: 38px;
+	min-width: 180px;
+	height: 100px;
+
+`;
+
 const IconButton = styled.button`
-	position: absolute;
-	top: 3px;
-	right: 3.8rem;
+	// position: absolute;
+    // top: 0;
+	// right: 1rem;
+    // transform: translateY(-50%);
 	width: 3.2rem;
 	height: 3rem;
 	border: none;
 	background: none;
 	font-size: 2.3rem;
 	color: #ccc;
-	// transition: all 2s ease;
-	transition: all 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, box-shadow 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, border 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+	transition: all 2s ease;
+	outline: none;
+	// transition: all 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, box-shadow 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, border 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+
+		&.active {
+			color: #45B3E0;
+			
+		}
 
 		& + div {
 
 			position: absolute;
-			top: 48px;
-			right: -25px;	
+			width: 100%
+			// bottom: 18%;
+			// right: -45px;	
 			z-index: 99;
 			display: block;
 			padding: 11px 15px 10px 13px;
@@ -29,17 +46,17 @@ const IconButton = styled.button`
 			border: 1px solid rgba(115, 115, 115, 0.8);
 			border-radius: 5px;
 			font-size: 14px;
-			color: #fff;
 			-webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.15);
-			box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.15)
+			box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.15);
+			
 
-			& > p {color: #f00}
+			& > p {color: #fff}
 		}
 
 		& + div:before {
 
 			position: absolute;
-			left: 64px;
+			left: 84px;
 			top: -6px;
 			width: 9px;
 			height: 9px;
@@ -60,10 +77,10 @@ const IconButton = styled.button`
 
 const TooltipBox = (props) => {
 	return (
-		<Fragment>
-			<IconButton onClick={props.onClick}><MdPets /></IconButton>
+		<TooltipBoxWrapper>
+			<IconButton className={props.active ? 'active' : ''} onClick={props.onClick} ><MdPets /></IconButton>
 			<div><p>날짜/종류/상태 필터</p></div>
-		</Fragment>
+		</TooltipBoxWrapper>
 	);
 };
 

@@ -12,6 +12,8 @@ const ListWrapper = styled.ul`
 		// grid-auto-rows: 300px;
 		justify-content: space-around;
 		// grid-template-rows: 260px 400px 400px;
+		transition: all 0.5s ease
+		
 		& > li {
 			animation: fadeInUp 1s both;
 
