@@ -3,6 +3,7 @@ import Item from "./Item";
 import Loading from "./Loading";
 import { observer, inject } from "mobx-react";
 import styled from "styled-components";
+import { fadeInUp } from "./Animations";
 
 const ListWrapper = styled.ul`
 	  	padding: 50px 50px 100px;
@@ -15,12 +16,8 @@ const ListWrapper = styled.ul`
 		transition: all 0.5s ease
 		
 		& > li {
-			animation: fadeInUp 1s both;
+			animation: ${fadeInUp} 1s both;
 
-			@keyframes fadeInUp {
-				from {  transform: translate3d(0,40px,0); opacity: 0; }
-				to   { transform: translate3d(0,0,0);opacity: 1; }
-			}
 			grid-column: span 1;
 			// &:nth-child(5),
 			// &:nth-child(6) {

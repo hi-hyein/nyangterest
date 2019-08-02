@@ -6,8 +6,9 @@ import FormControl from '@material-ui/core/FormControl';
 import InputLabel from '@material-ui/core/InputLabel';
 import Select from '@material-ui/core/Select';
 import { MdSearch } from "react-icons/md";
-import styled from 'styled-components';
 import Calendar2 from './Calendar2';
+import styled from 'styled-components';
+import { fadeInDown, fadeOut } from "./Animations";
 
 // 셀렉트박스
 const Form = styled.form`
@@ -16,16 +17,30 @@ const Form = styled.form`
 	height: 0;
 	text-align: left;
 	transform: translate(-500%);
-	transition: all 0.5s ease-in-out
+	transition: all 1s ease-in-out
 	
 	&.slide-in{
 		margin-top: 24px;
 		height: 100%;
 		transform: translateX(0);
+
+		@media screen and (max-width: 640px) {
+			transform: none;
+			// animation: ${fadeInDown} 0.5s both;
+			text-align: center;
+			opacity: 1;
+		}
 	}
 
 	&.slide-out{
 		transform: translateX(-500%);
+
+		@media screen and (max-width: 640px) {
+			margin-top: -468%;
+			animation: ${fadeOut} 0.5s both;
+			opacity: 0;
+
+		}
 	}
 
 
@@ -35,12 +50,23 @@ const FormControlDiv = styled(FormControl)`
 	&& {
 		min-width: 120px;
 		margin: 2% 10px 0;
+		transition: all 0.2s ease;
+
+		@media screen and (max-width: 1024px) {
+			margin: 2% 10px;
+		}
+
+		@media screen and (max-width: 640px) {
+			width: 90%;
+		}
+
 
 	}
 `;
 
 const Fieldset = styled.fieldset`
     position: relative;
+	z-index: 99;
 	top: -6px;
 	min-width: 265px;
 	height: 100%;
@@ -88,12 +114,21 @@ const MenuItemDiv = styled(MenuItem)`
 // 검색아이콘
 const IconButton = styled.button`
 	position: relative;
-	top: 25px;
+	top: 20px;
 	width: 3rem;
 	height: 3rem;
 	border: none;
 	font-size: 2rem;
 	color: #ccc;
+	
+	@media screen and (max-width: 1024px) {
+		top: 16px;
+	}
+
+
+	@media screen and (max-width: 640px) {
+		top: 0;
+	}
 
 	& svg {
 		display: inline-block;
@@ -220,9 +255,6 @@ class SearchItems extends Component {
 							<legend>시작일 &amp; 종료일 </legend>
 							<Calendar2 />
 						</Fieldset>
-						{/* <InputLabel ref={ref => { this.InputLabelRef = ref; }} htmlFor="outlined-org_cd-simple">
-							시작일&amp;종료일
-						</InputLabel> */}
 					</FormControlDiv>
 					<FormControlDiv variant="outlined">
 						<InputLabel ref={ref => { this.InputLabelRef = ref; }} htmlFor="outlined-org_cd-simple">

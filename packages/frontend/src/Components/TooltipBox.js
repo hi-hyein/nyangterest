@@ -8,8 +8,17 @@ import styled from "styled-components";
 const TooltipBoxWrapper = styled.div`
 	position: relative;
 	top: 38px;
-	min-width: 180px;
+	// min-width: 180px;
 	height: 100px;
+
+	@media screen and (max-width: 1024px) {
+		top: unset;
+		height: auto;
+	}
+
+	@media screen and (max-width: 640px) {
+		top: 6px
+	}
 
 `;
 
@@ -30,15 +39,19 @@ const IconButton = styled.button`
 
 		&.active {
 			color: #45B3E0;
+
 			
+			& + div {
+				display: none;
+			}
 		}
 
 		& + div {
 
 			position: absolute;
-			width: 100%
+			width: 160px;
 			// bottom: 18%;
-			// right: -45px;	
+			right: -85%;	
 			z-index: 99;
 			display: block;
 			padding: 11px 15px 10px 13px;
@@ -49,7 +62,6 @@ const IconButton = styled.button`
 			-webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.15);
 			box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.15);
 			
-
 			& > p {color: #fff}
 		}
 
@@ -71,7 +83,7 @@ const IconButton = styled.button`
 		}
 
 		&:hover + div {
-			display: block;
+			// display: block;
 		}
 `;
 
