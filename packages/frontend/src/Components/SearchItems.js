@@ -114,7 +114,7 @@ const MenuItemDiv = styled(MenuItem)`
 // 검색아이콘
 const IconButton = styled.button`
 	position: relative;
-	top: 20px;
+	top: 24px;
 	width: 3rem;
 	height: 3rem;
 	border: none;
@@ -122,7 +122,11 @@ const IconButton = styled.button`
 	color: #ccc;
 	
 	@media screen and (max-width: 1024px) {
-		top: 16px;
+		top: 18px;
+	}
+
+	@media screen and (max-width: 768px) {
+		top: 14px;
 	}
 
 
@@ -153,7 +157,6 @@ class SearchItems extends Component {
 		state: "상태",
 		bgAnden: "시작일&amp;종료일",
 		kind: "품종",
-		age: '',
 		neuterYn: '중성화여부',
 		labelWidth: 0,
 	}
@@ -172,7 +175,6 @@ class SearchItems extends Component {
 	}
 
 	render() {
-		// const { org_cd } = this.state;
 
 		return (
 			<Fragment>
@@ -269,23 +271,6 @@ class SearchItems extends Component {
 								<em>None</em>
 							</MenuItem>
 							<MenuItem value={1}>[고양이] 한국 고양이</MenuItem>
-							<MenuItem value={2}>Twenty</MenuItem>
-							<MenuItem value={3}>Thirty</MenuItem>
-						</Select>
-					</FormControlDiv>
-					<FormControlDiv variant="outlined">
-						<InputLabel ref={ref => { this.InputLabelRef = ref; }} htmlFor="outlined-org_cd-simple">
-							나이
-						</InputLabel>
-						<Select
-							value={this.state.age}
-							onChange={this.handleChange}
-							input={<OutlinedInput labelWidth={this.state.labelWidth} name="age" id="outlined-age-simple" />}
-						>
-							<MenuItem value="">
-								<em>None</em>
-							</MenuItem>
-							<MenuItem value={1}>Ten</MenuItem>
 							<MenuItem value={2}>Twenty</MenuItem>
 							<MenuItem value={3}>Thirty</MenuItem>
 						</Select>
