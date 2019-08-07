@@ -7,7 +7,8 @@ const cors = require("cors");
 const fetch = require("node-fetch");
 const app = express();
 const PORT = 8080;
-const hash = require('hash.js')
+const hash = require('hash.js');
+const nodemailer = require('nodemailer');
 
 router.get("/page/:numOfRows/:id/", (req, res) => {
 	const bgnde = moment()
@@ -57,31 +58,75 @@ app.get("/admin/member", (req, res) => {
 	});
 });
 
+
+const emailToken = hash.sha256().update('nyangterest').digest('hex')
+
 router.post("/", (req, res) => {
 	const body = req.body;
 	console.log('test',body);
-
-	const email = body.email;
-	const password = body.password;
-	const passwordHash = hash.sha256().update(password).digest('hex');
+	const memberMail = body.email;
+	const memberPass = body.password;
+	const passwordHash = hash.sha256().update(memberPass).digest('hex');
 	const signupdate = moment().format('YYYYMMDD');
+	const emailLink = `http://localhost:3000/welcome?email=${memberMail}&token=${emailToken}`;
 
-	console.log('암호화된 암호:',passwordHash)
-
-	// 패스워드 암호화하여 저장하기 
-	// 암호화 함수는 SHA-256를 일단 사용할 것!(주로권장)
-	// const sql = "INSERT INTO member (email, password, signupdate)";
-	const sql = "INSERT INTO `member` (`email`, `password`, `signupdate`) VALUES ( ?,?,? )";
-	const params = [email, passwordHash, signupdate]
-
-	connection.query(sql,params,(err, rows, fields) => {
-		if(err){
-		console.log(err);
-		} else {
-		console.log(rows);
+	let transporter = nodemailer.createTransport({
+		service: 'gmail',
+		auth: {
+			user: '',  // gmail 계정 아이디를 입력
+			pass: ''          // gmail 계정의 비밀번호를 입력
 		}
 	});
+
+	let mailOptions = {
+		from: '',    // 발송 메일 주소 (위에서 작성한 gmail 계정 아이디)
+		to: memberMail ,                     // 수신 메일 주소
+		subject: 'Sending Email using Node.js',   // 제목
+		text: `안녕하세요 회원가입을 축하드립니다. ${emailLink} 해당 링크로 접속해주세요. 그러면 회원가입이 완료됩니다.`  // 내용
+	};
+
+	transporter.sendMail(mailOptions, function(error, info){
+		if (error) {
+		  console.log(error);
+		}
+		else {
+		  console.log('Email sent: ' + info.response);
+		}
+	  });
 });
+
+
+router.post("/welcome",(req,res)=>{
+	const body = req.body
+	const email = body.email
+	const token = body.token
+	console.log(email,token)
+	// 디비에 저장된 이메일주소와 회원이입력한 이메일주소 비교
+	// 토큰주소 비교하고
+	// 디비에 정보저장하고
+	// certify 컬럼 true로 변경
+	console.log(memberMail);
+	console.log(token, emailToken);
+	if (memberMail === email && emailToken === token) {
+		console.log("같아")
+		// 패스워드 암호화하여 저장하기 
+		// 암호화 함수는 SHA-256를 일단 사용할 것!(주로권장)
+		const sql = "INSERT INTO `member` (`email`, `password`, `signupdate`) VALUES ( ?,?,? )";
+		const params = [memberMail, passwordHash, signupdate]
+
+		connection.query(sql,params,(err, rows, fields) => {
+			if(err){
+			console.log(err);
+			} else {
+			console.log(rows);
+			}
+		});
+	}else {
+		console.log("x")
+	}
+});
+
+
 
 app.use(express.json());
 
@@ -100,6 +145,8 @@ app.use("/", router);
 // // app.get("/", function(req, res, next) {
 // // 	res.json({ msg: "This is CORS-enabled for all origins!" });
 // // });
+
+
 
 app.listen(PORT, function() {
 	console.log("enabled web server listening !");
