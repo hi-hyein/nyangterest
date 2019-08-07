@@ -10,7 +10,10 @@ const PORT = 8080;
 const hash = require('hash.js');
 const nodemailer = require('nodemailer');
 
+const serviceKey = `P3gvH0LsdoPkxFnZU2Ee98hGDDEwVTJndJFa8NDUhznSLlZG6OOxBopFWLBmiCPOfWXsF8Wz8LFHJguz41qJvA%3D%3D&`;
+const api = 'http://openapi.animal.go.kr/openapi/service/rest/abandonmentPublicSrvc';
 // 기본주소
+
 router.get("/page/:numOfRows/:id/", (req, res) => {
 	const bgnde = moment()
 		.subtract(3, "month")
@@ -18,21 +21,17 @@ router.get("/page/:numOfRows/:id/", (req, res) => {
 	const endde = moment().format("YYYYMMDD");
 	const numOfRows = req.params.numOfRows;
 	const pageNo = req.params.id;
-	const serviceKey = `P3gvH0LsdoPkxFnZU2Ee98hGDDEwVTJndJFa8NDUhznSLlZG6OOxBopFWLBmiCPOfWXsF8Wz8LFHJguz41qJvA%3D%3D&`;
-
-	const url = `http://openapi.animal.go.kr/openapi/service/rest/abandonmentPublicSrvc/abandonmentPublic?serviceKey=${serviceKey}_type=json&bgnde=${bgnde}&endde=${endde}&upkind=422400&numOfRows=${numOfRows}&pageNo=${pageNo}`;
+	const url = `${api}/abandonmentPublic?serviceKey=${serviceKey}_type=json&bgnde=${bgnde}&endde=${endde}&upkind=422400&numOfRows=${numOfRows}&pageNo=${pageNo}`;
 
 	fetch(url)
 		.then(response => response.json())
 		.then(json => {
 			res.send(json.response.body);
-			console.log(json.response.body)
-			// console.log("key:" + req.params.id);
-			// console.log("key2:" + req.params.numOfRows);
-			// console.log(json.response.body.pageNo);
-			// console.log("today:" + endde);
-			// console.log("3month:" + bgnde);
-			// console.log("state:" + state);
+			// console.log(json.response.body)
+			console.log("key:" + req.params.id);
+			console.log("key2:" + req.params.numOfRows);
+			console.log("today:" + endde);
+			console.log("3month:" + bgnde);
 		})
 		.catch(() => {
 			res.send(JSON.stringify({ message: "System Error" }));
@@ -44,15 +43,13 @@ router.get("/page/:numOfRows/:id/", (req, res) => {
 // 상태
 router.get("/search/:state/", (req, res) => {
 	const state = req.params.state;
-	const serviceKey = `P3gvH0LsdoPkxFnZU2Ee98hGDDEwVTJndJFa8NDUhznSLlZG6OOxBopFWLBmiCPOfWXsF8Wz8LFHJguz41qJvA%3D%3D&`;
-
-	const url = `http://openapi.animal.go.kr/openapi/service/rest/abandonmentPublicSrvc/abandonmentPublic?serviceKey=${serviceKey}_type=json&state=${state}`;
+	let url = `${api}/abandonmentPublic?serviceKey=${serviceKey}_type=json&state=${state}`;
 
 	fetch(url)
 		.then(response => response.json())
 		.then(json => {
 			res.send(json.response.body);
-			console.log(json.response.body)
+			// console.log(json.response.body)
 			console.log("key:" + req.params.state);
 
 		})
@@ -167,11 +164,6 @@ app.use(cors());
 app.use("/", router);
 app.use("/search", router);
 // app.use("/admin/member", router);
-
-// // app.get("/", function(req, res, next) {
-// // 	res.json({ msg: "This is CORS-enabled for all origins!" });
-// // });
-
 
 
 app.listen(PORT, function () {

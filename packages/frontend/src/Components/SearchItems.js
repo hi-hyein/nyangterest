@@ -156,15 +156,9 @@ const IconButton = styled.button`
 class SearchItems extends Component {
 
 	state = {
-		items: [],
-		numOfRows: 72,
-		pageNo: 1,
-		// org_cd: "시도",
-		// upr_cd: "시군구",
-		// careNm: "보호소이름",
-		state: "",
-		// selectedItem: "",
-		labelWidth: 0
+		value: " ",
+		options: [],
+		labelWidth: 0,
 		// bgAnden: "시작일&amp;종료일",
 		// kind: "품종",
 		// age: '',
@@ -172,20 +166,18 @@ class SearchItems extends Component {
 
 	}
 
-	searchValue = async () => {
+	searchValue = async (e) => {
 		try {
-			const { items, pageNo, numOfRows, state } = this.state;
-			const url = `/search/${state}/${numOfRows}/${pageNo}`;
+			e.preventDefault();
+			const state = e.target.value;
+			const url = `/search/${state}`;
 			const response = await fetch(url);
 			const json = await response.json();
-			this.setState(
-				{
-					items: [...items, ...json.items.item],
-
-					// hasMore: this.state.items.length
-				},
+			this.setState({
+				value: state,
+				name: json.name
+			},
 				() => console.log(this)
-				// () => console.log(items, numOfRows, pageNo)
 			);
 		} catch (err) {
 			// console.log(err);
@@ -203,17 +195,14 @@ class SearchItems extends Component {
 		});
 	}
 
-	handleChange = (e) => {
-		this.setState({
-			[e.target.name]: e.target.value,
-		});
-	}
+	// handleChange = (e) => {
+	// 	this.setState({
+	// 		[e.target.name]: e.target.value,
+	// 	});
+	// }
 
 	render() {
 		const options = ["notice", "protect"]
-		console.log(options);
-
-		// const { org_cd } = this.state;
 		return (
 			<Fragment>
 				<Form autoComplete="off" className={this.props.isVisible ? 'slide-in' : 'slide-out'}>
@@ -278,8 +267,8 @@ class SearchItems extends Component {
 							상태
 						</InputLabel>
 						<Select
-							value={this.state.state}
-							onChange={this.handleChange}
+							value={this.state.value}
+							onChange={this.searchValue}
 							input={<OutlinedInput labelWidth={this.state.labelWidth} name="state" id="outlined-age-simple" />}
 						>
 							<MenuItem value="">
