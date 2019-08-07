@@ -73,13 +73,13 @@ router.post("/", (req, res) => {
 	let transporter = nodemailer.createTransport({
 		service: 'gmail',
 		auth: {
-			user: '',  // gmail 계정 아이디를 입력
-			pass: ''          // gmail 계정의 비밀번호를 입력
+			user: 'nyangterest@gmail.com',  // gmail 계정 아이디를 입력
+			pass: 'sidxjfptmxm!'          // gmail 계정의 비밀번호를 입력
 		}
 	});
 
 	let mailOptions = {
-		from: '',    // 발송 메일 주소 (위에서 작성한 gmail 계정 아이디)
+		from: 'nyangterest@gmail.com',    // 발송 메일 주소 (위에서 작성한 gmail 계정 아이디)
 		to: memberMail ,                     // 수신 메일 주소
 		subject: 'Sending Email using Node.js',   // 제목
 		text: `안녕하세요 회원가입을 축하드립니다. ${emailLink} 해당 링크로 접속해주세요. 그러면 회원가입이 완료됩니다.`  // 내용
