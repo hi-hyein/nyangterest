@@ -100,7 +100,7 @@ class LayerJoin extends Component {
 				method: 'POST',
 				body: stateTojson,
 			});
-            alert("가입완료되었습니다")
+            alert("이메일로 인증번호가 전송되었습니다.")
         }else {
             alert("모든 입력사항을 알맞게 입력해주세요")
         }
