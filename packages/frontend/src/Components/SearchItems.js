@@ -156,8 +156,18 @@ const IconButton = styled.button`
 class SearchItems extends Component {
 
 	state = {
+<<<<<<< HEAD
 		value: " ",
 		options: [],
+=======
+		org_cd: "시도",
+		upr_cd: "시군구",
+		careNm: "보호소이름",
+		state: "상태",
+		bgAnden: "시작일&amp;종료일",
+		kind: "품종",
+		neuterYn: '중성화여부',
+>>>>>>> master
 		labelWidth: 0,
 		// bgAnden: "시작일&amp;종료일",
 		// kind: "품종",
@@ -202,7 +212,11 @@ class SearchItems extends Component {
 	// }
 
 	render() {
+<<<<<<< HEAD
 		const options = ["notice", "protect"]
+=======
+
+>>>>>>> master
 		return (
 			<Fragment>
 				<Form autoComplete="off" className={this.props.isVisible ? 'slide-in' : 'slide-out'}>
