@@ -7,7 +7,8 @@ import styled from "styled-components";
 
 const TooltipBoxWrapper = styled.div`
 	position: relative;
-	top: 38px;
+	top: 42px;
+	margin-left: auto;
 	// min-width: 180px;
 	height: 100px;
 
