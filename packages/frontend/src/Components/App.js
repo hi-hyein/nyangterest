@@ -6,7 +6,7 @@ import Header from "./layout/Header";
 import Nav from "./Nav";
 import List from "./List";
 import MemberList from "./MemberList";
-import SearchBox from "./SearchBox";
+import SearchBox from "./search/SearchBox";
 import Welcome from "./Welcome";
 
 const Wrapper = styled.div`

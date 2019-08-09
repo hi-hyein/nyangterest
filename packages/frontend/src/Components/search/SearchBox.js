@@ -35,7 +35,6 @@ class SearchBox extends Component {
 	state = {
 		isVisible: false,
 		active: false,
-		focus: false,
 	}
 
 	toggleHidden = () => {
