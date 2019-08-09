@@ -30,4 +30,94 @@
  - 공고중 : notice
  - 보호중 : protect
 
+
+<pre>
+	router.get("/search/:state/", (req, res) => {
+	const state = req.params.state;
+	let url = `${api}/abandonmentPublic?serviceKey=${serviceKey}_type=json&state=${state}`;
+
+	fetch(url)
+		.then(response => response.json())
+		.then(json => {
+			res.send(json.response.body);
+			// console.log(json.response.body)
+			console.log("key:" + req.params.state);
+
+		})
+		.catch(() => {
+			res.send(JSON.stringify({ message: "System Error" }));
+		});
+});
+
+</pre>
+
 3. 내맘대로 되는게 하나도 없네 기존 백엔드 코드에서 state를 변수로만 정하면 될줄 알았는데 파라미터로 받아와서 url로 연결해야 프론트에서 보여질거 같다.
+
+4. 총 받고 싶은 파라미터는 7개이상인데 이걸 받아오려면 router.get("/page/:numOfRows/:id/:xx/:xxx/:.....", (req, res) =>  이런식으로 받으려니 뭔가
+잘못된거 같기도 하고 너무 복잡해 보인다. 아 모르겠다.
+
+
+### 멘토링 후 다시 도전!
+
+1. 멘토님이 이런 경우 즉 가변적인 파라미터를 선택적으로 가져와서 코드를 만들어야 할때는 post 방식으로 변경하고 body에 필요한 파라미터 값만 전달해 주는 식으로 만들면 된다고 하셨다. 오호라! 
+
+2. get이 아닌 post로 테스트를 다시 진행하였다. 우선 백엔드 부분 먼저 콘솔로 찍어보자.
+
+<pre>
+	router.post("/search/", (req, res) => {
+	const body = req.body;
+	const numOfRows = body.numOfRows;
+	const pageNo = body.pageNo;
+	const state = body.state;
+
+	let url = `${api}/abandonmentPublic?serviceKey=${serviceKey}_type=json&state=${state}&upkind=422400&numOfRows=${numOfRows}&pageNo=${pageNo}`;
+
+	fetch(url)
+		.then(response => response.json())
+		.then(json => {
+			res.send(json.response.body);
+			console.log(json.response.body.state);
+
+		})
+		.catch(() => {
+			res.send(JSON.stringify({ message: "System Error" }));
+		});
+});
+
+</pre>
+
+![너의 이름은 undefined] (https://yoonucho.github.io/post_img/code8-undefined.png)
+
+1. 아니 왜 undefined일까 왜지? 이때까지는 알 수가 없었다.
+
+2. 깨닫고 나서 보니 나같은 저세상 멍청이도 없다..
+
+3. console.log(json.response.body.state)를 입력했을때  undefined이 나온 이유는 response.body에 state가 없어서 디폴트값인 undefined이 나온것이다.
+	그래서 포스트맨을 참고하여 careAddr을 찍어봤고 원하는 결과를 얻었다. 이제 프론트쪽에 코드를 만들어서 연결을 해보면 되는거겠지?
+
+	<pre>
+	router.post("/search/", (req, res) => {
+		const body = req.body;
+		const numOfRows = body.numOfRows;
+		const pageNo = body.pageNo;
+		const state = body.state;
+
+		let url = `${api}/abandonmentPublic?serviceKey=${serviceKey}_type=json&state=${state}&upkind=422400&numOfRows=${numOfRows}&pageNo=${pageNo}`;
+
+		fetch(url)
+			.then(response => response.json())
+			.then(json => {
+				res.send(json.response.body.);
+				console.log(json.response.body.items.item.careAddr)
+
+			})
+			.catch(() => {
+				res.send(JSON.stringify({ message: "System Error" }));
+			});
+	});
+
+</pre>
+
+![포스트맨에서는 이렇게 나옵니다. ] (https://yoonucho.github.io/post_img/post-res.png)
+
+![드디어 원하는 결과 ] (https://yoonucho.github.io/post_img/code9.png)

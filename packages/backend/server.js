@@ -28,10 +28,10 @@ router.get("/page/:numOfRows/:id/", (req, res) => {
 		.then(json => {
 			res.send(json.response.body);
 			// console.log(json.response.body)
-			console.log("key:" + req.params.id);
-			console.log("key2:" + req.params.numOfRows);
-			console.log("today:" + endde);
-			console.log("3month:" + bgnde);
+			// console.log("key:" + req.params.id);
+			// console.log("key2:" + req.params.numOfRows);
+			// console.log("today:" + endde);
+			// console.log("3month:" + bgnde);
 		})
 		.catch(() => {
 			res.send(JSON.stringify({ message: "System Error" }));
@@ -41,16 +41,19 @@ router.get("/page/:numOfRows/:id/", (req, res) => {
 // 검색
 
 // 상태
-router.get("/search/:state/", (req, res) => {
-	const state = req.params.state;
-	let url = `${api}/abandonmentPublic?serviceKey=${serviceKey}_type=json&state=${state}`;
+router.post("/search/", (req, res) => {
+	const body = req.body;
+	const numOfRows = body.numOfRows;
+	const pageNo = body.pageNo;
+	const state = body.state;
+
+	let url = `${api}/abandonmentPublic?serviceKey=${serviceKey}_type=json&state=${state}&upkind=422400&numOfRows=${numOfRows}&pageNo=${pageNo}`;
 
 	fetch(url)
 		.then(response => response.json())
 		.then(json => {
 			res.send(json.response.body);
-			// console.log(json.response.body)
-			console.log("key:" + req.params.state);
+			console.log(json.response.body.items.item.careAddr)
 
 		})
 		.catch(() => {
