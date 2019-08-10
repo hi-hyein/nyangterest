@@ -1,6 +1,7 @@
 import React from "react";
 import { MdPets } from "react-icons/md";
 import styled from "styled-components";
+import { fadeOutDown } from "../Animations";
 
 // 툴팁
 
@@ -16,18 +17,15 @@ const TooltipBoxWrapper = styled.div`
 		top: unset;
 		height: auto;
 	}
-
-	@media screen and (max-width: 640px) {
-		top: 6px
+	
+	@media screen and (max-width: 700px) {
+		margin:24px 0 0;
+		height: 0;
 	}
 
 `;
 
 const IconButton = styled.button`
-	// position: absolute;
-    // top: 0;
-	// right: 1rem;
-    // transform: translateY(-50%);
 	width: 3.2rem;
 	height: 3rem;
 	border: none;
@@ -36,14 +34,15 @@ const IconButton = styled.button`
 	color: #ccc;
 	transition: all 2s ease;
 	outline: none;
-	// transition: all 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, box-shadow 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms, border 250ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
 
 		&.active {
 			color: #45B3E0;
 
-			
+
 			& + div {
-				display: none;
+				opacity: 0;
+				// animation: ${fadeOutDown} 0.5s both;
+
 			}
 		}
 
@@ -54,7 +53,7 @@ const IconButton = styled.button`
 			// bottom: 18%;
 			right: -85%;	
 			z-index: 99;
-			display: block;
+			opacity: 1;
 			padding: 11px 15px 10px 13px;
 			background-color: #808080;
 			border: 1px solid rgba(115, 115, 115, 0.8);
@@ -90,7 +89,7 @@ const IconButton = styled.button`
 
 const TooltipBox = (props) => {
 	return (
-		<TooltipBoxWrapper>
+		<TooltipBoxWrapper className="btn-wrap">
 			<IconButton className={props.active ? 'active' : ''} onClick={props.onClick} ><MdPets /></IconButton>
 			<div><p>날짜/종류/상태 필터</p></div>
 		</TooltipBoxWrapper>

@@ -8,11 +8,8 @@ const SearchDiv = styled.div`
 	position: relative;
 	z-index: 99;
 	display: flex;
-	// min-width: 1280px;
-	// min-height: 56px;
 	padding: 0 5%; 
 	transition: all 0.2s ease;
-
 
 	@media screen and (max-width: 1024px) {
 		padding: 0 7%;
@@ -21,10 +18,6 @@ const SearchDiv = styled.div`
 	}
 
 	@media screen and (max-width: 700px) {
-		padding: 0 2%;
-	}
-
-	@media screen and (max-width: 640px) {
 		flex-wrap: wrap-reverse;
 	}
 	
