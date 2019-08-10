@@ -5,45 +5,67 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import { MdSearch } from "react-icons/md";
 import Calendar2 from './Calendar2';
 import styled from 'styled-components';
-import { fadeInDown, fadeOut } from "../Animations";
 
 // 셀렉트박스
 const Form = styled.form`
 
 	display:flex;
-	// margin-top: -150px
-	// height: 0
 	flex: auto;
 	text-align: left;
 	transform: translate(-500%);
-	transition: all 1s ease-in-out
+	transition: all 0.7s ease-in-out
+
+	@media screen and (max-width: 700px) {
+		flex-wrap: wrap;
+	}
 	
 	&.slide-in{
 		margin-top: 24px;
-		// height: 100%;
+		height: 100%;
 		transform: translateX(0);
 
-		@media screen and (max-width: 640px) {
+		@media screen and (max-width: 1024px) {
+
+			+ .btn-wrap {
+				margin-top:24px;
+				top: unset;
+
+			}
+		}
+
+		@media screen and (max-width: 700px) {
+			margin-top: 40px;
 			transform: none;
-			// animation: ${fadeInDown} 0.5s both;
 			text-align: center;
 			opacity: 1;
+
+			+ .btn-wrap {
+				margin-top: 15px;
+				
+			}
 		}
 	}
 
 	&.slide-out{
 		transform: translateX(-500%);
 
-		@media screen and (max-width: 640px) {
-			margin-top: -468%;
-			animation: ${fadeOut} 0.5s both;
+		@media screen and (max-width: 700px) {
+			margin-top: -70px;
+			transform: translateY(-100%);
 			opacity: 0;
 
 		}
 	}
 
 	&& {
-		& > div {margin-right:2%}
+		& > div {
+				margin-right:2%;
+
+				@media screen and (max-width: 700px) {
+					margin-right: 0;
+					min-width: 100%;
+				}
+		}
 	}
 
 
@@ -54,22 +76,13 @@ const FormControlDiv = styled(FormControl)`
 	&& {
 		display: inline-flex;
 		position: relative;
-		margin: 16px 10px 8px;
+		margin: 16px 0 8px;
 		padding: 0;
 		min-width: 310px;
 		flex-direction: column;
 		vertical-align: top;
 		transition: all 0.2s ease;
 		flex-basis: 20%;
-
-		@media screen and (max-width: 1024px) {
-			// margin: 2% 10px;
-		}
-
-		@media screen and (max-width: 640px) {
-			width: 90%;
-		}
-
 
 	}
 `;
@@ -93,7 +106,13 @@ const Fieldset = styled.fieldset`
 
 
 	// 인풋의 부모 폼창에 포커스 효과
-	:focus-within { border: 2px solid #3f51b5;}
+	:focus-within { 
+		border: 2px solid #3f51b5;
+
+		& legend {
+			color: #3f51b5
+		}
+	}
 
 	& legend {	
 				color: rgba(0, 0, 0, 0.54);
@@ -174,7 +193,7 @@ class SearchItems extends Component {
 					</FormControlDiv>
 					<TextFieldDiv
 						label="검색어"
-						placeholder="시도,시군구,보호소이름,상태,품종,중성화여부 ex) 인천광역시 부평구 코숏 "
+						placeholder="시도,시군구,보호소이름,상태,품종,중성화여부 ex) 인천광역시 부평구 한국 고양이 "
 						margin="normal"
 						variant="outlined"
 						InputLabelProps={{
