@@ -6,7 +6,8 @@ import Header from "./layout/Header";
 import Nav from "./Nav";
 import List from "./List";
 import MemberList from "./MemberList";
-import SearchBox from "./search/SearchBox";
+import SearchBar from "./search/SearchBar";
+// import SearchBox from "./search/SearchBox";
 import Welcome from "./Welcome";
 
 const Wrapper = styled.div`
@@ -34,7 +35,8 @@ class App extends Component {
 							userState={this.state.userState}
 						/>
 						<Wrapper>
-							<SearchBox />
+							{/* <SearchBox /> */}
+							<SearchBar />
 							<GlobalStyle />
 							<Nav />
 							<Route exact path="/" component={List} />

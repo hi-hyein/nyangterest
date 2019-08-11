@@ -121,3 +121,16 @@
 ![포스트맨에서는 이렇게 나옵니다. ] (https://yoonucho.github.io/post_img/post-res.png)
 
 ![드디어 원하는 결과 ] (https://yoonucho.github.io/post_img/code9.png)
+
+
+### 프론트에서 테스트 왜 안되냐 ㅠㅠ
+
+검색어가 없으면 기존 리스트보여주고 검색어가 있고 일치하면 결과를 보여줘라. 
+
+힌트는: filter , toLowerCase?
+
+음..잘안되네.. 우선 백엔드데이터를 프론트에서 받아오는 페이지를 만들어보자.
+
+1. /search 페이지에 post로 데이터 뿌리기 (성공)
+2. 검색했을때 텍스트 검출하기 예제 만들기
+3. 실제데이터 적용

@@ -43,8 +43,10 @@ router.get("/page/:numOfRows/:id/", (req, res) => {
 // 상태
 router.post("/search/", (req, res) => {
 	const body = req.body;
-	const numOfRows = body.numOfRows;
-	const pageNo = body.pageNo;
+	const numOfRows = 72;
+	const pageNo = 1;
+	// const numOfRows = body.numOfRows;
+	// const pageNo = body.pageNo;
 	const state = body.state;
 
 	let url = `${api}/abandonmentPublic?serviceKey=${serviceKey}_type=json&state=${state}&upkind=422400&numOfRows=${numOfRows}&pageNo=${pageNo}`;
@@ -53,7 +55,7 @@ router.post("/search/", (req, res) => {
 		.then(response => response.json())
 		.then(json => {
 			res.send(json.response.body);
-			console.log(json.response.body.items.item.careAddr)
+			// console.log(json.response.body.items.item.careAddr)
 
 		})
 		.catch(() => {
