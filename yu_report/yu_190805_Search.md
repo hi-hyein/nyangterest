@@ -147,3 +147,6 @@
  * 오브젝트를 한꺼번에 받을수는 없는건가?
  * 리스트와 검색바를 통합해서 만들자. 접속시에는 /page였다가 검색바를 클릭했을때 post로 /search로 변환
  * 검색바의 props의 props 처리는 어떻게 해야 할까
+ * 검색어가 2개이상일때 결과물이 나오게끔 
+
+![검색어 입력 1차] (https://yoonucho.github.io/post_img/search1.gif)
