@@ -38,9 +38,8 @@ router.get("/page/:numOfRows/:id/", (req, res) => {
 		});
 });
 
-// 검색
+// 검색바
 
-// 상태
 router.post("/search/", (req, res) => {
 	const body = req.body;
 	const numOfRows = 72;

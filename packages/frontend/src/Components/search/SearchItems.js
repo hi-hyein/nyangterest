@@ -1,4 +1,5 @@
 import React, { Component, Fragment } from 'react';
+// import { observer, inject } from "mobx-react";
 import FormControl from '@material-ui/core/FormControl';
 import TextField from '@material-ui/core/TextField';
 import InputAdornment from '@material-ui/core/InputAdornment';
@@ -12,7 +13,7 @@ const Form = styled.form`
 	display:flex;
 	flex: auto;
 	text-align: left;
-	transform: translate(-500%);
+	// transform: translate(-500%);
 	transition: all 0.7s ease-in-out
 
 	@media screen and (max-width: 700px) {
@@ -164,27 +165,84 @@ const SearchIcon = styled(InputAdornment)`
 	}
 `;
 
+// @inject('listStore')
+// @observer
+
 class SearchItems extends Component {
 
-	state = {
+	// state = {
+	// 	item: [],
+	// 	numOfRows: 72,
+	// 	pageNo: 1,
+	// 	searchKeyword: " "
+	// }
 
+	// static defaultProps = {
+	// 	numOfRows: 72,
+	// }
+
+	// componentDidMount() {
+	// 	this.callApi()
+	// }
+
+	// handleSubmit = (e) => {
+	// 	// e.preventDefault();
+	// 	let nextState = {};
+	// 	nextState[e.target.name] = e.target.value;
+	// 	this.setState(nextState);
+	// };
+
+	callApi = async () => {
+		try {
+			const url = `/search`;
+			const config = {
+				method: 'POST',
+				headers: {
+					'Accept': 'application/json',
+					'Content-Type': 'application/json',
+				}
+			};
+			const response = await fetch(url, config);
+			const data = await response.json();
+			// console.log(data);
+			this.setState(
+				{
+					item: [...data, ...data.items.item]
+					// numOfRows: data.numOfRows,
+				},
+				() => console.log(this)
+			);
+		} catch (err) {
+			// console.log(err);
+			this.setState({
+				error: err.message,
+			});
+		}
 	}
 
-	componentDidMount() {
-	}
-
-
-	handleChange = (e) => {
-		this.setState({
-			[e.target.name]: e.target.value,
-		});
-	}
+	// stateRefresh = () => {
+	// 	this.setState({
+	// 		item: [],
+	// 		searchKeyword: ""
+	// 	})
+	// 	this.callApi();
+	// }
 
 	render() {
 
+		// const FilterdList = (item) => {
+		// 	item = item.filter((keyword) => {
+		// 		return keyword.name.indexOf(this.state.searchKeyword) > -1;
+		// 	});
+		// 	return item.map((keyword, id) => {
+		// 		return <li key={id}><div {...keyword} /> </li>
+		// 	});
+
+		// }
 		return (
 			<Fragment>
-				<Form autoComplete="off" className={this.props.isVisible ? 'slide-in' : 'slide-out'}>
+				<Form autoComplete="off" className="slide-in">
+					{/* <Form autoComplete="off" className={this.props.isVisible ? 'slide-in' : 'slide-out'}> */}
 					<FormControlDiv variant="outlined">
 						<Fieldset>
 							<legend>시작일 &amp; 종료일 </legend>
@@ -196,6 +254,9 @@ class SearchItems extends Component {
 						placeholder="시도,시군구,보호소이름,상태,품종,중성화여부 ex) 인천광역시 부평구 한국 고양이 "
 						margin="normal"
 						variant="outlined"
+						name="searchKeyword"
+						value={this.props.search}
+						onChange={this.props.onChange}
 						InputLabelProps={{
 							shrink: true,
 						}}

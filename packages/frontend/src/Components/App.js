@@ -36,10 +36,10 @@ class App extends Component {
 						/>
 						<Wrapper>
 							{/* <SearchBox /> */}
-							<SearchBar />
 							<GlobalStyle />
+							<SearchBar />
 							<Nav />
-							<Route exact path="/" component={List} />
+							{/* <Route exact path="/" component={List} /> */}
 							<Route path="/admin/member" component={MemberList} />
 							<Route path="/welcome" component={Welcome} />
 						</Wrapper>
