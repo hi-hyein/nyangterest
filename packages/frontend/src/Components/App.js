@@ -4,10 +4,8 @@ import styled from "styled-components";
 import GlobalStyle from "./GlobalStyles";
 import Header from "./layout/Header";
 import Nav from "./Nav";
-import List from "./List";
+import Home from "./Home";
 import MemberList from "./MemberList";
-import SearchBar from "./search/SearchBar";
-// import SearchBox from "./search/SearchBox";
 import Welcome from "./Welcome";
 
 const Wrapper = styled.div`
@@ -37,9 +35,8 @@ class App extends Component {
 						<Wrapper>
 							{/* <SearchBox /> */}
 							<GlobalStyle />
-							<SearchBar />
 							<Nav />
-							{/* <Route exact path="/" component={List} /> */}
+							<Route exact path="/" component={Home} />
 							<Route path="/admin/member" component={MemberList} />
 							<Route path="/welcome" component={Welcome} />
 						</Wrapper>

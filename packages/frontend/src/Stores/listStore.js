@@ -8,6 +8,9 @@ export default class ListStore {
 	@observable hasMore = true;
 	@observable isLoading = false;
 	@observable error = false;
+	// @observable search = "";
+	// @observable isVisible = false;
+	// @observable active = false;
 
 	constructor(root) {
 		this.root = root;
@@ -76,6 +79,27 @@ export default class ListStore {
 		}
 	};
 
+
+	// 이부분을 좀더 수정하고 활성화시켜야지.
+	// @action
+	// handleChange = (e) => {
+	// 	const { search } = this;
+	// 	console.log(e.target.value)
+	// 	runInAction(() => {
+
+	// 		this.setValue(search= e.target.value );
+	// 	})
+	// }
+
+	// @action
+	// toggleHidden = () => {
+	// 	const { active, isVisible } = this;
+	// 	this.setToggle({
+	// 		this.active = !active;
+	// 		this.isVisible = !isVisible;
+	// 	});
+	// 	console.log('toggle show. ..')
+	// }
 
 }
 
