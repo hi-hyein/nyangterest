@@ -55,15 +55,9 @@ const ListWrapper = styled.ul`
 	}
 
 `
-@inject('listStore')
+@inject('listStore', 'searchStore')
 @observer
 class Home extends Component {
-	state = {
-		search: "",
-		active: false,
-		isVisible: false
-
-	};
 
 	componentDidMount() {
 		const { handleScroll, loadList } = this.props.listStore;
@@ -77,71 +71,11 @@ class Home extends Component {
 	}
 
 
-	callApi = async () => {
-		try {
-			const { items, pageNo, numOfRows } = this.state;
-			const url = `/search/${numOfRows}/${pageNo}`;
-
-			// const config = {
-			// 	method: 'POST',
-			// 	headers: {
-			// 		'Accept': 'application/json',
-			// 		'Content-Type': 'application/json',
-			// 	}
-			// };
-			const response = await fetch(url);
-			// const response = await fetch(url, config);
-			const data = await response.json();
-			// console.log(data);
-			this.setState(
-				{
-					items: [...items, ...data.items.item],
-					scrolling: false,
-					numOfRows: data.numOfRows,
-					isLoading: false
-				},
-				() => console.log(this)
-			);
-		} catch (err) {
-			// console.log(err);
-			this.setState({
-				error: err.message,
-				isLoading: false
-			});
-		}
-	}
-
-	// loadMore = () => {
-	// 	this.setState(
-	// 		prevState => ({
-	// 			pageNo: prevState.pageNo + 1,
-	// 			scrolling: true,
-	// 			isLoading: true
-	// 		}),
-	// 		this.callApi
-	// 	);
-	// };
-
-
-	handleChange = (e) => {
-		console.log(e.target.value)
-		this.setState({ search: e.target.value });
-	}
-
-	toggleHidden = () => {
-		this.setState({
-			active: !this.state.active,
-			isVisible: !this.state.isVisible,
-		});
-		console.log('toggle show. ..')
-	}
-
 	render() {
-		const { listStore } = this.props;
-		// const { handleChange, toggleHidden } = this.props.listStore;
-		const lowercaseFilter = this.state.search.toLowerCase();
-		const filteredItem = listStore.items.filter(item => {
-			// console.log(this.state.search.toLowerCase());
+		const { items, isLoading, hasMore } = this.props.listStore;
+		const { search, active, isVisible, handleChange, toggleHidden } = this.props.searchStore;
+		const lowercaseFilter = search.toLowerCase();
+		const filteredItem = items.filter(item => {
 			return Object.keys(item).some(key =>
 				typeof item[key] === "string" && item[key].toLowerCase().includes(lowercaseFilter)
 			)
@@ -150,19 +84,18 @@ class Home extends Component {
 		return (
 			<Fragment>
 				<SearchDiv>
-					<FormBox isVisible={this.state.isVisible} value={this.state.search} onChange={this.handleChange} />
-					<TooltipBox active={this.state.active} onClick={this.toggleHidden} />
+					<FormBox isVisible={isVisible} value={search} onChange={handleChange} />
+					<TooltipBox active={active} onClick={toggleHidden} />
 				</SearchDiv>
 				<ListWrapper className="item-list">
-					{listStore.items.length > 0 && filteredItem.map((item, id) => (
+					{items.length > 0 && filteredItem.map((item, id) => (
 						<li key={id}>
 							<Item {...item} />
 						</li>
-					))
-					}
+					))}
 				</ListWrapper>
 
-				{listStore.isLoading && listStore.hasMore && (
+				{isLoading && hasMore && (
 					<div>
 						Loading...
 						<Loading />
