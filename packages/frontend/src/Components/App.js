@@ -5,7 +5,7 @@ import GlobalStyle from "./GlobalStyles";
 import Header from "./layout/Header";
 import Nav from "./Nav";
 import Home from "./Home";
-import MemberList from "./MemberList";
+import MemberList from "./admin/MemberList";
 import Welcome from "./Welcome";
 
 const Wrapper = styled.div`
@@ -33,7 +33,6 @@ class App extends Component {
 							userState={this.state.userState}
 						/>
 						<Wrapper>
-							{/* <SearchBox /> */}
 							<GlobalStyle />
 							<Nav />
 							<Route exact path="/" component={Home} />

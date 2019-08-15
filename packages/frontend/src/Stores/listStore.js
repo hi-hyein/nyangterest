@@ -23,11 +23,22 @@ export default class ListStore {
 			const response = await fetch(url);
 			const json = await response.json();
 
-			runInAction(() => {
-				// console.log(this)
-				// console.log(`${this}, "numOfRows:" ${numOfRows}, "pageNo:" ${pageNo}`);
-				this.setItems([...items, ...json.items.item]);
-			});
+			if (json.items.length === 0) {
+				runInAction(() => {
+					return { error: "검색된 내용이 없습니다. " }
+				})
+
+			} else {
+				runInAction(() => {
+					// console.log(this)
+					// console.log(`${this}, "numOfRows:" ${numOfRows}, "pageNo:" ${pageNo}`);
+					this.setItems([...items, ...json.items.item]);
+					return { error: "" }
+				});
+
+			}
+
+
 
 
 			// 스크롤을 내릴때 리스트 보여줄게 있으면 loadmore함수를 실행해서 다음 페이지를 보여줘라.이걸 어떻게 해야 하나

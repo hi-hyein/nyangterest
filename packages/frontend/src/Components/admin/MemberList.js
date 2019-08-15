@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import Member from "./Member";
-import { fadeInUp } from "./Animations";
+import { fadeInUp } from "../Animations";
 import styled from "styled-components";
 import Table from '@material-ui/core/Table';
 import TableHead from '@material-ui/core/TableHead';

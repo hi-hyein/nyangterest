@@ -4,7 +4,7 @@ import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import Checkbox from '@material-ui/core/Checkbox';
-import AgreeLink from "../AgreeLink";
+import AgreeLink from "../agree/AgreeLink";
 import Service from "../agree/Service";
 import Privacy from "../agree/Privacy";
 

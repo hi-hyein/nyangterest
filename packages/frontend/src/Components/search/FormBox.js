@@ -4,7 +4,7 @@ import FormControl from '@material-ui/core/FormControl';
 import TextField from '@material-ui/core/TextField';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import { MdSearch } from "react-icons/md";
-import Calendar2 from './Calendar2';
+import DayPicker from './DayPicker';
 import styled from 'styled-components';
 
 // 셀렉트박스
@@ -175,10 +175,11 @@ class FormBox extends Component {
 		return (
 			<Fragment>
 				<Form autoComplete="off" className={this.props.isVisible ? 'slide-in' : 'slide-out'}>
+					{/* <Form onSubmit={this.props.onSubmit} autoComplete="off" className={this.props.isVisible ? 'slide-in' : 'slide-out'}> */}
 					<FormControlDiv variant="outlined">
 						<Fieldset>
 							<legend>시작일 &amp; 종료일 </legend>
-							<Calendar2 />
+							<DayPicker />
 						</Fieldset>
 					</FormControlDiv>
 					<TextFieldDiv
