@@ -68,7 +68,8 @@ router.post("/", (req, res) => {
 	const memberPass = body.password;
 	const passwordHash = hash.sha256().update(memberPass).digest('hex');
 	const signupdate = moment().format('YYYYMMDD');
-	const emailLink = `http://localhost:3000/welcome?email=${memberMail}&token=${emailToken}`;
+	const certify = false
+	const emailLink = `http://localhost:8080/welcome?email=${memberMail}&token=${emailToken}`;
 
 	let transporter = nodemailer.createTransport({
 		service: 'gmail',
@@ -81,8 +82,8 @@ router.post("/", (req, res) => {
 	let mailOptions = {
 		from: 'nyangterest@gmail.com',    // 발송 메일 주소 (위에서 작성한 gmail 계정 아이디)
 		to: memberMail ,                     // 수신 메일 주소
-		subject: 'Sending Email using Node.js',   // 제목
-		text: `안녕하세요 회원가입을 축하드립니다. ${emailLink} 해당 링크로 접속해주세요. 그러면 회원가입이 완료됩니다.`  // 내용
+		subject: '냥터레스트 회원가입을 위한 이메일 인증을 부탁드립니다.',   // 제목
+		text: `안녕하세요 회원가입을 축하드립니다. ${emailLink} 해당 링크로 접속해주시면 인증이 완료되어 냥터레스트에 로그인하실 수 있습니다.`  // 내용
 	};
 
 	transporter.sendMail(mailOptions, function(error, info){
@@ -93,37 +94,24 @@ router.post("/", (req, res) => {
 		  console.log('Email sent: ' + info.response);
 		}
 	  });
+
+	const sql = "INSERT INTO `member` (`email`, `password`, `signupdate`, `certify`) VALUES ( ?,?,?,? )"
+	const params = [memberMail, passwordHash, signupdate, certify]
+	connection.query(sql,params,(err, rows, fields) => {
+		if(err){
+		console.log(err);
+		} else {
+		console.log(rows);
+		}
+	});
 });
 
 
-router.post("/welcome",(req,res)=>{
-	const body = req.body
-	const email = body.email
-	const token = body.token
-	console.log(email,token)
-	// 디비에 저장된 이메일주소와 회원이입력한 이메일주소 비교
-	// 토큰주소 비교하고
-	// 디비에 정보저장하고
-	// certify 컬럼 true로 변경
-	console.log(memberMail);
-	console.log(token, emailToken);
-	if (memberMail === email && emailToken === token) {
-		console.log("같아")
-		// 패스워드 암호화하여 저장하기 
-		// 암호화 함수는 SHA-256를 일단 사용할 것!(주로권장)
-		const sql = "INSERT INTO `member` (`email`, `password`, `signupdate`) VALUES ( ?,?,? )";
-		const params = [memberMail, passwordHash, signupdate]
-
-		connection.query(sql,params,(err, rows, fields) => {
-			if(err){
-			console.log(err);
-			} else {
-			console.log(rows);
-			}
-		});
-	}else {
-		console.log("x")
-	}
+router.get("/welcome",(req,res)=>{
+	res.sendFile(path.join(__dirname+'/welcome.html'));
+	const email = req.query.email;
+	console.log(email)
+	
 });
 
 
