@@ -10,9 +10,28 @@
     냥터레스트 회원가입을 축하합니다.
     5초 후 냥터레스트 홈페이지로 자동 이동됩니다.
     <script>
-        setTimeout(()=>{
-            window.location.href = 'http://localhost:3000/';
-        },5000)
+        // function getQueryStringObject() {
+        //     var a = window.location.search.substr(1).split('&');
+        //     if (a == "") return {};
+        //     var b = {};
+        //     for (var i = 0; i < a.length; ++i) {
+        //         var p = a[i].split('=', 2);
+        //         if (p.length == 1)
+        //             b[p[0]] = "";
+        //         else
+        //             b[p[0]] = decodeURIComponent(p[1].replace(/\+/g, " "));
+        //     }
+        //     return b;
+        // }
+
+        // var qs = getQueryStringObject();
+        // var email = qs.email;
+        // var token = qs.token;
+
+        // console.log(email,token)
+        // setTimeout(()=>{
+        //     window.location.href = 'http://localhost:3000/';
+        // },5000)
     </script>
 </body>
 </html>

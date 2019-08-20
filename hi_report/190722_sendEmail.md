@@ -120,5 +120,11 @@ Proxy error: Could not proxy request /welcome?email=qwer from localhost:3000 to 
 ## 느낀점
 계획대로 하고싶어 문서작성은 했지만..! 역시 계획대로 안되는 것이 인생ㅎ..
 
+# fetch
+
+- promise란?
+
+
+
 
 
