@@ -115,7 +115,8 @@ router.get("/welcome",(req,res)=>{
 
 	//일단 이메일로만 찾아서 인증 컬럼 변경해보기
 	// 할일 - 회원가입할때 가입되어있는 이메일 중복처리하기
-	connection.query(`SELECT * FROM member WHERE esmail='${certifyInfo.email}'`,(err, rows, fields) => {
+	
+	connection.query(`SELECT * FROM member WHERE email='${certifyInfo.email}'`,(err, rows, fields) => {
 		if(!rows[0].certify){
 			res.sendFile(path.join(__dirname+'/welcome.html'))
 			connection.query(`UPDATE member SET certify=true WHERE email='${certifyInfo.email}'`)
@@ -123,7 +124,7 @@ router.get("/welcome",(req,res)=>{
 			res.redirect('http://localhost:3000');
 		}
 	})
-s});
+});
 
 
 
