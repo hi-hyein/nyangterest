@@ -10,6 +10,10 @@ const PORT = 8080;
 const hash = require('hash.js');
 const nodemailer = require('nodemailer');
 
+const serviceKey = `P3gvH0LsdoPkxFnZU2Ee98hGDDEwVTJndJFa8NDUhznSLlZG6OOxBopFWLBmiCPOfWXsF8Wz8LFHJguz41qJvA%3D%3D&`;
+const api = 'http://openapi.animal.go.kr/openapi/service/rest/abandonmentPublicSrvc';
+// 기본주소
+
 router.get("/page/:numOfRows/:id/", (req, res) => {
 	const bgnde = moment()
 		.subtract(3, "month")
@@ -17,18 +21,41 @@ router.get("/page/:numOfRows/:id/", (req, res) => {
 	const endde = moment().format("YYYYMMDD");
 	const numOfRows = req.params.numOfRows;
 	const pageNo = req.params.id;
-	const serviceKey = `P3gvH0LsdoPkxFnZU2Ee98hGDDEwVTJndJFa8NDUhznSLlZG6OOxBopFWLBmiCPOfWXsF8Wz8LFHJguz41qJvA%3D%3D&`;
+	const url = `${api}/abandonmentPublic?serviceKey=${serviceKey}_type=json&bgnde=${bgnde}&endde=${endde}&upkind=422400&numOfRows=${numOfRows}&pageNo=${pageNo}`;
 
-	const url = `http://openapi.animal.go.kr/openapi/service/rest/abandonmentPublicSrvc/abandonmentPublic?serviceKey=${serviceKey}_type=json&bgnde=${bgnde}&endde=${endde}&upkind=422400&state=notice&numOfRows=${numOfRows}&pageNo=${pageNo}`;
 	fetch(url)
 		.then(response => response.json())
 		.then(json => {
 			res.send(json.response.body);
-			console.log("key:" + req.params.id);
-			console.log("key2:" + req.params.numOfRows);
-			console.log(json.response.body.pageNo);
-			console.log("today:" + endde);
-			console.log("3month:" + bgnde);
+			// console.log(json.response.body)
+			// console.log("key:" + req.params.id);
+			// console.log("key2:" + req.params.numOfRows);
+			// console.log("today:" + endde);
+			// console.log("3month:" + bgnde);
+		})
+		.catch(() => {
+			res.send(JSON.stringify({ message: "System Error" }));
+		});
+});
+
+// 검색바
+
+router.post("/search/", (req, res) => {
+	const body = req.body;
+	const numOfRows = 72;
+	const pageNo = 1;
+	// const numOfRows = body.numOfRows;
+	// const pageNo = body.pageNo;
+	const state = body.state;
+
+	let url = `${api}/abandonmentPublic?serviceKey=${serviceKey}_type=json&state=${state}&upkind=422400&numOfRows=${numOfRows}&pageNo=${pageNo}`;
+
+	fetch(url)
+		.then(response => response.json())
+		.then(json => {
+			res.send(json.response.body);
+			// console.log(json.response.body.items.item.careAddr)
+
 		})
 		.catch(() => {
 			res.send(JSON.stringify({ message: "System Error" }));
@@ -63,7 +90,7 @@ const emailToken = hash.sha256().update('nyangterest').digest('hex')
 
 router.post("/", (req, res) => {
 	const body = req.body;
-	console.log('test',body);
+	console.log('test', body);
 	const memberMail = body.email;
 	const memberPass = body.password;
 	const passwordHash = hash.sha256().update(memberPass).digest('hex');
@@ -80,27 +107,27 @@ router.post("/", (req, res) => {
 
 	let mailOptions = {
 		from: 'nyangterest@gmail.com',    // 발송 메일 주소 (위에서 작성한 gmail 계정 아이디)
-		to: memberMail ,                     // 수신 메일 주소
+		to: memberMail,                     // 수신 메일 주소
 		subject: 'Sending Email using Node.js',   // 제목
 		text: `안녕하세요 회원가입을 축하드립니다. ${emailLink} 해당 링크로 접속해주세요. 그러면 회원가입이 완료됩니다.`  // 내용
 	};
 
-	transporter.sendMail(mailOptions, function(error, info){
+	transporter.sendMail(mailOptions, function (error, info) {
 		if (error) {
-		  console.log(error);
+			console.log(error);
 		}
 		else {
-		  console.log('Email sent: ' + info.response);
+			console.log('Email sent: ' + info.response);
 		}
-	  });
+	});
 });
 
 
-router.post("/welcome",(req,res)=>{
+router.post("/welcome", (req, res) => {
 	const body = req.body
 	const email = body.email
 	const token = body.token
-	console.log(email,token)
+	console.log(email, token)
 	// 디비에 저장된 이메일주소와 회원이입력한 이메일주소 비교
 	// 토큰주소 비교하고
 	// 디비에 정보저장하고
@@ -114,14 +141,14 @@ router.post("/welcome",(req,res)=>{
 		const sql = "INSERT INTO `member` (`email`, `password`, `signupdate`) VALUES ( ?,?,? )";
 		const params = [memberMail, passwordHash, signupdate]
 
-		connection.query(sql,params,(err, rows, fields) => {
-			if(err){
-			console.log(err);
+		connection.query(sql, params, (err, rows, fields) => {
+			if (err) {
+				console.log(err);
 			} else {
-			console.log(rows);
+				console.log(rows);
 			}
 		});
-	}else {
+	} else {
 		console.log("x")
 	}
 });
@@ -139,16 +166,13 @@ console.log(__dirname);
 
 app.use(cors());
 app.use("/", router);
-// app.use("/page", router);
+app.use("/search", router);
 // app.use("/admin/member", router);
 
-// // app.get("/", function(req, res, next) {
-// // 	res.json({ msg: "This is CORS-enabled for all origins!" });
-// // });
 
 
 
-app.listen(PORT, function() {
+app.listen(PORT, function () {
 	console.log("enabled web server listening !");
 });
 

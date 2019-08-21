@@ -1,6 +1,6 @@
 import { createGlobalStyle } from "styled-components";
 
-const DayPicker = createGlobalStyle`
+const DayPickerStyle = createGlobalStyle`
 
 /* DayPicker styles */
 
@@ -235,4 +235,4 @@ const DayPicker = createGlobalStyle`
 
 `;
 
-export default DayPicker;
+export default DayPickerStyle;
