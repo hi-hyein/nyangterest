@@ -69,8 +69,8 @@ router.post("/", (req, res) => {
 	const passwordHash = hash.sha256().update(memberPass).digest('hex');
 	const signupdate = moment().format('YYYYMMDD');
 	const certify = false
-	const emailLink = `http://localhost:8080/welcome?email=${memberMail}&token=${emailToken}`;
-
+	const emailLink = `http://localhost:8080/welcome?email=${memberMail}&token=${emailToken}`;	
+	
 	let transporter = nodemailer.createTransport({
 		service: 'gmail',
 		auth: {
@@ -86,24 +86,31 @@ router.post("/", (req, res) => {
 		text: `안녕하세요 회원가입을 축하드립니다. ${emailLink} 해당 링크로 접속해주시면 인증이 완료되어 냥터레스트에 로그인하실 수 있습니다.`  // 내용
 	};
 
-	transporter.sendMail(mailOptions, function(error, info){
-		if (error) {
-		  console.log(error);
+	connection.query(`SELECT * FROM member WHERE email='${memberMail}'`,(err, rows, fields) => {
+		if(rows){
+			res.send(rows)
+		}else{
+			console.log('없으니까 가입가능')
+			transporter.sendMail(mailOptions, function(error, info){
+				if (error) {
+				  console.log(error);
+				}
+				else {
+				  console.log('Email sent: ' + info.response);
+				}
+			  });
+		
+			const sql = "INSERT INTO `member` (`email`, `password`, `signupdate`, `certify`) VALUES ( ?,?,?,? )"
+			const params = [memberMail, passwordHash, signupdate, certify]
+			connection.query(sql,params,(err, rows, fields) => {
+				if(err){
+				console.log(err);
+				} else {
+				console.log(rows);
+				}
+			});
 		}
-		else {
-		  console.log('Email sent: ' + info.response);
-		}
-	  });
-
-	const sql = "INSERT INTO `member` (`email`, `password`, `signupdate`, `certify`) VALUES ( ?,?,?,? )"
-	const params = [memberMail, passwordHash, signupdate, certify]
-	connection.query(sql,params,(err, rows, fields) => {
-		if(err){
-		console.log(err);
-		} else {
-		console.log(rows);
-		}
-	});
+	})
 });
 
 
@@ -115,7 +122,6 @@ router.get("/welcome",(req,res)=>{
 
 	//일단 이메일로만 찾아서 인증 컬럼 변경해보기
 	// 할일 - 회원가입할때 가입되어있는 이메일 중복처리하기
-	
 	connection.query(`SELECT * FROM member WHERE email='${certifyInfo.email}'`,(err, rows, fields) => {
 		if(!rows[0].certify){
 			res.sendFile(path.join(__dirname+'/welcome.html'))

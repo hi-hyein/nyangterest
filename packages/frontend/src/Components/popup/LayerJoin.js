@@ -23,7 +23,20 @@ class LayerJoin extends Component {
         passwordNotMatchText: "6자이상 15자 이하 입력해주세요",
         passwordCheck:"",
         passwordCheckValidate: false,
+        memberInfo: []
     }
+
+    getMemberInfo = async () => {
+		try {
+			const url = `/`;
+			const response = await fetch(url);
+			const json = await response.json();
+            this.setState({ memberInfo: json });
+            console.log(this.state.memberInfo)
+		} catch (err) {
+			console.log(err);
+		}
+	}; 
 
     validate = (format, value) => {
         const reg = format;
@@ -91,6 +104,8 @@ class LayerJoin extends Component {
         const state = this.state
         const stateTojson = JSON.stringify(state)
 
+        this.getMemberInfo()
+
         if ( state.emailValidate && state.passwordValidate && state.passwordCheckValidate){
             fetch('/', {
 				headers: {
@@ -104,6 +119,8 @@ class LayerJoin extends Component {
         }else {
             alert("모든 입력사항을 알맞게 입력해주세요")
         }
+        
+
     }
 
     render(){
