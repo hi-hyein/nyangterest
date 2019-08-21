@@ -87,9 +87,11 @@ router.post("/", (req, res) => {
 	};
 
 	connection.query(`SELECT * FROM member WHERE email='${memberMail}'`,(err, rows, fields) => {
-		if(rows){
+		if(!rows[0]===undefined){
 			res.send(rows)
-		}else{
+			console.log(rows)
+			console.log('있으니까 안돼!')
+		}else {
 			console.log('없으니까 가입가능')
 			transporter.sendMail(mailOptions, function(error, info){
 				if (error) {
@@ -127,7 +129,7 @@ router.get("/welcome",(req,res)=>{
 			res.sendFile(path.join(__dirname+'/welcome.html'))
 			connection.query(`UPDATE member SET certify=true WHERE email='${certifyInfo.email}'`)
 		}else {
-			res.redirect('http://localhost:3000');
+			res.sendFile(path.join(__dirname+'/welcome2.html'))
 		}
 	})
 });

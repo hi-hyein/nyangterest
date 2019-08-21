@@ -104,7 +104,7 @@ class LayerJoin extends Component {
         const state = this.state
         const stateTojson = JSON.stringify(state)
 
-        this.getMemberInfo()
+        // this.getMemberInfo()
 
         if ( state.emailValidate && state.passwordValidate && state.passwordCheckValidate){
             fetch('/', {
