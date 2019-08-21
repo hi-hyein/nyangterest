@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import moment from 'moment';
 import DayPickerInput from 'react-day-picker/DayPickerInput';
-import DayPicker from './DayPicker'
+import DayPickerStyle from './DayPickerStyle'
 import MomentLocaleUtils, { formatDate, parseDate } from 'react-day-picker/moment';
 import 'moment/locale/ko';
 import styled from 'styled-components';
@@ -25,7 +25,7 @@ const InputFromDiv = styled.div`
 `;
 
 
-class Calendar2 extends Component {
+class DayPicker extends Component {
 
 	state = {
 		from: undefined,
@@ -42,8 +42,9 @@ class Calendar2 extends Component {
 		}
 	}
 
+	// 요기에 fetch를 넣어야 할거 같다.
 	handleFromChange = (from) => {
-		this.setState({ from });
+		this.setState({ from }, console.log(from));
 	}
 
 	handleToChange = (to) => {
@@ -55,7 +56,7 @@ class Calendar2 extends Component {
 		const modifiers = { start: from, end: to };
 		return (
 			<div>
-				<DayPicker />
+				<DayPickerStyle />
 				<div className="InputFromTo">
 					<InputFromDiv>
 						<DayPickerInput
@@ -88,7 +89,7 @@ class Calendar2 extends Component {
 							dayPickerProps={{
 								locale: 'ko',
 								localeUtils: MomentLocaleUtils,
-								selectedDays: [from, { from, to }],
+								selectedDays: [from, { from, to }, console.log(from)],
 								disabledDays: { before: from },
 								modifiers,
 								month: from,
@@ -104,4 +105,4 @@ class Calendar2 extends Component {
 	}
 }
 
-export default Calendar2;
+export default DayPicker;

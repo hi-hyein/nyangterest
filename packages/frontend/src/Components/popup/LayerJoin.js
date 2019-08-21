@@ -4,7 +4,7 @@ import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import Checkbox from '@material-ui/core/Checkbox';
-import AgreeLink from "../AgreeLink";
+import AgreeLink from "../agree/AgreeLink";
 import Service from "../agree/Service";
 import Privacy from "../agree/Privacy";
 
@@ -23,7 +23,20 @@ class LayerJoin extends Component {
         passwordNotMatchText: "6자이상 15자 이하 입력해주세요",
         passwordCheck:"",
         passwordCheckValidate: false,
+        memberInfo: []
     }
+
+    getMemberInfo = async () => {
+		try {
+			const url = `/`;
+			const response = await fetch(url);
+			const json = await response.json();
+            this.setState({ memberInfo: json });
+            console.log(this.state.memberInfo)
+		} catch (err) {
+			console.log(err);
+		}
+	}; 
 
     validate = (format, value) => {
         const reg = format;
@@ -91,6 +104,8 @@ class LayerJoin extends Component {
         const state = this.state
         const stateTojson = JSON.stringify(state)
 
+        // this.getMemberInfo()
+
         if ( state.emailValidate && state.passwordValidate && state.passwordCheckValidate){
             fetch('/', {
 				headers: {
@@ -100,10 +115,12 @@ class LayerJoin extends Component {
 				method: 'POST',
 				body: stateTojson,
 			});
-            alert("이메일로 인증번호가 전송되었습니다.")
+            alert("회원가입이 완료되었습니다. 입력된 이메일로 인증을 해주세요!")
         }else {
             alert("모든 입력사항을 알맞게 입력해주세요")
         }
+        
+
     }
 
     render(){

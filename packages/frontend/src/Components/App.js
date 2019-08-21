@@ -4,10 +4,8 @@ import styled from "styled-components";
 import GlobalStyle from "./GlobalStyles";
 import Header from "./layout/Header";
 import Nav from "./Nav";
-import List from "./List";
-import MemberList from "./MemberList";
-import SearchBox from "./SearchBox";
-import Welcome from "./Welcome";
+import Home from "./Home";
+import MemberList from "./admin/MemberList";
 
 const Wrapper = styled.div`
 	position: relative;
@@ -34,12 +32,10 @@ class App extends Component {
 							userState={this.state.userState}
 						/>
 						<Wrapper>
-							<SearchBox />
 							<GlobalStyle />
 							<Nav />
-							<Route exact path="/" component={List} />
+							<Route exact path="/" component={Home} />
 							<Route path="/admin/member" component={MemberList} />
-							<Route path="/welcome" component={Welcome} />
 						</Wrapper>
 					</div>
 				</Fragment>

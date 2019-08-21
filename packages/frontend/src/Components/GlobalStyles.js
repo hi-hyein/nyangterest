@@ -17,6 +17,14 @@ const GlobalStyle = createGlobalStyle`
     	box-sizing:border-box;
   }
 
+  input {
+
+	  &:focus{
+			outline: none;
+	  }  
+
+  }	
+
   input[type="checkbox" i] {vertical-align: middle}
 
   a, button {transition: all 0.3s linear}
