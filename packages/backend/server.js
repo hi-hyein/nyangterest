@@ -38,31 +38,7 @@ router.get("/page/:numOfRows/:id/", (req, res) => {
 		});
 });
 
-// 검색바
 
-router.get("/page/:searchKeyword/:numOfRows/:id/", (req, res) => {
-	// const numOfRows = 72;
-	// const pageNo = 1;
-	// const { numOfRows, pageNo } = req.body;
-	// const numOfRows = body.numOfRows;
-	// const pageNo = body.pageNo;
-	const searchKeyword = req.params.searchKeyword;
-	const numOfRows = req.params.numOfRows;
-	const pageNo = req.params.id;
-
-	let url = `${api}/abandonmentPublic?serviceKey=${serviceKey}_type=json&upkind=422400&searchKeyword=${searchKeyword}&numOfRows=${numOfRows}&pageNo=${pageNo}`;
-
-	fetch(url)
-		.then(response => response.json())
-		.then(json => {
-			res.send(json.response.body);
-			// console.log(json.response.body.items.item.careAddr)
-
-		})
-		.catch(() => {
-			res.send(JSON.stringify({ message: "System Error" }));
-		});
-});
 // router.post("/search/", (req, res) => {
 // 	const body = req.body;
 // 	// const numOfRows = 72;

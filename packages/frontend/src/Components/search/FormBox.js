@@ -189,7 +189,7 @@ class FormBox extends Component {
 		return (
 			<Fragment>
 				{/* <Form autoComplete="off" className={this.props.isVisible ? 'slide-in' : 'slide-out'}> */}
-				<Form onKeyPress={this.props.onKeyPress} autoComplete="off" className={this.props.isVisible ? 'slide-in' : 'slide-out'}>
+				<Form autoComplete="off" className={this.props.isVisible ? 'slide-in' : 'slide-out'}>
 					<FormControlDiv variant="outlined">
 						<Fieldset>
 							<legend>시작일 &amp; 종료일 </legend>

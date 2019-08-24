@@ -61,7 +61,7 @@ class DayPicker extends Component {
 					<InputFromDiv>
 						<DayPickerInput
 							value={from}
-							placeholder="시작일"
+							placeholder={`${formatDate(new Date(), "LL", "ko")}`}
 							format={"LL"}
 							formatDate={formatDate}
 							parseDate={parseDate}
@@ -82,7 +82,7 @@ class DayPicker extends Component {
 						<DayPickerInput
 							ref={el => (this.to = el)}
 							value={to}
-							placeholder="종료일"
+							placeholder={`${formatDate(new Date(), "LL", "ko")}`}
 							format={"LL"}
 							formatDate={formatDate}
 							parseDate={parseDate}
