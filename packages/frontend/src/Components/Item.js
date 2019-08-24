@@ -50,12 +50,13 @@ const Info = styled.div`
 		}
 	}
 `;
-const Item = ({ kindCd, happenDt, borderBottomColor = "#5262bc", popfile }) => (
+const Item = ({ kindCd, colorCd, happenDt, borderBottomColor = "#5262bc", popfile }) => (
 	<Container borderBottomColor={borderBottomColor}>
 		<Content>
 			<Info>
 				<h2>품종: {kindCd}</h2>
 				<p>등록일: {happenDt}</p>
+				<p>색상: {colorCd}</p>
 				<CatImage popfile={popfile} alt={kindCd} />
 			</Info>
 		</Content>

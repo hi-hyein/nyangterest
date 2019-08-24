@@ -4,6 +4,8 @@ export default class SearchStore {
 	@observable search = "";
 	@observable isVisible = false;
 	@observable active = false;
+	@observable searchKeyword = "";
+
 
 	constructor(root) {
 		this.root = root;
@@ -11,8 +13,8 @@ export default class SearchStore {
 
 	@action
 	handleChange = (e) => {
-		console.log(e.target.value)
-		this.search = e.target.value
+		this.search = e.target.value;
+		console.log(this.search)
 	}
 
 	@action
@@ -22,5 +24,30 @@ export default class SearchStore {
 		console.log('toggle show. ..')
 	}
 
-}
+	// @action
+	// handleKeyPress = (e) => {
+	// 	if (e.key === "Enter") {
+	// 		console.log("test!")
+	// 		// e.preventDefault();
+	// 		const { pageNo, numOfRows, loadList } = this.root.listStore;
+	// 		const url = `/search/${numOfRows}/${pageNo}`;
 
+	// 		runInAction(() => {
+	// 			return loadList(), this.search = "";
+	// 		});
+	// 	}
+
+	// }
+
+	// @action
+	// handleSubmit = (e) => {
+	// 	e.preventDefault();
+	// 	const data = new FormData(e.target);
+
+	// 	fetch('/search/submit', {
+	// 		method: 'POST',
+	// 		body: data,
+	// 	});
+	// }
+
+}

@@ -4,7 +4,6 @@ import FormControl from '@material-ui/core/FormControl';
 import TextField from '@material-ui/core/TextField';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import { MdSearch } from "react-icons/md";
-import DayPicker from './DayPicker';
 import styled from 'styled-components';
 
 // 셀렉트박스
@@ -145,11 +144,25 @@ const TextFieldDiv = styled(TextField)`
 
 
 // 검색아이콘
-const SearchIcon = styled(InputAdornment)`
+const IconButton = styled.button`
 	position: relative;
 	width: 2rem;
+	height: 2rem;
+	border: none;
+	background: none;
 	font-size: 2rem;
 	color: #ccc;
+	transition: all 2s ease;
+	outline: none;
+
+`;
+
+
+let SearchIcon = styled(InputAdornment)`
+	// position: relative;
+	// width: 2rem;
+	// font-size: 2rem;
+	// color: #ccc;
 	
 	& svg {
 		display: inline-block;
@@ -165,7 +178,8 @@ const SearchIcon = styled(InputAdornment)`
 	}
 `;
 
-// @inject('listStore')
+SearchIcon = styled.span``;
+// @inject('searchStore')
 // @observer
 
 class FormBox extends Component {
@@ -174,12 +188,12 @@ class FormBox extends Component {
 
 		return (
 			<Fragment>
-				<Form autoComplete="off" className={this.props.isVisible ? 'slide-in' : 'slide-out'}>
-					{/* <Form onSubmit={this.props.onSubmit} autoComplete="off" className={this.props.isVisible ? 'slide-in' : 'slide-out'}> */}
+				{/* <Form autoComplete="off" className={this.props.isVisible ? 'slide-in' : 'slide-out'}> */}
+				<Form onKeyPress={this.props.onKeyPress} autoComplete="off" className={this.props.isVisible ? 'slide-in' : 'slide-out'}>
 					<FormControlDiv variant="outlined">
 						<Fieldset>
 							<legend>시작일 &amp; 종료일 </legend>
-							<DayPicker />
+							{this.props.children}
 						</Fieldset>
 					</FormControlDiv>
 					<TextFieldDiv
@@ -187,8 +201,8 @@ class FormBox extends Component {
 						placeholder="시도,시군구,보호소이름,상태,품종,중성화여부 ex) 인천광역시 부평구 한국 고양이 "
 						margin="normal"
 						variant="outlined"
-						name="searchKeyword"
-						value={this.props.search}
+						name="search"
+						value={this.props.value}
 						onChange={this.props.onChange}
 						InputLabelProps={{
 							shrink: true,
@@ -200,7 +214,7 @@ class FormBox extends Component {
 								overflow: 'hidden',
 								width: '100%',
 							},
-							startAdornment: <SearchIcon position="start"><MdSearch /></SearchIcon>
+							startAdornment: <IconButton type="submit" ><SearchIcon position="start"><MdSearch /></SearchIcon></IconButton>
 						}}
 					/>
 				</Form>
