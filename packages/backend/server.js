@@ -21,7 +21,7 @@ router.get("/page/:numOfRows/:id/", (req, res) => {
 	const endde = moment().format("YYYYMMDD");
 	const numOfRows = req.params.numOfRows;
 	const pageNo = req.params.id;
-	const url = `${api}/abandonmentPublic?serviceKey=${serviceKey}_type=json&bgnde=${bgnde}&endde=${endde}&upkind=422400&state=notice&numOfRows=${numOfRows}&pageNo=${pageNo}`;
+	const url = `${api}/abandonmentPublic?ServiceKey=${serviceKey}_type=json&bgnde=${bgnde}&endde=${endde}&upkind=422400&state=notice&numOfRows=${numOfRows}&pageNo=${pageNo}`;
 
 	fetch(url)
 		.then(response => response.json())
@@ -38,29 +38,24 @@ router.get("/page/:numOfRows/:id/", (req, res) => {
 		});
 });
 
+// 시군구
 
-// router.post("/search/", (req, res) => {
-// 	const body = req.body;
-// 	// const numOfRows = 72;
-// 	// const pageNo = 1;
-// 	const { numOfRows, pageNo } = req.body;
-// 	// const numOfRows = body.numOfRows;
-// 	// const pageNo = body.pageNo;
-// 	const state = body.state;
+router.get("/search/sido", (req, res) => {
+	const url = `${api}/sido?ServiceKey=${serviceKey}_type=json`;
 
-// 	let url = `${api}/abandonmentPublic?serviceKey=${serviceKey}_type=json&state=${state}&upkind=422400&numOfRows=72&pageNo=1`;
+	fetch(url)
+		.then(response => response.json())
+		.then(json => {
+			res.send(json.response.body.items);
+			console.log(json.response.body.items)
 
-// 	fetch(url)
-// 		.then(response => response.json())
-// 		.then(json => {
-// 			res.send(numOfRows, pageNo);
-// 			// console.log(json.response.body.items.item.careAddr)
+		})
+		.catch(() => {
+			res.send(JSON.stringify({ message: "System Error" }));
+		});
+});
 
-// 		})
-// 		.catch(() => {
-// 			res.send(JSON.stringify({ message: "System Error" }));
-// 		});
-// });
+
 
 // db접속
 const data = fs.readFileSync(__dirname + "/db.json");
@@ -174,7 +169,7 @@ console.log(__dirname);
 
 app.use(cors());
 app.use("/", router);
-app.use("/search", router);
+// app.use("/search", router);
 // app.use("/admin/member", router);
 
 
