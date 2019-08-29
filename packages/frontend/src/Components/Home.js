@@ -58,7 +58,7 @@ const ListWrapper = styled.ul`
 
 `
 // 오늘 날짜 기준으로 일주일전
-const defaultFrom = new Date(Date.now() + -7 * 24 * 3600 * 1000);
+const defaultFrom = new Date(Date.now() + -7 * 24 * 3600 * 1000);    //-일/시/60분*60초/밀리세컨
 const todayDate = new Date();
 
 @inject('listStore', 'searchStore')
@@ -66,9 +66,10 @@ const todayDate = new Date();
 
 class Home extends Component {
 
+	// DayPicker
 	state = {
 		from: defaultFrom,
-		to: todayDate
+		to: todayDate,
 	}
 
 	handleFromChange = (from) => {
@@ -77,7 +78,8 @@ class Home extends Component {
 
 	handleToChange = (to) => {
 
-		this.setState({ to }, this.showFromMonth, console.log(typeof to))
+		this.setState({ to }, this.showFromMonth)
+		// this.setState({ to }, this.showFromMonth, console.log(typeof to))
 	}
 
 	showFromMonth = () => {
@@ -106,28 +108,16 @@ class Home extends Component {
 		const { from, to } = this.state;
 		const { handleFromChange, handleToChange } = this;
 		const { items, isLoading, hasMore } = this.props.listStore;
-		const { search, active, isVisible, handleChange, toggleHidden } = this.props.searchStore;
+		const { search, active, isVisible, toggleHidden } = this.props.searchStore;
 
-
-		console.log(typeof search)
+		// console.log(typeof search)
 		const searchSplit = search.split(" ");
-		console.log(typeof searchSplit)
+		// console.log(typeof searchSplit)
 
 		const lowercaseFilter = searchSplit.filter(item => {
 			return item.split("").reverse().join("") || searchSplit;
 		}, console.log(searchSplit));
-		console.log(typeof searchSplit, typeof lowercaseFilter)
-
-		// return searchSplit.reverse().join(" ") === search;
-
-		// console.log(checkSearchKeyword("test"))
-
-		// const lowercaseFilter = search.toLowerCase();
-		// const filteredDateItem = items.filter(item => item.happenDt > dayPicker.from && item.happenDt < dayPicker.to);
-		// const finalfilteredItems = filteredDateItem.filter(item => {
-		// 	return Object.keys(item).some(key =>
-		// 		typeof item[key] === "string" && item[key].toLowerCase().includes(lowercaseFilter)
-		// 	);
+		// console.log(typeof searchSplit, typeof lowercaseFilter)
 
 		const filteredItem = items.filter(item => {
 			return Object.keys(item).some(key =>
@@ -139,9 +129,10 @@ class Home extends Component {
 		return (
 			< Fragment >
 				<SearchDiv>
-					<FormBox isVisible={isVisible} value={search} onChange={handleChange}>
+					<FormBox isVisible={isVisible} value={search}>
 						<DayPicker
 							month={from} from={from} to={to} onDayFromChange={handleFromChange} onDayToChange={handleToChange} selectedDays={[from, { from, to }]} />
+
 					</FormBox>
 
 					<TooltipBox active={active} onClick={toggleHidden} />
@@ -166,6 +157,17 @@ class Home extends Component {
 				}
 			</Fragment >
 		)
+
+		// return searchSplit.reverse().join(" ") === search;
+
+		// console.log(checkSearchKeyword("test"))
+
+		// const lowercaseFilter = search.toLowerCase();
+		// const filteredDateItem = items.filter(item => item.happenDt > dayPicker.from && item.happenDt < dayPicker.to);
+		// const finalfilteredItems = filteredDateItem.filter(item => {
+		// 	return Object.keys(item).some(key =>
+		// 		typeof item[key] === "string" && item[key].toLowerCase().includes(lowercaseFilter)
+		// 	);
 	}
 }
 
