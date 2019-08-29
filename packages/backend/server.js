@@ -80,9 +80,6 @@ app.get("/admin/member", (req, res) => {
 	});
 });
 
-
-const emailToken = hash.sha256().update('nyangterest').digest('hex')
-
 router.post("/", (req, res) => {
 	const body = req.body;
 	console.log('test', body);
@@ -91,6 +88,8 @@ router.post("/", (req, res) => {
 	const passwordHash = hash.sha256().update(memberPass).digest('hex');
 	const signupdate = moment().format('YYYYMMDD');
 	const certify = false
+	const tokenUnique = moment().format()
+	const emailToken = hash.sha256().update(`${memberMail}+${tokenUnique}`).digest('hex')
 	const emailLink = `http://localhost:8080/welcome?email=${memberMail}&token=${emailToken}`;
 
 	let transporter = nodemailer.createTransport({
@@ -109,12 +108,30 @@ router.post("/", (req, res) => {
 	};
 
 	connection.query(`SELECT * FROM member WHERE email='${memberMail}'`, (err, rows, fields) => {
-		if (!rows[0] === undefined) {
-			res.send(rows)
-			console.log(rows)
-			console.log('있으니까 안돼!')
+		// 가입 이메일 중복 처리
+		if (rows[0] !== undefined) {
+			// 가입된 이메일이 있을때
+			console.log('있으니까 안돼')
+			res.send(
+				{ emailOverlapping: true }
+			)
 		} else {
+			// 가입된 이메일 존재
+			console.log('아이디없을때', rows)
 			console.log('없으니까 가입가능')
+
+			// 회언 정보 DB저장
+			const sql = "INSERT INTO `member` (`email`, `password`, `signupdate`, `certify`, `token`) VALUES ( ?,?,?,?,? )"
+			const params = [memberMail, passwordHash, signupdate, certify, emailToken]
+			connection.query(sql, params, (err, rows, fields) => {
+				if (err) {
+					console.log(err);
+				} else {
+					console.log(rows);
+				}
+			});
+
+			// 가입인증메일 보내기
 			transporter.sendMail(mailOptions, function (error, info) {
 				if (error) {
 					console.log(error);
@@ -124,33 +141,34 @@ router.post("/", (req, res) => {
 				}
 			});
 
-			const sql = "INSERT INTO `member` (`email`, `password`, `signupdate`, `certify`) VALUES ( ?,?,?,? )"
-			const params = [memberMail, passwordHash, signupdate, certify]
-			connection.query(sql, params, (err, rows, fields) => {
-				if (err) {
-					console.log(err);
-				} else {
-					console.log(rows);
-				}
-			});
+			res.send({
+				emailOverlapping: false
+			})
 		}
 	})
 });
 
-
 router.get("/welcome", (req, res) => {
+	// 인증메일 인증작업
+	// 1. 쿼리로 가져온 이메일로 디비의 row를 뽑아온다
+	// 2. 토큰과 db토큰 비교
+	// 3. 비교 후 토큰이 맞으면 인증컬럼 변경
+
 	const certifyInfo = {
 		email: req.query.email,
 		token: req.query.token
 	}
 
-	//일단 이메일로만 찾아서 인증 컬럼 변경해보기
-	// 할일 - 회원가입할때 가입되어있는 이메일 중복처리하기
 	connection.query(`SELECT * FROM member WHERE email='${certifyInfo.email}'`, (err, rows, fields) => {
-		if (!rows[0].certify) {
+		// 회원가입시 저장된 토큰 가져오기
+		const dbToken = rows[0].token
+
+		// 메일로 받은 토큰과 db토큰 비교 && 인증상태가 false일때
+		if (dbToken === certifyInfo.token && rows[0].certify === 0) {
 			res.sendFile(path.join(__dirname + '/welcome.html'))
-			connection.query(`UPDATE member SET certify=true WHERE email='${certifyInfo.email}'`)
+			connection.query(`UPDATE member SET certify=true WHERE token='${dbToken}'`)
 		} else {
+			// 인증상태가 true일때
 			res.sendFile(path.join(__dirname + '/welcome2.html'))
 		}
 	})
