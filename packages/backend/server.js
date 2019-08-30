@@ -47,6 +47,23 @@ router.get("/search/sido", (req, res) => {
 		.then(response => response.json())
 		.then(json => {
 			res.send(json.response.body.items);
+			// console.log(json.response.body.items)
+
+		})
+		.catch(() => {
+			res.send(JSON.stringify({ message: "System Error" }));
+		});
+});
+
+// 품종
+
+router.get("/search/kind", (req, res) => {
+	const url = `${api}/kind?ServiceKey=${serviceKey}_type=json&up_kind_cd=422400`;
+
+	fetch(url)
+		.then(response => response.json())
+		.then(json => {
+			res.send(json.response.body.items);
 			console.log(json.response.body.items)
 
 		})
