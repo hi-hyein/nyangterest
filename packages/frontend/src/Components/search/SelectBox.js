@@ -166,7 +166,7 @@ const components = {
 
 @inject('listStore')
 @observer
-class SelectBox extends Component {
+class SelectBox extends Component 
 
 	getAsyncOptions = async () => {
 		const { items, numOfRows, pageNo } = this.props.listStore;
