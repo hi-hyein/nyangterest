@@ -4,8 +4,6 @@ export default class SearchStore {
 	@observable search = "";
 	@observable isVisible = false;
 	@observable active = false;
-	@observable searchKeyword = "";
-
 
 	constructor(root) {
 		this.root = root;

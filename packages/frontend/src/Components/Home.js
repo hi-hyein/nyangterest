@@ -1,13 +1,71 @@
-import React, { Component, Fragment } from 'react';
-import Item from "./Item";
-import Loading from "./Loading";
-import FormBox from "./search/FormBox";
-import DayPicker from './search/DayPicker';
-import TooltipBox from "./search/TooltipBox";
-import styled from "styled-components";
-import { fadeInUp } from "./Animations";
+import React, { Component, Fragment } from "react";
 import { observer, inject } from "mobx-react";
-import moment from 'moment';
+import styled from "styled-components";
+import List from "./List";
+import Loading from "./Loading";
+import DayPicker from "./search/DayPicker";
+import FormBox from "./search/FormBox";
+import SearchBox from "./search/SearchBox";
+import SelectBox from "./search/SelectBox";
+import TooltipBox from "./search/TooltipBox";
+
+const Form = styled.form`
+	display: flex;
+	flex: auto;
+	text-align: left;
+	// transform: translate(-500%);
+	transition: all 0.7s ease-in-out 
+	
+	@media screen and (max-width:960px) {
+		flex-wrap: wrap;
+	}
+
+	&.slide-in {
+		margin-top: 24px;
+		height: 100%;
+		transform: translateX(0);
+
+		@media screen and (max-width: 1024px) {
+			+ .btn-wrap {
+				margin-top: 24px;
+				top: unset;
+			}
+		}
+
+		@media screen and (max-width: 700px) {
+			margin-top: 40px;
+			transform: none;
+			text-align: center;
+			opacity: 1;
+
+			+ .btn-wrap {
+				margin-top: 15px;
+			}
+		}
+	}
+
+	&.slide-out {
+		transform: translateX(-500%);
+
+		@media screen and (max-width: 700px) {
+			margin-top: -70px;
+			transform: translateY(-100%);
+			opacity: 0;
+		}
+	}
+
+	&& {
+		& > div {
+			margin-right: 2%;
+
+			@media screen and (max-width: 960px) {
+				margin-right: 0;
+				min-width: 100%;
+			}
+		}
+	}
+`;
+
 
 // 검색 폼
 const SearchDiv = styled.div`
@@ -29,68 +87,14 @@ const SearchDiv = styled.div`
 	
 `;
 
-// 리스트
-const ListWrapper = styled.ul`
-	padding: 50px 50px 100px;
-	display: grid;
-	grid-template-columns: repeat(auto-fill, 250px);
-	grid-gap: 20px;
-	// grid-auto-rows: 300px;
-	justify-content: space-around;
-	// grid-template-rows: 260px 400px 400px;
-	transition: all 0.5s ease
-	
-	& > li {
-		animation: ${fadeInUp} 1s both;
-
-		grid-column: span 1;
-		
-	}
-
-	@media screen and (max-width: 700px) {
-		grid-template-columns: 1fr;
-		grid-gap: 50px;
-		padding: 10px;
-		& > div {
-			grid-column: span 1 !important;
-		}
-	}
-
-`
-// 오늘 날짜 기준으로 일주일전
-const defaultFrom = new Date(Date.now() + -7 * 24 * 3600 * 1000);    //-일/시/60분*60초/밀리세컨
-const todayDate = new Date();
-
 @inject('listStore', 'searchStore')
 @observer
-
 class Home extends Component {
 
-	// DayPicker
 	state = {
-		from: defaultFrom,
-		to: todayDate,
-	}
-
-	handleFromChange = (from) => {
-		this.setState({ from });
-	}
-
-	handleToChange = (to) => {
-
-		this.setState({ to }, this.showFromMonth)
-		// this.setState({ to }, this.showFromMonth, console.log(typeof to))
-	}
-
-	showFromMonth = () => {
-		const { from, to } = this.state;
-		if (!from) {
-			return;
-		}
-		if (moment(to).diff(moment(from), 'months') < 1) {
-			this.to.getDayPicker().showMonth(from);
-		}
-	}
+		searchField: "",
+		selectedCategory: ""
+	};
 
 	componentDidMount() {
 		const { handleScroll, loadList } = this.props.listStore;
@@ -103,71 +107,84 @@ class Home extends Component {
 		window.removeEventListener("scroll", handleScroll);
 	}
 
+	searchChange = e => {
+		this.setState({ searchField: e.target.value });
+		console.log(this.state);
+	};
+
+	// select filter
+	categoryChange = e => {
+		this.setState({ selectedCategory: e.value });
+		console.log(e.value);
+	};
 
 	render() {
-		const { from, to } = this.state;
-		const { handleFromChange, handleToChange } = this;
 		const { items, isLoading, hasMore } = this.props.listStore;
-		const { search, active, isVisible, toggleHidden } = this.props.searchStore;
+		const { active, isVisible, toggleHidden } = this.props.searchStore;
+		const { searchField, selectedCategory } = this.state;
 
-		// console.log(typeof search)
-		const searchSplit = search.split(" ");
-		// console.log(typeof searchSplit)
+		const filteredItems = items.filter(item => {
+			return (
+				// 셀렉트박스 필터링
+				item.kindCd.includes(selectedCategory) &&
+				// item.kindCd.includes(searchField)
+				// 검색바
+				Object.keys(item).some(
+					key =>
+						typeof item[key] === "string" &&
+						item[key].toLowerCase().includes(searchField)
+				)
+			);
+		});
 
-		const lowercaseFilter = searchSplit.filter(item => {
-			return item.split("").reverse().join("") || searchSplit;
-		}, console.log(searchSplit));
-		// console.log(typeof searchSplit, typeof lowercaseFilter)
-
-		const filteredItem = items.filter(item => {
-			return Object.keys(item).some(key =>
-				typeof item[key] === "string" && item[key].toLowerCase().includes(lowercaseFilter)
-			)
-
-		})
-
-		return (
-			< Fragment >
-				<SearchDiv>
-					<FormBox isVisible={isVisible} value={search}>
-						<DayPicker
-							month={from} from={from} to={to} onDayFromChange={handleFromChange} onDayToChange={handleToChange} selectedDays={[from, { from, to }]} />
-
-					</FormBox>
-
-					<TooltipBox active={active} onClick={toggleHidden} />
-				</SearchDiv>
-				<ListWrapper className="item-list">
-					{items.length > 0 && filteredItem.map((item, id) => (
-						<li key={id}>
-							<Item {...item} />
-						</li>
-
-					))}
-
-				</ListWrapper>
-
-				{
-					isLoading && hasMore && (
-						<div>
-							Loading...
-						<Loading />
-						</div>
-					)
-				}
-			</Fragment >
-		)
-
-		// return searchSplit.reverse().join(" ") === search;
-
-		// console.log(checkSearchKeyword("test"))
-
-		// const lowercaseFilter = search.toLowerCase();
+		// 달력을 포함한 코드
 		// const filteredDateItem = items.filter(item => item.happenDt > dayPicker.from && item.happenDt < dayPicker.to);
 		// const finalfilteredItems = filteredDateItem.filter(item => {
 		// 	return Object.keys(item).some(key =>
 		// 		typeof item[key] === "string" && item[key].toLowerCase().includes(lowercaseFilter)
+		// // 	);
+		// const finalfilteredItems = filteredDateItem.filter(item => {
+		// 	return (
+		// 		item.kindCd.includes(selectedCategory) &&
+		// 		Object.keys(item).some(
+		// 			key =>
+		// 				typeof item[key] === "string" &&
+		// 				item[key].toLowerCase().includes(searchField)
+		// 		)
 		// 	);
+		// });
+
+		return (
+			< Fragment >
+				<SearchDiv>
+					<Form
+						autoComplete="on"
+						className={isVisible ? "slide-in" : "slide-out"}
+					>
+						<FormBox isVisible={isVisible} value="">
+							<DayPicker />
+						</FormBox>
+						<SelectBox
+							defaultValue={this.selectedCategory}
+							onChange={this.categoryChange}
+						/>
+						<SearchBox SearchChange={this.searchChange} />
+					</Form>
+					<TooltipBox active={active} onClick={toggleHidden} />
+				</SearchDiv>
+				{items.length > 0 && <List products={filteredItems} />}
+				{!items.length && !filteredItems.length && (
+					<div>No Guides available</div>
+				)}
+				{isLoading && hasMore && (
+					<div>
+						Loading...
+						<Loading />
+					</div>
+				)}
+			</Fragment >
+		)
+
 	}
 }
 
