@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-// import moment from 'moment';
+import moment from 'moment';
 import DayPickerInput from 'react-day-picker/DayPickerInput';
 import DayPickerStyle from './DayPickerStyle'
 import MomentLocaleUtils, { formatDate, parseDate } from 'react-day-picker/moment';
@@ -24,35 +24,41 @@ const InputFromDiv = styled.div`
 		}
 `;
 
+// 오늘 날짜 기준으로 일주일전
+const defaultFrom = new Date(Date.now() + -7 * 24 * 3600 * 1000);    //-일/시/60분*60초/밀리세컨
+const todayDate = new Date();
 
 class DayPicker extends Component {
 
-	// state = {
-	// 	from: undefined,
-	// 	to: undefined,
-	// }
+	// DayPicker
+	state = {
+		from: defaultFrom,
+		to: todayDate,
+	}
 
-	// showFromMonth = () => {
-	// 	const { from, to } = this.props;
-	// 	if (!from) {
-	// 		return;
-	// 	}
-	// 	if (moment(to).diff(moment(from), 'months') < 1) {
-	// 		this.to.getDayPicker().showMonth(from);
-	// 	}
-	// }
+	handleFromChange = (from) => {
+		this.setState({ from });
+	}
 
-	// // 요기에 fetch를 넣어야 할거 같다.
-	// handleFromChange = (from) => {
-	// 	this.setState({ from });
-	// }
+	handleToChange = (to) => {
 
-	// handleToChange = (to) => {
-	// 	this.setState({ to }, this.showFromMonth);
-	// }
+		this.setState({ to }, this.showFromMonth)
+		// this.setState({ to }, this.showFromMonth, console.log(typeof to))
+	}
+
+	showFromMonth = () => {
+		const { from, to } = this.state;
+		if (!from) {
+			return;
+		}
+		if (moment(to).diff(moment(from), 'months') < 1) {
+			this.to.getDayPicker().showMonth(from);
+		}
+	}
 
 	render() {
-		const { from, to, onDayFromChange, onDayToChange } = this.props;
+		const { from, to, } = this.state;
+		const { handleFromChange, handleToChange } = this;
 		const modifiers = { start: from, end: to };
 		return (
 			<div>
@@ -75,7 +81,7 @@ class DayPicker extends Component {
 								numberOfMonths: 1,
 								onDayClick: () => this.to.getInput().focus(),
 							}}
-							onDayFromChange={onDayFromChange}
+							onDayFromChange={handleFromChange}
 						/></InputFromDiv>{' '}
 					-{' '}
 					<InputFromDiv className="InputFromTo-to">
@@ -96,7 +102,7 @@ class DayPicker extends Component {
 								fromMonth: from,
 								numberOfMonths: 1,
 							}}
-							onDayToChange={onDayToChange}
+							onDayToChange={handleToChange}
 						/>
 					</InputFromDiv>
 				</div>
