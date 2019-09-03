@@ -1,75 +1,6 @@
-import React, { Component, Fragment } from 'react';
+import React, { Fragment } from 'react';
 import FormControl from '@material-ui/core/FormControl';
 import styled from 'styled-components';
-import Autocomplete from './Autocomplete';
-// import { observer, inject } from "mobx-react";
-// import InputAdornment from '@material-ui/core/InputAdornment';
-// import { MdSearch } from "react-icons/md";
-
-
-const Form = styled.form`
-
-	display:flex;
-	flex: auto;
-	text-align: left;
-	// transform: translate(-500%);
-	transition: all 0.7s ease-in-out
-
-	@media screen and (max-width: 700px) {
-		flex-wrap: wrap;
-	}
-	
-	&.slide-in{
-		margin-top: 24px;
-		height: 100%;
-		transform: translateX(0);
-
-		@media screen and (max-width: 1024px) {
-
-			+ .btn-wrap {
-				margin-top:24px;
-				top: unset;
-
-			}
-		}
-
-		@media screen and (max-width: 700px) {
-			margin-top: 40px;
-			transform: none;
-			text-align: center;
-			opacity: 1;
-
-			+ .btn-wrap {
-				margin-top: 15px;
-				
-			}
-		}
-	}
-
-	&.slide-out{
-		transform: translateX(-500%);
-
-		@media screen and (max-width: 700px) {
-			margin-top: -70px;
-			transform: translateY(-100%);
-			opacity: 0;
-
-		}
-	}
-
-	&& {
-		& > div {
-				margin-right:2%;
-
-				@media screen and (max-width: 700px) {
-					margin-right: 0;
-					min-width: 100%;
-				}
-		}
-	}
-
-
-`;
 
 const FormControlDiv = styled(FormControl)`
 
@@ -131,88 +62,17 @@ const Fieldset = styled.fieldset`
 	
 `;
 
-
-// 검색아이콘
-// const IconButton = styled.button`
-// 	position: relative;
-// 	width: 2rem;
-// 	height: 2rem;
-// 	border: none;
-// 	background: none;
-// 	font-size: 2rem;
-// 	color: #ccc;
-// 	transition: all 2s ease;
-// 	outline: none;
-
-// `;
-
-
-// let SearchIcon = styled(InputAdornment)`
-// 	// position: relative;
-// 	// width: 2rem;
-// 	// font-size: 2rem;
-// 	// color: #ccc;
-
-// 	& svg {
-// 		display: inline-block;
-// 		position: absolute;
-// 		top: 50%;
-// 		-webkit-transform: translateY(-50%);
-// 		-ms-transform: translateY(-50%);
-// 		transform: translateY(-50%);
-// 		left: 0;
-// 		right: 0;
-// 		margin: auto;
-// 		text-align: center;
-// 	}
-// `;
-
-// SearchIcon = styled.span``;
-
-
-// @inject('searchStore')
-// @observer
-class FormBox extends Component {
-
-	render() {
-		return (
-			<Fragment>
-				{/* <Form autoComplete="off" className={this.props.isVisible ? 'slide-in' : 'slide-out'}> */}
-				<Form autoComplete="on" className={this.props.isVisible ? 'slide-in' : 'slide-out'}>
-					<FormControlDiv variant="outlined">
-						<Fieldset>
-							<legend>시작일 &amp; 종료일 </legend>
-							{this.props.children}
-						</Fieldset>
-					</FormControlDiv>
-					<Autocomplete />
-					{/* <div className="divider" /> */}
-
-					{/* <TextFieldDiv
-						label="검색어"
-						placeholder="시도,시군구,보호소이름,상태,품종,중성화여부 ex) 인천광역시 부평구 한국 고양이 "
-						margin="normal"
-						variant="outlined"
-						name="search"
-						value={this.props.value}
-						onChange={this.props.onChange}
-						InputLabelProps={{
-							shrink: true,
-						}}
-						InputProps={{
-							style: {
-								textOverflow: 'ellipsis',
-								whiteSpace: 'nowrap',
-								overflow: 'hidden',
-								width: '100%',
-							},
-							startAdornment: <IconButton type="submit" ><SearchIcon position="start"><MdSearch /></SearchIcon></IconButton>
-						}}
-					/> */}
-				</Form>
-			</Fragment>
-		);
-	}
-}
+const FormBox = (props) => {
+	return (
+		<Fragment>
+			<FormControlDiv variant="outlined">
+				<Fieldset>
+					<legend>시작일 &amp; 종료일 </legend>
+					{props.children}
+				</Fieldset>
+			</FormControlDiv>
+		</Fragment>
+	);
+};
 
 export default FormBox;
