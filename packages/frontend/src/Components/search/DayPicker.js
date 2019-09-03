@@ -24,12 +24,26 @@ const InputFromDiv = styled.div`
 		}
 `;
 
+// 오늘 날짜 기준으로 일주일전
+const defaultFrom = new Date(Date.now() + -7 * 24 * 3600 * 1000);    //-일/시/60분*60초/밀리세컨
+const todayDate = new Date();
 
 class DayPicker extends Component {
 
+	// DayPicker
 	state = {
-		from: undefined,
-		to: undefined,
+		from: defaultFrom,
+		to: todayDate,
+	}
+
+	handleFromChange = (from) => {
+		this.setState({ from });
+	}
+
+	handleToChange = (to) => {
+
+		this.setState({ to }, this.showFromMonth)
+		// this.setState({ to }, this.showFromMonth, console.log(typeof to))
 	}
 
 	showFromMonth = () => {
@@ -42,17 +56,9 @@ class DayPicker extends Component {
 		}
 	}
 
-	// 요기에 fetch를 넣어야 할거 같다.
-	handleFromChange = (from) => {
-		this.setState({ from }, console.log(from));
-	}
-
-	handleToChange = (to) => {
-		this.setState({ to }, this.showFromMonth);
-	}
-
 	render() {
-		const { from, to } = this.state;
+		const { from, to, } = this.state;
+		const { handleFromChange, handleToChange } = this;
 		const modifiers = { start: from, end: to };
 		return (
 			<div>
@@ -61,7 +67,7 @@ class DayPicker extends Component {
 					<InputFromDiv>
 						<DayPickerInput
 							value={from}
-							placeholder="시작일"
+							placeholder={`${formatDate(new Date(), "LL", "ko")}`}
 							format={"LL"}
 							formatDate={formatDate}
 							parseDate={parseDate}
@@ -75,28 +81,28 @@ class DayPicker extends Component {
 								numberOfMonths: 1,
 								onDayClick: () => this.to.getInput().focus(),
 							}}
-							onDayChange={this.handleFromChange}
+							onDayFromChange={handleFromChange}
 						/></InputFromDiv>{' '}
 					-{' '}
 					<InputFromDiv className="InputFromTo-to">
 						<DayPickerInput
 							ref={el => (this.to = el)}
 							value={to}
-							placeholder="종료일"
+							placeholder={`${formatDate(new Date(), "LL", "ko")}`}
 							format={"LL"}
 							formatDate={formatDate}
 							parseDate={parseDate}
 							dayPickerProps={{
 								locale: 'ko',
 								localeUtils: MomentLocaleUtils,
-								selectedDays: [from, { from, to }, console.log(from)],
+								selectedDays: [from, { from, to }],
 								disabledDays: { before: from },
 								modifiers,
 								month: from,
 								fromMonth: from,
 								numberOfMonths: 1,
 							}}
-							onDayChange={this.handleToChange}
+							onDayToChange={handleToChange}
 						/>
 					</InputFromDiv>
 				</div>
