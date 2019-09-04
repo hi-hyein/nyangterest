@@ -92,8 +92,6 @@ router.get("/search/:numOfRows", (req, res) => {
 		});
 });
 
-
-
 // db접속
 const data = fs.readFileSync(__dirname + "/db.json");
 const conf = JSON.parse(data);
@@ -117,6 +115,7 @@ app.get("/admin/member", (req, res) => {
 	});
 });
 
+// 회원가입
 router.post("/", (req, res) => {
 	const body = req.body;
 	console.log('test', body);
@@ -185,6 +184,7 @@ router.post("/", (req, res) => {
 	})
 });
 
+// 회원가입 완료
 router.get("/welcome", (req, res) => {
 	// 인증메일 인증작업
 	// 1. 쿼리로 가져온 이메일로 디비의 row를 뽑아온다
@@ -211,7 +211,24 @@ router.get("/welcome", (req, res) => {
 	})
 });
 
-
+// 로그인
+router.post("/signin",(req, res)=>{
+	const body = req.body
+	const userId = body.userId
+	const userPw = body.userPassword
+	const userPwHash = hash.sha256().update(userPw).digest('hex');
+	connection.query(`SELECT * FROM member WHERE email='${userId}' AND password='${userPwHash}'`, (err, rows, fields) => {
+		if(rows[0]===undefined){
+			res.send({
+				sucess: false
+			})
+		}else {
+			res.send({
+				sucess: true
+			})
+		}
+	})
+});
 
 app.use(express.json());
 

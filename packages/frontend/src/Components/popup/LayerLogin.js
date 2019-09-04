@@ -4,11 +4,45 @@ import Button from '@material-ui/core/Button';
 
 class LayerLogin extends Component {
     state = {
+        userId:'',
+        userPassword:''
+    }
 
+    userIdHandler = (e) => {
+        this.setState({
+            userId: e.target.value
+        })
+    }
+
+    userPwHandler = (e) => {
+        this.setState({
+            userPassword: e.target.value
+        })
+    }
+
+    sendUserInfo = () => {
+        const state = this.state
+        const stateTojson = JSON.stringify(state)
+
+        fetch('/signin',{
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            method: 'POST',
+            body: stateTojson,
+        }).then(res=>res.json()).then(json=>{
+            if(!json.sucess){
+                console.log('로그인실패')
+            }else {
+                console.log('로그인성공')
+            }
+        })
     }
 
     render(){
         return (
+            
             <div>      
                 <div>
                     <TextField
@@ -18,6 +52,7 @@ class LayerLogin extends Component {
                         margin="normal"
                         variant="outlined"
                         fullWidth={true}
+                        onChange={this.userIdHandler}
                     />
                 </div>
                 <div>
@@ -29,10 +64,11 @@ class LayerLogin extends Component {
                         variant="outlined"
                         type="password"
                         fullWidth={true}
+                        onChange={this.userPwHandler}
                     />
                 </div>
                 <div style={{marginTop:"30px",paddingTop:"30px", borderTop:"1px solid #eee"}}>
-                <Button fullWidth={true} size="large" variant="contained" color="primary">
+                <Button fullWidth={true} size="large" variant="contained" color="primary" onClick={this.sendUserInfo}>
                     로그인
                 </Button>
                 <Button fullWidth={true} size="large" variant="contained" style={{marginTop:"15px"}}>
