@@ -17,6 +17,14 @@ const GlobalStyle = createGlobalStyle`
     	box-sizing:border-box;
   }
 
+  #wrap {
+	  		padding-top: 76px;
+
+			@media screen and (max-width:1024px) {
+				padding-top:0;
+			}
+  }	
+
   input {
 
 	  &:focus{

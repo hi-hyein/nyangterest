@@ -14,6 +14,40 @@ import SearchBox from "./search/SearchBox";
 import SelectBox from "./search/SelectBox";
 import TooltipBox from "./search/TooltipBox";
 
+// 검색 폼
+const SearchDiv = styled.div`
+	position: fixed;
+	// position: relative;
+	z-index: 99;
+	display: flex;
+	width: 100%;
+	max-width: 1280px;
+	// max-height: 110px;
+	padding: 0 5%;
+	background: #fff; 
+	transition: all 0.2s ease;
+
+	@media screen and (max-width: 1024px) {
+  		align-items: center;
+  		justify-content: center;
+	}
+
+	@media screen and (max-width: 960px) {
+		padding: 0 7% ;
+  		
+	}
+
+	@media screen and (max-width: 700px) {
+		padding-top: 14%;
+		flex-wrap: wrap-reverse;
+	}
+
+	@media screen and (max-width:640px ) {
+		padding-top: 20%;
+	}
+	
+`;
+
 const Form = styled.form`
 	display: flex;
 	flex: auto;
@@ -21,24 +55,33 @@ const Form = styled.form`
 	// transform: translate(-500%);
 	transition: all 0.7s ease-in-out 
 	
-	@media screen and (max-width:960px) {
+	@media screen and (max-width:1024px) {
 		flex-wrap: wrap;
 	}
 
 	&.slide-in {
 		margin-top: 24px;
-		height: 100%;
+		height: 86px;
 		transform: translateX(0);
 
 		@media screen and (max-width: 1024px) {
+			padding-top: 14%;
+			height: auto;
+
 			+ .btn-wrap {
 				margin-top: 24px;
 				top: unset;
 			}
 		}
 
+		@media screen and (max-width: 960px) {
+			padding: 14% 0 2%;
+			height: 100%;
+
+		}
+
 		@media screen and (max-width: 700px) {
-			margin-top: 40px;
+			padding: 2% 0;
 			transform: none;
 			text-align: center;
 			opacity: 1;
@@ -53,7 +96,7 @@ const Form = styled.form`
 		transform: translateX(-500%);
 
 		@media screen and (max-width: 700px) {
-			margin-top: -70px;
+			margin-top: -100px;
 			transform: translateY(-100%);
 			opacity: 0;
 		}
@@ -63,7 +106,7 @@ const Form = styled.form`
 		& > div {
 			margin-right: 2%;
 
-			@media screen and (max-width: 960px) {
+			@media screen and (max-width: 1024px) {
 				margin-right: 0;
 				min-width: 100%;
 			}
@@ -72,25 +115,6 @@ const Form = styled.form`
 `;
 
 
-// 검색 폼
-const SearchDiv = styled.div`
-	position: relative;
-	z-index: 99;
-	display: flex;
-	padding: 0 5%; 
-	transition: all 0.2s ease;
-
-	@media screen and (max-width: 1024px) {
-		padding: 0 7%;
-  		align-items: center;
-  		justify-content: center;
-	}
-
-	@media screen and (max-width: 700px) {
-		flex-wrap: wrap-reverse;
-	}
-	
-`;
 
 const InputFromDiv = styled.div`
 	display: inline-block;
@@ -124,6 +148,7 @@ class Home extends Component {
 		from: defaultFrom,
 		to: todayDate,
 		isDisabled: false,
+
 	};
 
 	showFromMonth = () => {
@@ -196,7 +221,21 @@ class Home extends Component {
 						item[key].toLowerCase().includes(searchField)
 				)
 			);
-		});
+		})
+		// const filteredItems = items.filter(item => {
+		// 	return (
+		// 		// 셀렉트박스 필터링
+
+		// 		item.kindCd.includes(selectedCategory) &&
+		// 		// item.kindCd.includes(searchField)
+		// 		// 검색바
+		// 		Object.keys(item).some(
+		// 			key =>
+		// 				typeof item[key] === "string" &&
+		// 				item[key].toLowerCase().includes(searchField)
+		// 		)
+		// 	);
+		// });
 
 		// 달력을 포함한 코드
 
@@ -289,8 +328,8 @@ class Home extends Component {
 					</Form>
 					<TooltipBox active={active} onClick={toggleHidden} />
 				</SearchDiv>
-				{items.length > 0 && <List products={finalfilteredItems} />}
-				{!items.length && !finalfilteredItems.length && (
+				{items.length > 0 && <List products={filteredItems} />}
+				{!items.length && !filteredItems.length && (
 					<div>No Guides available</div>
 				)}
 				{isLoading && hasMore && (

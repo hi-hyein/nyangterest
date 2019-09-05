@@ -66,6 +66,10 @@ const TextFieldDiv = styled(TextField)`
 		& fieldset + div {
 			display: flex;
 			padding: 10px 0 10px;
+
+			& div[class$= singleValue] {
+				max-width: calc(100% - 60px);
+			}
 		}
 	}
 `;
