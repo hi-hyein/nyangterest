@@ -130,6 +130,51 @@ const DayPickerStyle = createGlobalStyle`
 		vertical-align: middle;
 		text-align: center;
 		cursor: pointer;
+
+		&--selected:not(.DayPicker-Day--disabled):not(.DayPicker-Day--outside) {
+			position: relative;
+			background-color: #4A90E2;
+			color: #F0F8FF;
+		}
+
+		/* Default modifiers */
+
+		&--today {
+			color: #D0021B;
+			font-weight: 700;
+		}
+
+		&--outside {
+			color: #8B9898;
+			cursor: default;
+		}
+
+		&--disabled {
+			color: #DCE0E0;
+			cursor: default;
+			/* background-color: #eff1f1; */
+		}
+
+		/* Example modifiers */
+
+		&--sunday {
+			background-color: #F7F8F8;
+		}
+
+		&--sunday:not(&-Day--today) {
+			color: #DCE0E0;
+		}
+
+		&--selected:not(.DayPicker-Day--disabled):not(.DayPicker-Day--outside) {
+			position: relative;
+			background-color: #3f51b5;
+			color: #F0F8FF;
+		}
+
+		&--selected:not(&-Day--disabled):not(&-Day--outside):hover {
+			background-color: #51A0FA;
+		}
+
 	}
 
 	&-WeekNumber {
@@ -162,53 +207,7 @@ const DayPickerStyle = createGlobalStyle`
 		cursor: pointer;
 	}
 
-	/* Default modifiers */
-
-	&-Day--today {
-		color: #D0021B;
-		font-weight: 700;
-	}
-
-	&-Day--outside {
-		color: #8B9898;
-		cursor: default;
-	}
-
-	&-Day--disabled {
-		color: #DCE0E0;
-		cursor: default;
-		/* background-color: #eff1f1; */
-	}
-
-
-	/* Example modifiers */
-
-	&-Day--sunday {
-		background-color: #F7F8F8;
-	}
-
-	&-Day--sunday:not(&-Day--today) {
-		color: #DCE0E0;
-	}
-
-	&-Day--selected:not(&-Day--disabled):not(&-Day--outside) {
-		position: relative;
-
-		background-color: #3f51b5;
-		color: #F0F8FF;
-	}
-
-	&-Day--selected:not(&-Day--disabled):not(&-Day--outside):hover {
-		background-color: #51A0FA;
-	}
-
-	&:not(&--interactionDisabled)
-		&-Day:not(&-Day--disabled):not(&-Day--selected):not(&-Day--outside):hover {
-		background-color: #F0F8FF;
-	}
-
 }
-
 
 
 /* DayPickerInput */
@@ -230,9 +229,6 @@ const DayPickerStyle = createGlobalStyle`
 	}
 
 }
-
-
-
 
 
 `;

@@ -1,10 +1,15 @@
 import React, { Component, Fragment } from "react";
 import { observer, inject } from "mobx-react";
+import DayPickerInput from 'react-day-picker/DayPickerInput';
+import DayPickerStyle from './search/DayPickerStyle'
+import MomentLocaleUtils, { formatDate, parseDate } from 'react-day-picker/moment';
+import 'moment/locale/ko';
+import moment from 'moment';
 import styled from "styled-components";
 import List from "./List";
 import Loading from "./Loading";
-import DayPicker from "./search/DayPicker";
 import FormBox from "./search/FormBox";
+// import DayPicker from "./search/DayPicker";
 import SearchBox from "./search/SearchBox";
 import SelectBox from "./search/SelectBox";
 import TooltipBox from "./search/TooltipBox";
@@ -87,14 +92,65 @@ const SearchDiv = styled.div`
 	
 `;
 
+const InputFromDiv = styled.div`
+	display: inline-block;
+
+	input {
+			max-width:127px; 
+			border:none
+			// border-bottom: 1px dotted #f00;
+			font-size: 1rem;
+			line-height: 1.5rem;
+			text-align: center;
+
+			&::placeholder {
+				color: #ccc;
+				// text-align: center;
+			}
+		}
+`;
+
+// 오늘 날짜 기준으로 일주일전
+const defaultFrom = new Date(Date.now() + -7 * 24 * 3600 * 1000);    //-일/시/60분*60초/밀리세컨
+const todayDate = new Date();
+
 @inject('listStore', 'searchStore')
 @observer
 class Home extends Component {
 
 	state = {
 		searchField: "",
-		selectedCategory: ""
+		selectedCategory: "",
+		from: defaultFrom,
+		to: todayDate,
+		isDisabled: false,
 	};
+
+	showFromMonth = () => {
+		const { from, to } = this.state;
+		if (!from) {
+			return;
+		}
+		if (moment(to).diff(moment(from), 'months') < 1) {
+			this.to.getDayPicker().showMonth(from);
+		}
+	}
+
+	// handleDayClick(day) {
+	// 	const range = DateUtils.addDayToRange(day, this.state);
+	// 	this.setState(range);
+	// }
+
+	handleFromChange = (from) => {
+		this.setState({ from });
+	}
+
+	handleToChange = (to) => {
+
+		this.setState({ to }, this.showFromMonth)
+		// this.setState({ to }, this.showFromMonth, console.log(typeof to))
+	}
+
 
 	componentDidMount() {
 		const { handleScroll, loadList } = this.props.listStore;
@@ -122,10 +178,15 @@ class Home extends Component {
 		const { items, isLoading, hasMore } = this.props.listStore;
 		const { active, isVisible, toggleHidden } = this.props.searchStore;
 		const { searchField, selectedCategory } = this.state;
+		const { from, to } = this.state;
+		const modifiers = { start: from, end: to };
+
+		const { handleFromChange, handleToChange } = this;
 
 		const filteredItems = items.filter(item => {
 			return (
 				// 셀렉트박스 필터링
+
 				item.kindCd.includes(selectedCategory) &&
 				// item.kindCd.includes(searchField)
 				// 검색바
@@ -138,11 +199,21 @@ class Home extends Component {
 		});
 
 		// 달력을 포함한 코드
-		// const filteredDateItem = items.filter(item => item.happenDt > dayPicker.from && item.happenDt < dayPicker.to);
-		// const finalfilteredItems = filteredDateItem.filter(item => {
-		// 	return Object.keys(item).some(key =>
-		// 		typeof item[key] === "string" && item[key].toLowerCase().includes(lowercaseFilter)
-		// // 	);
+
+		const filteredDateItem = items.filter(item => item.happenDt >= from || item.happenDt <= to
+			// happenDt는 from보다 크고 to보다 작다.
+		);
+
+		console.log(filteredDateItem)
+
+		const finalfilteredItems = filteredDateItem.filter(item => {
+			return item.kindCd.includes(selectedCategory) &&
+				Object.keys(item).some(key =>
+					typeof item[key] === "string" && item[key].toLowerCase().includes(searchField)
+				)
+		});
+		console.log(`finalfilteredItems: ${finalfilteredItems}`)
+
 		// const finalfilteredItems = filteredDateItem.filter(item => {
 		// 	return (
 		// 		item.kindCd.includes(selectedCategory) &&
@@ -161,8 +232,54 @@ class Home extends Component {
 						autoComplete="on"
 						className={isVisible ? "slide-in" : "slide-out"}
 					>
-						<FormBox isVisible={isVisible} value="">
-							<DayPicker />
+						<FormBox isVisible={isVisible}>
+							<div>
+								<DayPickerStyle />
+								<div className="InputFromTo">
+									<InputFromDiv>
+										<DayPickerInput
+											value={from}
+											placeholder={`${formatDate(new Date(), "LL", "ko")}`}
+											format={"LL"}
+											formatDate={formatDate}
+											parseDate={parseDate}
+											dayPickerProps={{
+												locale: 'ko',
+												localeUtils: MomentLocaleUtils,
+												selectedDays: [from, { from, to }],
+												disabledDays: { after: to },
+												toMonth: to,
+												modifiers,
+												numberOfMonths: 1,
+												onDayClick: () => this.to.getInput().focus(),
+											}}
+											onDayChange={handleFromChange}
+										/></InputFromDiv>{' '}
+									-{' '}
+									<InputFromDiv className="InputFromTo-to">
+										<DayPickerInput
+											ref={el => (this.to = el)}
+											value={to}
+											placeholder={`${formatDate(new Date(), "LL", "ko")}`}
+											format={"LL"}
+											formatDate={formatDate}
+											parseDate={parseDate}
+											dayPickerProps={{
+												locale: 'ko',
+												localeUtils: MomentLocaleUtils,
+												selectedDays: [from, { from, to }],
+												disabledDays: { before: from },
+												modifiers,
+												month: from,
+												fromMonth: from,
+												numberOfMonths: 1,
+											}}
+											onDayChange={handleToChange}
+										/>
+									</InputFromDiv>
+								</div>
+							</div>
+
 						</FormBox>
 						<SelectBox
 							defaultValue={this.selectedCategory}
@@ -172,8 +289,8 @@ class Home extends Component {
 					</Form>
 					<TooltipBox active={active} onClick={toggleHidden} />
 				</SearchDiv>
-				{items.length > 0 && <List products={filteredItems} />}
-				{!items.length && !filteredItems.length && (
+				{items.length > 0 && <List products={finalfilteredItems} />}
+				{!items.length && !finalfilteredItems.length && (
 					<div>No Guides available</div>
 				)}
 				{isLoading && hasMore && (
