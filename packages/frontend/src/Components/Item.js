@@ -56,6 +56,7 @@ const Item = ({ kindCd, happenDt, borderBottomColor = "#5262bc", popfile }) => (
 			<Info>
 				<h2>품종: {kindCd}</h2>
 				<p>등록일: {happenDt}</p>
+				{/* <p>색상: {colorCd}</p> */}
 				<CatImage popfile={popfile} alt={kindCd} />
 			</Info>
 		</Content>

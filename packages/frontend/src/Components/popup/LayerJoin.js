@@ -26,18 +26,6 @@ class LayerJoin extends Component {
         memberInfo: []
     }
 
-    getMemberInfo = async () => {
-		try {
-			const url = `/`;
-			const response = await fetch(url);
-			const json = await response.json();
-            this.setState({ memberInfo: json });
-            console.log(this.state.memberInfo)
-		} catch (err) {
-			console.log(err);
-		}
-	}; 
-
     validate = (format, value) => {
         const reg = format;
 		const validate = reg.test(value);
@@ -104,8 +92,6 @@ class LayerJoin extends Component {
         const state = this.state
         const stateTojson = JSON.stringify(state)
 
-        // this.getMemberInfo()
-
         if ( state.emailValidate && state.passwordValidate && state.passwordCheckValidate){
             fetch('/', {
 				headers: {
@@ -114,18 +100,30 @@ class LayerJoin extends Component {
 				},
 				method: 'POST',
 				body: stateTojson,
-			});
-            alert("회원가입이 완료되었습니다. 입력된 이메일로 인증을 해주세요!")
+            }).then(res=>res.json()).then(json=>{
+                this.setState({
+                    memberInfo: json
+                })
+
+                if(this.state.memberInfo.emailOverlapping === true){
+                    this.setState({
+                        emailValidate: false
+                    })
+                    alert("이미 가입된 이메일입니다. 다른 이메일을 입력해주세요")
+                }else {
+                    this.setState({
+                        emailValidate: true
+                    })
+                    alert("회원가입이 완료되었습니다! 이메일 인증을 완료해주세요!")
+                }
+            })
         }else {
             alert("모든 입력사항을 알맞게 입력해주세요")
         }
-        
-
     }
 
     render(){
         const {email, password, emailValidate, emailMatchText, emailNotMatchText, passwordValidate, passwordMatchText, passwordNotMatchText, passwordCheck, passwordCheckValidate} = this.state
-    
         return (
             <div>      
                 <div>
