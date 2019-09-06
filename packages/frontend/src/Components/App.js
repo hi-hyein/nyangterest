@@ -26,7 +26,7 @@ class App extends Component {
 		return (
 			<Router>
 				<Fragment>
-					<div id="wrap" style={{paddingTop:'76px'}}>
+					<div id="wrap">
 						{/* 헤더 */}
 						<Header
 							userState={this.state.userState}

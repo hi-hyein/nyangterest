@@ -8,7 +8,6 @@ import MenuItem from "@material-ui/core/MenuItem";
 import styled from "styled-components";
 import { Chip } from "@material-ui/core";
 import CancelIcon from "@material-ui/icons/Cancel";
-import { observer, inject } from "mobx-react";
 
 const SelectDiv = styled(AsyncSelect)`
 	&& {
@@ -66,6 +65,10 @@ const TextFieldDiv = styled(TextField)`
 		& fieldset + div {
 			display: flex;
 			padding: 10px 0 10px;
+
+			& div[class$= singleValue] {
+				max-width: calc(100% - 60px);
+			}
 		}
 	}
 `;
@@ -164,18 +167,18 @@ const components = {
 	ValueContainer
 };
 
-@inject('listStore')
-@observer
 class SelectBox extends Component {
 
+	state = { numOfRows: 1000 }
+
 	getAsyncOptions = async () => {
-		const { items, numOfRows, pageNo } = this.props.listStore;
-		const url = `/page/${numOfRows}/${pageNo}`;
+		const { numOfRows } = this.state;
+		const url = `/search/${numOfRows}/`;
 		const response = await fetch(url);
 		const json = await response.json();
-		const data = json.items.item;
-		console.log(this)
-		this.setState({ items: [...items, ...json.items.item] });
+		const data = json.item;
+		// const total = Object.keys(data).length
+		console.log(data)
 
 		return (
 			data
@@ -344,6 +347,5 @@ Menu.propTypes = {
 	innerProps: PropTypes.object.isRequired,
 	selectProps: PropTypes.object.isRequired
 };
-
 
 export default SelectBox;
