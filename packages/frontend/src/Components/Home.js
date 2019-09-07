@@ -3,8 +3,8 @@ import { observer, inject } from "mobx-react";
 import DayPickerInput from 'react-day-picker/DayPickerInput';
 import DayPickerStyle from './search/DayPickerStyle'
 import MomentLocaleUtils, { formatDate, parseDate } from 'react-day-picker/moment';
-import 'moment/locale/ko';
 import moment from 'moment';
+import 'moment/locale/ko';
 import styled from "styled-components";
 import List from "./List";
 import Loading from "./Loading";
@@ -149,6 +149,7 @@ class Home extends Component {
 		from: defaultFrom,
 		to: todayDate,
 		isDisabled: false,
+		// isOpen: false
 
 	};
 
@@ -172,11 +173,9 @@ class Home extends Component {
 	}
 
 	handleToChange = (to) => {
-
 		this.setState({ to }, this.showFromMonth)
 		// this.setState({ to }, this.showFromMonth, console.log(typeof to))
 	}
-
 
 	componentDidMount() {
 		const { handleScroll, loadList } = this.props.listStore;
@@ -200,19 +199,35 @@ class Home extends Component {
 		console.log(e.value);
 	};
 
+	// ListDetail 오픈
+	popupToggle = () => {
+		this.setState({
+			isOpen: !this.state.isOpen
+		})
+	}
+
+	// popupClick = () => {
+	// 	this.setState({
+	// 		isOpen: true,
+	// 	})
+	// }
+
+	// popupClose = () => {
+	// 	this.setState({
+	// 		isOpen: false,
+	// 	})
+	// }
+
 	render() {
 		const { items, isLoading, hasMore } = this.props.listStore;
 		const { active, isVisible, toggleHidden } = this.props.searchStore;
 		const { searchField, selectedCategory } = this.state;
 		const { from, to } = this.state;
 		const modifiers = { start: from, end: to };
-
 		const { handleFromChange, handleToChange } = this;
-
 		const filteredItems = items.filter(item => {
 			return (
 				// 셀렉트박스 필터링
-
 				item.kindCd.includes(selectedCategory) &&
 				// item.kindCd.includes(searchField)
 				// 검색바
@@ -319,7 +334,6 @@ class Home extends Component {
 									</InputFromDiv>
 								</div>
 							</div>
-
 						</FormBox>
 						<SelectBox
 							defaultValue={this.selectedCategory}
@@ -329,7 +343,7 @@ class Home extends Component {
 					</Form>
 					<TooltipBox active={active} onClick={toggleHidden} />
 				</SearchDiv>
-				{/* 토글버튼 눌렀을때 리스트 패딩값주기 */}
+
 				{items.length > 0 && <List products={filteredItems} />}
 				{!items.length && !filteredItems.length && (
 					<div>No Guides available</div>
