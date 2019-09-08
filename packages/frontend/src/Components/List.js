@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import Item from "./Item";
 import styled from "styled-components";
-import { Link, Route } from 'react-router-dom';
 import Layer from './popup/Layer';
 import ListDetail from './detail/ListDetail';
 
@@ -46,22 +45,6 @@ const Button = styled.button`
 	cursor: zoom-in;
 	background: unset
 `
-// const List = ({ products, popupClick }) => {
-// 	return (
-// 		<ListWrapper className="item-list">
-// 			{products.map((product, id) => {
-// 				return (
-// 					<li key={id}>
-// 						<Link to="/" onClick={popupClick}><Item {...product} /></Link>
-// 						<Layer />
-// 					</li>
-// 				);
-// 			})}
-// 		</ListWrapper>
-// 	);
-// };
-
-
 class List extends Component {
 
 	state = { isOpen: 0 }
@@ -88,15 +71,11 @@ class List extends Component {
 							<Button onClick={() => this.popupClick(product.desertionNo)}>
 								<Item {...product} />
 							</Button>
-							{/* <Link to={`/`} onClick={this.popupClick(product.desertionNo)}><Item {...product} />
-							</Link> */}
-							{/* <Route path={`/${product.desertionNo}`} component={Layer} /> */}
 							{this.state.isOpen === product.desertionNo &&
-								<Layer onClose={() => this.popupClose(product.desertionNo)}>
-									<ListDetail />
+								<Layer layerTitle={`${product.kindCd}`} onClose={() => this.popupClose(product.desertionNo)}>
+									<ListDetail {...product} />
 								</Layer>}
 						</li>
-						// , console.log(product.desertionNo)
 					)
 				})}
 			</ListWrapper>

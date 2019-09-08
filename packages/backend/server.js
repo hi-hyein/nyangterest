@@ -21,7 +21,7 @@ router.get("/page/:numOfRows/:id/", (req, res) => {
 	const endde = moment().format("YYYYMMDD");
 	const numOfRows = req.params.numOfRows;
 	const pageNo = req.params.id;
-	const url = `${api}/abandonmentPublic?ServiceKey=${serviceKey}_type=json&bgnde=${bgnde}&endde=${endde}&upkind=422400&state=notice&numOfRows=${numOfRows}&pageNo=${pageNo}`;
+	const url = `${api}/abandonmentPublic?ServiceKey=${serviceKey}_type=json&bgnde=${bgnde}&endde=${endde}&upkind=422400&numOfRows=${numOfRows}&pageNo=${pageNo}`;
 
 	fetch(url)
 		.then(response => response.json())

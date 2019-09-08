@@ -44,6 +44,13 @@
     font-weight: bold;
 }
 
+.layer-title h2{
+	overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+	line-height: 32px;
+}
+
 .layer-btn-close {
     position: absolute;
     top: 20px;
