@@ -80,7 +80,7 @@ router.get("/search/:numOfRows", (req, res) => {
 		.format("YYYYMMDD");
 	const numOfRows = req.params.numOfRows;
 	const endde = moment().format("YYYYMMDD");
-	const url = `${api}/abandonmentPublic?ServiceKey=${serviceKey}_type=json&bgnde=${bgnde}&endde=${endde}&upkind=422400&state=notice&numOfRows=${numOfRows}`;
+	const url = `${api}/abandonmentPublic?ServiceKey=${serviceKey}_type=json&bgnde=${bgnde}&endde=${endde}&upkind=422400&numOfRows=${numOfRows}`;
 
 	fetch(url)
 		.then(response => response.json())

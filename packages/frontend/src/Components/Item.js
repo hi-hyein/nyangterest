@@ -40,7 +40,7 @@ const Info = styled.div`
 
 	& > span {
 		display: flex;
-		height: 200px;
+		height: 180px;
 		justify-content: center;
 		align-items: center;
 

@@ -28,7 +28,7 @@ const Content = styled.div`
 
 const Info = styled.div`
 	width: 100%;
-	padding-top: 13px;
+	padding-top: 20px;
 
 	& > h2 {
 		padding-bottom: 0.5rem;
@@ -39,18 +39,18 @@ const Info = styled.div`
 	}
 
 	& > p {
-		padding: 0 0.5rem;
+		padding: 0.5rem;
 		font-size: 0.8rem;
 		color: #333;
-		text-align: right;
+		text-align: center;
 	}
 	
 
 	& > figure {
 		position: relative;
-		top:3px;
 		display: flex;
-		min-height: 350px;
+		height: 350px;
+		max-height: 100%;
 		justify-content: center;
 		align-items: center;
 		
@@ -68,7 +68,7 @@ const ListWrapper = styled.ul`
 	padding: 2rem 1rem;
 
 	& > li {
-		color: #333;
+		color: #3f51b5;
 		padding-bottom: 1rem;
 		font-weight: 600;
 		text-indent: -14px;
@@ -89,6 +89,10 @@ const ListWrapper = styled.ul`
 		&:last-child {
 			padding-bottom: 0;
 		}
+
+		&>span {
+			color: #333;
+		}
 	} 
 
 `
@@ -100,30 +104,58 @@ const StatusDiv = styled.div`
 	min-width: 100px;
 	width: auto;
 	padding:1rem;
-	background: ${props => (props.end ? "#E74C3C" : "#87CEEB")};
+	background: ${props => props.backgroundColor}
+
+	&.end {
+		background: #E74C3C; 
+	}
+	
 	text-align: center;
 
 `
-const Item = ({ neuterYn, age, backgroundColor, sexCd, weight, colorCd, processState, kindCd, noticeNo, happenDt, noticeEdt, happenPlace, specialMark, popfile, desertionNo, careNm, careTel, orgNm, officetel }) => (
-	<Container>
-		<Content id={desertionNo}>
-			<Info>
-				{/* <h2>{kindCd}</h2> */}
-				<p>{colorCd}/{neuterYn}/{age}/{sexCd}/{weight}</p>
-				<StatusDiv backgroundColor={backgroundColor}><span className="status">{processState}</span></StatusDiv>
-				<CatImage popfile={popfile} alt={kindCd} processState={processState} />
-				<ListWrapper>
-					<li>공고번호: {noticeNo}</li>
-					<li>공고기간: {happenDt} ~ {noticeEdt}</li>
-					<li>발견장소: {happenPlace}</li>
-					<li>특이사항: {specialMark}</li>
-					<li>보호센터: {careNm} {careTel}</li>
-					<li>담당기관: {orgNm} {officetel}</li>
-				</ListWrapper>
-			</Info>
-		</Content>
-	</Container>
-);
+const Item = ({ neuterYn, age, backgroundColor = "#87CEEB", sexCd, weight, colorCd, processState, kindCd, noticeNo, happenDt, noticeEdt, happenPlace, specialMark, popfile, desertionNo, careNm, careTel, orgNm, officetel }) => {
+
+	// 성별여부 알파벳을 한글로 변경
+	const female = sexCd.replace("F", "암컷");
+	const man = sexCd.replace("M", "수컷");
+	const question = sexCd.replace("Q", "성별 미상");
+	const gender = (sexCd === "F" && female) || (sexCd === "M" && man) || (sexCd === "Q" && question)
+
+	// 중성화여부 알파벳을 한글로 변경
+	const yes = neuterYn.replace("Y", "중성화O");
+	const no = neuterYn.replace("N", "중성화X");
+	const unknown = neuterYn.replace("U", "중성화 미상");
+	const tnr = (neuterYn === "Y" && yes) || (neuterYn === "N" && no) || (neuterYn === "U" && unknown)
+
+	// 보호여부에 종료텍스트가 포함되어 있으면 
+	const end = processState.includes("종료")
+
+	// 나이에 괄호제거
+	const old = age.replace(/[()]/g, "");
+
+	// 몸무게에 괄호제거
+	const bodyWeight = weight.replace(/[()]/g, "");
+
+	return (
+		<Container>
+			<Content id={desertionNo}>
+				<Info>
+					<StatusDiv className={end ? "end" : null} backgroundColor={backgroundColor}><span>{processState}</span></StatusDiv>
+					<CatImage popfile={popfile} alt={kindCd} processState={processState} />
+					<p>{colorCd}/{tnr}/{old}/{gender}/{bodyWeight}</p>
+					<ListWrapper>
+						<li><span>공고번호:</span> {noticeNo}</li>
+						<li><span>공고기간:</span> {happenDt} ~ {noticeEdt}</li>
+						<li><span>발견장소:</span> {happenPlace}</li>
+						<li><span>특이사항:</span> {specialMark}</li>
+						<li><span>보호센터:</span> {careNm} {careTel}</li>
+						<li><span>담당기관:</span> {orgNm} {officetel}</li>
+					</ListWrapper>
+				</Info>
+			</Content>
+		</Container>
+	)
+}
 
 const CatImage = props => {
 	return (
