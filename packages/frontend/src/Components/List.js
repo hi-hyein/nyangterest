@@ -12,13 +12,7 @@ const ListWrapper = styled.ul`
 	grid-gap: 20px;
 	// grid-auto-rows: 300px;
 	justify-content: space-around;
-	// grid-template-rows: 260px 400px 400px;
-	a:-webkit-any-link {
-		text-decoration: none;
-		cursor: zoom-in;
-	}
-
-	transition: all 0.5s ease 
+	transition: all 0.5s ease; 
 	
 	& > li {
 		grid-column: span 1;
@@ -32,18 +26,20 @@ const ListWrapper = styled.ul`
 		grid-template-columns: 1fr;
 		grid-gap: 50px;
 		padding: 10px;
-		& > div {
-			grid-column: span 1 !important;
-		}
 	}
 `;
 
 const Button = styled.button`
+	width: 100%;
     padding: 0;
 	font-size: inherit;
     border: 0;
 	cursor: zoom-in;
-	background: unset
+	background: unset;
+
+	& > div {
+		grid-column: span 1 !important;
+	}
 `
 class List extends Component {
 

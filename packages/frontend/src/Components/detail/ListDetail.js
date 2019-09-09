@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 
 const Container = styled.div`
 	position: relative;
-	max-height:100%;
+	max-height: 100%;
 	min-height: 100%;
 	background: #eee;
 	background-size: cover;
@@ -16,6 +16,10 @@ const Container = styled.div`
 	align-items: center;
 	justify-content: space-between;
 	padding: 0 20px;
+
+	@media screen and (max-width: 700px) {
+		padding: 0 5px;
+	}
 `;
 
 const Content = styled.div`
@@ -30,22 +34,14 @@ const Info = styled.div`
 	width: 100%;
 	padding-top: 20px;
 
-	& > h2 {
-		padding-bottom: 0.5rem;
-		font-size: 2rem;
-		color: #303f9f;
-		font-weight: 600;
-		text-align: center;
-	}
-
 	& > p {
 		padding: 0.5rem;
 		font-size: 0.8rem;
 		color: #333;
 		text-align: center;
+		line-height: 1rem;
 	}
 	
-
 	& > figure {
 		position: relative;
 		display: flex;
@@ -53,7 +49,12 @@ const Info = styled.div`
 		max-height: 100%;
 		justify-content: center;
 		align-items: center;
-		
+
+		@media screen and (max-width: 700px) {
+			height: 200px;
+    		min-height: 100%;
+		}
+
 		& > img {
 			position: absolute;
 			max-width: 100%;
@@ -67,6 +68,14 @@ const Info = styled.div`
 const ListWrapper = styled.ul`
 	padding: 2rem 1rem;
 
+	@media screen and (max-width: 640px) {
+		padding: 1rem;
+	}
+
+	@media screen and (max-width: 360px) {
+		padding: 1rem 0.6rem;
+	}
+
 	& > li {
 		color: #3f51b5;
 		padding-bottom: 1rem;
@@ -74,6 +83,17 @@ const ListWrapper = styled.ul`
 		text-indent: -14px;
     	padding-left: 14px;
     	line-height: 1.3rem;
+
+		@media screen and (max-width: 414px) {
+			font-size: 0.9rem;
+			text-indent: -68px;
+    		padding-left: 63px;
+			
+		}
+
+		@media screen and (max-width: 360px) {
+			letter-spacing: -0.5px;
+		}
 
 		&::before {
 			display: inline-block;
@@ -84,13 +104,19 @@ const ListWrapper = styled.ul`
 			border-radius: 50%;
 			vertical-align: middle;
 			content: '';
+
+			@media screen and (max-width: 360px) {
+				display: none;
+				margin-right: 5px;
+			}
 		}
 
 		&:last-child {
 			padding-bottom: 0;
 		}
 
-		&>span {
+		& > span {
+			margin-right:5px;
 			color: #333;
 		}
 	} 
