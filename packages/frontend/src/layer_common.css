@@ -72,6 +72,12 @@
     position: absolute;
     top: 20px;
     right: 20px;
+	border: none;
+	font-size: 1.8rem;
+}
+
+.layer-btn-close > svg{
+   vertical-align: top;
 }
 
 /* 반응형 */
@@ -81,6 +87,9 @@
 	}
 
 	.layer-title h2{
+		display:inline-block;
+		max-width: 95%;
+		padding-right: 1rem;
 		font-size: 1.5rem;
 	}
 }
@@ -88,5 +97,11 @@
 @media screen and (max-width: 700px) {
 	.layer-inner {
 			width: 90vw;
+	}
+}
+
+@media screen and (max-width: 360px) {
+	.layer-btn-close {
+		font-size: 1.5rem;
 	}
 }

@@ -37,7 +37,8 @@ const Info = styled.div`
 	& > p {
 		padding: 0.5rem;
 		font-size: 0.8rem;
-		color: #333;
+		color: #5b5b5b;
+		font-weight: 600;
 		text-align: center;
 		line-height: 1rem;
 	}
@@ -117,7 +118,17 @@ const ListWrapper = styled.ul`
 
 		& > span {
 			margin-right:5px;
-			color: #333;
+			&:first-child{color: #333;}
+			&:nth-child(3) {color: #3f8cb5;}
+
+			@media screen and (max-width: 375px) {
+				&:nth-child(3){display:block;padding-left: 5.2rem;}
+			}
+
+			@media screen and (max-width: 360px) {
+				&:nth-child(3){display:block;padding-left: 4.2rem;}
+			}
+
 		}
 	} 
 
@@ -170,12 +181,12 @@ const Item = ({ neuterYn, age, backgroundColor = "#87CEEB", sexCd, weight, color
 					<CatImage popfile={popfile} alt={kindCd} processState={processState} />
 					<p>{colorCd}/{tnr}/{old}/{gender}/{bodyWeight}</p>
 					<ListWrapper>
-						<li><span>공고번호:</span> {noticeNo}</li>
-						<li><span>공고기간:</span> {happenDt} ~ {noticeEdt}</li>
-						<li><span>발견장소:</span> {happenPlace}</li>
-						<li><span>특이사항:</span> {specialMark}</li>
-						<li><span>보호센터:</span> {careNm} {careTel}</li>
-						<li><span>담당기관:</span> {orgNm} {officetel}</li>
+						<li><span>공고번호:</span> <span>{noticeNo}</span></li>
+						<li><span>공고기간:</span> <span>{happenDt} ~ {noticeEdt}</span></li>
+						<li><span>발견장소:</span> <span>{happenPlace}</span></li>
+						<li><span>특이사항:</span> <span>{specialMark}</span></li>
+						<li><span>보호센터:</span> <span>{careNm}</span><span>{careTel}</span></li>
+						<li><span>담당기관:</span> <span>{orgNm}</span><span>{officetel}</span></li>
 					</ListWrapper>
 				</Info>
 			</Content>
