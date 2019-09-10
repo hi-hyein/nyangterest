@@ -55,7 +55,7 @@ class Header extends React.Component {
 
 		return (
 			<div className="header" style={HeaderStyle}>
-				<h1 style={LogoStyle}><Link exact to="/" style={{textDecoration:'none', color:'#000'}}>NYANGTEREST</Link></h1>
+				<h1 style={LogoStyle}><Link exact="true" to="/" style={{ textDecoration: 'none', color: '#000' }}>NYANGTEREST</Link></h1>
 				{openLogin &&
 					<Layer onClose={this.popupCLose} layerTitle="Login">
 						<LayerLogin />

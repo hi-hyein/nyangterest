@@ -37,6 +37,10 @@ const GlobalStyle = createGlobalStyle`
 
   a, button {transition: all 0.3s linear}
 
+  a:-webkit-any-link {
+		text-decoration: none;
+  }
+
   button {cursor: pointer;}
   
   img {max-width:100%;}

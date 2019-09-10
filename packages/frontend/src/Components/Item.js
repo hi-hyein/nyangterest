@@ -38,9 +38,9 @@ const Info = styled.div`
 		padding-bottom: 1rem;
 	}
 
-	& > a {
+	& > span {
 		display: flex;
-		height: 200px;
+		height: 180px;
 		justify-content: center;
 		align-items: center;
 
@@ -50,9 +50,9 @@ const Info = styled.div`
 		}
 	}
 `;
-const Item = ({ kindCd, happenDt, borderBottomColor = "#5262bc", popfile }) => (
-	<Container borderBottomColor={borderBottomColor}>
-		<Content>
+const Item = ({ kindCd, happenDt, borderBottomColor = "#5262bc", popfile, desertionNo }) => (
+	<Container borderBottomColor={borderBottomColor} >
+		<Content id={desertionNo}>
 			<Info>
 				<h2>품종: {kindCd}</h2>
 				<p>등록일: {happenDt}</p>
@@ -65,9 +65,9 @@ const Item = ({ kindCd, happenDt, borderBottomColor = "#5262bc", popfile }) => (
 
 const CatImage = props => {
 	return (
-		<a href={"http://naver.com"}>
+		<span>
 			<img src={props.popfile} alt={props.alt} className="CatImage" />
-		</a>
+		</span>
 	);
 };
 
