@@ -199,25 +199,6 @@ class Home extends Component {
 		console.log(e.value);
 	};
 
-	// ListDetail 오픈
-	popupToggle = () => {
-		this.setState({
-			isOpen: !this.state.isOpen
-		})
-	}
-
-	// popupClick = () => {
-	// 	this.setState({
-	// 		isOpen: true,
-	// 	})
-	// }
-
-	// popupClose = () => {
-	// 	this.setState({
-	// 		isOpen: false,
-	// 	})
-	// }
-
 	render() {
 		const { items, isLoading, hasMore } = this.props.listStore;
 		const { active, isVisible, toggleHidden } = this.props.searchStore;
