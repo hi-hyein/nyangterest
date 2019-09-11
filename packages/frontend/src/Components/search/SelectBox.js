@@ -169,22 +169,19 @@ const components = {
 
 class SelectBox extends Component {
 
-	state = { numOfRows: 1000 }
-
 	getAsyncOptions = async () => {
-		const { numOfRows } = this.state;
-		const url = `/search/${numOfRows}/`;
+		// const { data } = this.state;
+		const url = `/search/kind/`;
 		const response = await fetch(url);
 		const json = await response.json();
 		const data = json.item;
-		// const total = Object.keys(data).length
 		console.log(data)
 
 		return (
 			data
-				.map(x => x.kindCd)
+				.map(x => x.KNm)
 				// .reduce((arr, elem) => [...arr, ...elem], []) // flatten nested array 중첩배열
-				.filter((elem, index, arr) => arr.indexOf(elem) === index) // get array of unique values 고유키값
+				// .filter((elem, index, arr) => arr.indexOf(elem) === index) // get array of unique values 고유키값
 				.map(category => ({ value: category, label: category }))
 		);
 	};
