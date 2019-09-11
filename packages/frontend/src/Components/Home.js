@@ -209,13 +209,13 @@ class Home extends Component {
 		const filteredItems = items.filter(item => {
 			return (
 				// 셀렉트박스 필터링
-				item.kindCd.includes(selectedCategory) &&
+				item.kindCd.replace("한국 고양이", "코리안숏헤어").includes(selectedCategory) &&
 				// item.kindCd.includes(searchField)
 				// 검색바
 				Object.keys(item).some(
 					key =>
 						typeof item[key] === "string" &&
-						item[key].toLowerCase().includes(searchField)
+						item[key].toLowerCase().replace("한국 고양이", "코리안숏헤어").includes(searchField)
 				)
 			);
 		})

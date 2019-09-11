@@ -203,3 +203,109 @@ some() 메서드는 배열 안의 어떤 요소라도 주어진 판별 함수를
    - 이제 달력도 연결해서 리스트를 보여주면 되는것인가.
 * 검색 후 더이상 데이터가 없을때 무한 스크롤링 문제
    - 더이상 필터링 데이터가 없을때 스크롤링이 되지 않는 코드가 있어야 할거 같다.   
+
+* 셀렉트박스 데이터를 어떻게 받아올까 고민하다가 꼼수를 부려서 기존 api주소를 불러오되 한 페이지에 불러오는 갯수를 조절하는 코드를 만들었었다.
+  
+  * 기존
+
+ - backend
+
+```javascript
+	// 필터링
+router.get("/search/:numOfRows", (req, res) => {
+	const bgnde = moment()
+		.subtract(3, "month")
+		.format("YYYYMMDD");
+	const numOfRows = req.params.numOfRows;
+	const endde = moment().format("YYYYMMDD");
+	const url = `${api}/abandonmentPublic?ServiceKey=${serviceKey}_type=json&bgnde=${bgnde}&endde=${endde}&upkind=422400&numOfRows=${numOfRows}`;
+
+	fetch(url)
+		.then(response => response.json())
+		.then(json => {
+			res.send(json.response.body.items);
+		})
+		.catch(() => {
+			res.send(JSON.stringify({ message: "System Error" }));
+		});
+});
+```
+
+  - frontend
+
+```javascript
+	// 기존 api주소에서 한페이지에 불러오는 갯수를 1000으로 강제로 지정해둔 api를 백엔드에 지정하고 프론트엔드에서  품종에 관한 데이터를 불러온다.
+	state = { numOfRows: 1000 }
+
+	getAsyncOptions = async () => {
+		const { numOfRows } = this.state;
+		const url = `/search/${numOfRows}/`;
+		const response = await fetch(url);
+		const json = await response.json();
+		const data = json.item;
+		// const total = Object.keys(data).length
+		console.log(data)
+
+		return (
+			data
+				.map(x => x.kindCd)
+				// .reduce((arr, elem) => [...arr, ...elem], []) // flatten nested array 중첩배열
+				.filter((elem, index, arr) => arr.indexOf(elem) === index) // get array of unique values 고유키값
+				.map(category => ({ value: category, label: category }))
+		);
+	};
+```
+
+* 꼼수도 영 마음에 안들어서 고민중에 든 생각이 어짜피 일치하는 텍스트로 필터링되는거니 그냥 품종 api주소로 불러와도 되지 않나 라는 생각이 들었다.
+
+  * 수정 코드
+
+
+- backend
+
+```javascript
+	// 백엔드에서 지정해둔 품종api주소를 불러오고 프론트엔드에서 품종데이터를 불러온다.
+
+	// 품종
+	router.get("/search/kind", (req, res) => {
+		const url = `${api}/kind?ServiceKey=${serviceKey}_type=json&up_kind_cd=422400`;
+
+		fetch(url)
+			.then(response => response.json())
+			.then(json => {
+				res.send(json.response.body.items);
+				console.log(json.response.body.items)
+
+			})
+			.catch(() => {
+				res.send(JSON.stringify({ message: "System Error" }));
+			});
+	});
+```
+
+- frontend
+
+```javascript
+	getAsyncOptions = async () => {
+		const url = `/search/kind/`;
+		const response = await fetch(url);
+		const json = await response.json();
+		const data = json.item;
+		console.log(data)
+
+		return (
+			data
+				.map(x => x.KNm)
+				.map(category => ({ value: category, label: category }))
+		);
+	};
+``` 
+
+- 한국 고양이명칭을  코리아숏헤어로 바꿔야지.
+- 수정후 결과를 보니 품종리스트를 정렬해야 할 필요성이 느껴졌다.
+- 코리아숏헤어로 변경 후 sort()를 통해 정렬 
+- Mobx로 변경가능할지 생각해봐야지.
+- 검색했을때 setTimeout을설정해서 더이상 데이터가 없으면 로딩을 멈추는 코드도 필요하겠다.
+- 스크롤링을 계속하거나 개발자도구가 열려있거나 검색어를 입력했을때 offsetTop null error발생한다.
+- 성능 최적화를 위해서는 debounce와 throttle같은걸 이용해야 한다고 한다.
+- 또 셀렉트박스에 리셋할 수 있는 기능도 설정해야겠다.

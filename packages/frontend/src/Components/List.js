@@ -3,6 +3,7 @@ import Item from "./Item";
 import styled from "styled-components";
 import Layer from './popup/Layer';
 import ListDetail from './detail/ListDetail';
+import { fadeInUp } from './Animations';
 
 // 리스트
 const ListWrapper = styled.ul`
@@ -16,6 +17,7 @@ const ListWrapper = styled.ul`
 	
 	& > li {
 		grid-column: span 1;
+		animation: ${fadeInUp} 1s both;
 	}
 
 	@media screen and (max-width: 1024px) {
@@ -68,7 +70,7 @@ class List extends Component {
 								<Item {...product} />
 							</Button>
 							{this.state.isOpen === product.desertionNo &&
-								<Layer layerTitle={`${product.kindCd}`} onClose={() => this.popupClose(product.desertionNo)}>
+								<Layer layerTitle={`${product.kindCd}`.replace("한국 고양이", "코리안숏헤어")} onClose={() => this.popupClose(product.desertionNo)}>
 									<ListDetail {...product} />
 								</Layer>}
 						</li>
