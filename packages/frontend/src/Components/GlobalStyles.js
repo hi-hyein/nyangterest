@@ -41,7 +41,11 @@ const GlobalStyle = createGlobalStyle`
 		text-decoration: none;
   }
 
-  button {cursor: pointer;}
+  button {cursor: pointer;
+  	&:focus{
+		  outline:0;
+		  }
+  }
   
   img {max-width:100%;}
 
