@@ -50,18 +50,22 @@ const Info = styled.div`
 		}
 	}
 `;
-const Item = ({ kindCd, happenDt, borderBottomColor = "#5262bc", popfile, desertionNo }) => (
-	<Container borderBottomColor={borderBottomColor} >
-		<Content id={desertionNo}>
-			<Info>
-				<h2>품종: {kindCd}</h2>
-				<p>등록일: {happenDt}</p>
-				{/* <p>색상: {colorCd}</p> */}
-				<CatImage popfile={popfile} alt={kindCd} />
-			</Info>
-		</Content>
-	</Container>
-);
+
+const Item = ({ kindCd, happenDt, borderBottomColor = "#5262bc", popfile, desertionNo }) => {
+	const kind = kindCd.replace("한국 고양이", "코리안숏헤어")
+	return (
+		<Container borderBottomColor={borderBottomColor} >
+			<Content id={desertionNo}>
+				<Info>
+					<h2>품종: {kind}</h2>
+					<p>등록일: {happenDt}</p>
+					{/* <p>색상: {colorCd}</p> */}
+					<CatImage popfile={popfile} alt={kind} />
+				</Info>
+			</Content>
+		</Container>
+	)
+}
 
 const CatImage = props => {
 	return (

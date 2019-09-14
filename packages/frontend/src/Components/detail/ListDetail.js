@@ -165,7 +165,7 @@ const Item = ({ neuterYn, age, backgroundColor = "#87CEEB", sexCd, weight, color
 	const tnr = (neuterYn === "Y" && yes) || (neuterYn === "N" && no) || (neuterYn === "U" && unknown)
 
 	// 보호여부에 종료텍스트가 포함되어 있으면 
-	const end = processState.includes("종료")
+	const end = processState.includes("종료");
 
 	// 나이에 괄호제거
 	const old = age.replace(/[()]/g, "");
@@ -173,20 +173,24 @@ const Item = ({ neuterYn, age, backgroundColor = "#87CEEB", sexCd, weight, color
 	// 몸무게에 괄호제거
 	const bodyWeight = weight.replace(/[()]/g, "");
 
+	// 한국고양이를 코리안숏헤어로 변경
+	const kind = kindCd.replace("한국 고양이", "코리안숏헤어")
+	console.log(kind)
+
 	return (
 		<Container>
 			<Content id={desertionNo}>
 				<Info>
-					<StatusDiv className={end ? "end" : null} backgroundColor={backgroundColor}><span>{processState}</span></StatusDiv>
-					<CatImage popfile={popfile} alt={kindCd} processState={processState} />
+					<StatusDiv className={end && "end"} backgroundColor={backgroundColor}><span>{processState}</span></StatusDiv>
+					<CatImage popfile={popfile} alt={kind} processState={processState} />
 					<p>{colorCd}/{tnr}/{old}/{gender}/{bodyWeight}</p>
 					<ListWrapper>
 						<li><span>공고번호:</span> <span>{noticeNo}</span></li>
 						<li><span>공고기간:</span> <span>{happenDt} ~ {noticeEdt}</span></li>
 						<li><span>발견장소:</span> <span>{happenPlace}</span></li>
 						<li><span>특이사항:</span> <span>{specialMark}</span></li>
-						<li><span>보호센터:</span> <span>{careNm}</span><span>{careTel}</span></li>
-						<li><span>담당기관:</span> <span>{orgNm}</span><span>{officetel}</span></li>
+						<li><span>보호센터:</span> <span>{careNm}</span><span>({careTel})</span></li>
+						<li><span>담당기관:</span> <span>{orgNm}</span><span>({officetel})</span></li>
 					</ListWrapper>
 				</Info>
 			</Content>

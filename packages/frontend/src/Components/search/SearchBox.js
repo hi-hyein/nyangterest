@@ -8,8 +8,10 @@ const TextFieldDiv = styled(TextField)`
 	&& {
 		// width: 56%;
 		flex-basis: 70%;
+
 		[placeholder] {
 			text-overflow: ellipsis;
+			padding-left: 12px;
 		}
 	}
 `;

@@ -169,24 +169,20 @@ const components = {
 
 class SelectBox extends Component {
 
-	state = { numOfRows: 1000 }
-
 	getAsyncOptions = async () => {
-		const { numOfRows } = this.state;
-		const url = `/search/${numOfRows}/`;
+		// const { data } = this.state;
+		const url = `/search/kind/`;
 		const response = await fetch(url);
 		const json = await response.json();
 		const data = json.item;
-		// const total = Object.keys(data).length
-		console.log(data)
-
 		return (
 			data
-				.map(x => x.kindCd)
+				.map(x => x.KNm.replace("한국 고양이", "코리안숏헤어")).sort() // 배열재정렬
 				// .reduce((arr, elem) => [...arr, ...elem], []) // flatten nested array 중첩배열
-				.filter((elem, index, arr) => arr.indexOf(elem) === index) // get array of unique values 고유키값
+				// .filter((elem, index, arr) => arr.indexOf(elem) === index) // get array of unique values 고유키값
 				.map(category => ({ value: category, label: category }))
-		);
+		)
+
 	};
 
 	render() {
@@ -198,7 +194,6 @@ class SelectBox extends Component {
 						variant: "outlined",
 						label: "품종",
 						InputLabelProps: {
-							htmlFor: "react-select-multiple",
 							shrink: true
 						}
 					}}

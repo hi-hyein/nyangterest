@@ -63,6 +63,8 @@
 
 .layer-title h2{
 	overflow: hidden;
+	padding-left:2.7rem;
+	padding-right:2.7rem;
     text-overflow: ellipsis;
     white-space: nowrap;
 	line-height: 32px;
@@ -83,12 +85,13 @@
 /* 반응형 */
 @media screen and (max-width: 1024px) {
 	.layer-inner {
-			width: 70vw;
+		width: 70vw;
 	}
 
 	.layer-title h2{
 		display:inline-block;
-		max-width: 95%;
+		max-width: 90%;
+		padding-left: 0;
 		padding-right: 1rem;
 		font-size: 1.5rem;
 	}
@@ -96,7 +99,7 @@
 
 @media screen and (max-width: 700px) {
 	.layer-inner {
-			width: 90vw;
+		width: 90vw;
 	}
 }
 
