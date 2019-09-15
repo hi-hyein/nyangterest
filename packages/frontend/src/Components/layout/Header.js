@@ -58,7 +58,7 @@ class Header extends React.Component {
 				<h1 style={LogoStyle}><Link exact="true" to="/" style={{ textDecoration: 'none', color: '#000' }}>NYANGTEREST</Link></h1>
 				{openLogin &&
 					<Layer onClose={this.popupCLose} layerTitle="Login">
-						<LayerLogin />
+						<LayerLogin changeState={this.props.changeUserState}/>
 					</Layer>
 				}
 				{openJoin &&

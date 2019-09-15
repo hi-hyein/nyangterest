@@ -19,7 +19,20 @@ class App extends Component {
 		super();
 		this.state = {
 			userState: "logout",
+			userId:undefined
 		};
+	}
+
+	changeUserState = ()=>{
+		this.setState({
+			userState: "login"
+		})
+	}
+
+	changeUserId = (name)=>{
+		this.setState({
+			userId: name
+		})
 	}
 
 	render() {
@@ -30,6 +43,7 @@ class App extends Component {
 						{/* 헤더 */}
 						<Header
 							userState={this.state.userState}
+							changeUserState={this.changeUserState}
 						/>
 						<Wrapper>
 							<GlobalStyle />

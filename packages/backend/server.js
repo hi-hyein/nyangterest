@@ -9,6 +9,9 @@ const app = express();
 const PORT = 8080;
 const hash = require('hash.js');
 const nodemailer = require('nodemailer');
+const passport = require('passport');
+const LocalStrategy   = require('passport-local').Strategy;
+const session = require('express-session');
 
 const serviceKey = `P3gvH0LsdoPkxFnZU2Ee98hGDDEwVTJndJFa8NDUhznSLlZG6OOxBopFWLBmiCPOfWXsF8Wz8LFHJguz41qJvA%3D%3D&`;
 const api = 'http://openapi.animal.go.kr/openapi/service/rest/abandonmentPublicSrvc';
@@ -212,23 +215,77 @@ router.get("/welcome", (req, res) => {
 });
 
 // 로그인
-router.post("/signin",(req, res)=>{
-	const body = req.body
-	const userId = body.userId
-	const userPw = body.userPassword
-	const userPwHash = hash.sha256().update(userPw).digest('hex');
-	connection.query(`SELECT * FROM member WHERE email='${userId}' AND password='${userPwHash}'`, (err, rows, fields) => {
-		if(rows[0]===undefined){
-			res.send({
-				sucess: false
-			})
-		}else {
-			res.send({
-				sucess: true
-			})
-		}
-	})
+app.use(session({ secret: 'abcde', resave: true, saveUninitialized: false })); // 세션 활성화
+app.use(passport.initialize()); // passport 구동
+app.use(passport.session()); // 세션 연결
+
+passport.serializeUser((user, done) => { // Strategy 성공 시 호출됨
+    done(null, user); // 여기의 user가 deserializeUser의 첫 번째 매개변수로 이동
 });
+
+passport.deserializeUser((user, done) => { // 매개변수 user는 serializeUser의 done의 인자 user를 받은 것
+	done(null, user); // 여기의 user가 req.user가 됨
+});
+
+passport.use(new LocalStrategy({ // local 전략을 세움
+    usernameField: 'userId',
+    passwordField: 'userPassword',
+    session: true, // 세션에 저장 여부
+    passReqToCallback: false,
+  }, (id, password, done) => {
+	console.log("id:",id,"pw:",password,"done:",done)
+	const userPwHash = hash.sha256().update(password).digest('hex');
+	connection.query(`SELECT * FROM member WHERE email='${id}'`, function (err, result) {
+		if (err) {
+		  console.log('err :' + err);
+		  return done(false, null);
+		} else {
+		  if (result.length === 0) {
+			console.log('해당 유저가 없습니다');
+			return done(false, null);
+		  } else {
+			if (userPwHash !== result[0].password) {
+			  console.log('패스워드가 일치하지 않습니다');
+			  return done(false, null);
+			} else {
+					console.log(result[0].email,'님 :로그인 성공');
+					
+					return done(null, {
+					  user_id: result[0].email
+					});
+				}
+			}
+		}
+	});
+}));
+
+router.post("/signin", passport.authenticate('local', {
+	failureRedirect: "/"
+  }), (req, res) => {
+	  console.log(req.session.passport.user.user_id)
+	res.json({
+		sucess: true,
+		_userId: req.session.passport.user.user_id
+	})
+  });
+
+// router.post("/signin",(req, res)=>{
+// 	const body = req.body
+// 	const userId = body.userId
+// 	const userPw = body.userPassword
+// 	const userPwHash = hash.sha256().update(userPw).digest('hex');
+// 	connection.query(`SELECT * FROM member WHERE email='${userId}' AND password='${userPwHash}'`, (err, rows, fields) => {
+// 		if(rows[0]===undefined){
+// 			res.send({
+// 				sucess: false
+// 			})
+// 		}else {
+// 			res.send({
+// 				sucess: true
+// 			})
+// 		}
+// 	})
+// });
 
 app.use(express.json());
 
@@ -243,9 +300,6 @@ app.use(cors());
 app.use("/", router);
 // app.use("/search", router);
 // app.use("/admin/member", router);
-
-
-
 
 app.listen(PORT, function () {
 	console.log("enabled web server listening !");
