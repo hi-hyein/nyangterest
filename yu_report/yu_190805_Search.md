@@ -301,13 +301,30 @@ router.get("/search/:numOfRows", (req, res) => {
 	};
 ``` 
 
-- 한국 고양이명칭을  코리아숏헤어로 바꿔야지.
+- 한국 고양이명칭을  코리안숏헤어로 바꿔야지.
 - 수정후 결과를 보니 품종리스트를 정렬해야 할 필요성이 느껴졌다.
 - 코리아숏헤어로 변경 후 sort()를 통해 정렬 
 - Mobx로 변경가능할지 생각해봐야지.
 - 검색했을때 setTimeout을설정해서 더이상 데이터가 없으면 로딩을 멈추는 코드도 필요하겠다.
 - 스크롤링을 계속하거나 개발자도구가 열려있거나 검색어를 입력했을때 offsetTop null error발생한다.
 - 성능 최적화를 위해서는 debounce와 throttle같은걸 이용해야 한다고 한다.
-- 또 셀렉트박스에 리셋할 수 있는 기능도 설정해야겠다.
 - 상단바로가기 버튼을 하나 달아야겠다.
 - 버튼이 active시 애니메이션효과
+
+
+- 개체수가 제일 많은게 코숏이라 생각하는데 오름차순으로 정렬를 하면 너무 밑에 가있는게 맘에 걸려서
+- 기존의 .replace()로 한국 고양이를 코리안숏헤어를 변경한 코드를 .splice()로 삭제후 추가하는 방식으로 변경하였다.
+  - 기타자리에 코리안숏헤어정보를 넣고 한국고양이자리에 기타정보를 넣었다.
+
+ ```javascript 
+ 
+	let dataSort = data.splice(1, 1, { KNm: "코리안숏헤어", kindCd: "000200" })
+		dataSort = data.splice(32, 1, { KNm: "기타", kindCd: "000201" })
+		console.log(dataSort)
+		return (
+			data
+				.map(x => x.KNm)
+				.map(category => ({ value: category, label: category }))
+		)
+
+ ```

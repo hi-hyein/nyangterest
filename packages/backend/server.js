@@ -65,7 +65,7 @@ router.get("/search/kind", (req, res) => {
 		.then(response => response.json())
 		.then(json => {
 			res.send(json.response.body.items);
-			console.log(json.response.body.items)
+			// console.log(json.response.body.items)
 
 		})
 		.catch(() => {

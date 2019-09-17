@@ -6,8 +6,6 @@ import Paper from "@material-ui/core/Paper";
 import TextField from "@material-ui/core/TextField";
 import MenuItem from "@material-ui/core/MenuItem";
 import styled from "styled-components";
-import { Chip } from "@material-ui/core";
-import CancelIcon from "@material-ui/icons/Cancel";
 
 const SelectDiv = styled(AsyncSelect)`
 	&& {
@@ -58,6 +56,11 @@ const ValueDiv = styled.div`
 	& p {
 		font-size: 16px;
 	}
+
+	& + div {
+		cursor: pointer;
+	}
+
 `;
 
 const TextFieldDiv = styled(TextField)`
@@ -68,6 +71,14 @@ const TextFieldDiv = styled(TextField)`
 
 			& div[class$= singleValue] {
 				max-width: calc(100% - 60px);
+			}
+
+			& div[class$= -Input] {
+				color: #fff;
+
+				& input{
+					color: inherit;
+				}
 			}
 		}
 	}
@@ -139,16 +150,6 @@ const ValueContainer = props => {
 	return <ValueDiv>{props.children}</ValueDiv>;
 };
 
-const MultiValue = props => {
-	return (
-		<Chip
-			tabIndex={-1}
-			label={props.children}
-			onDelete={props.removeProps.onClick}
-			deleteIcon={<CancelIcon {...props.removeProps} />}
-		/>
-	);
-};
 
 const Menu = props => {
 	return (
@@ -175,9 +176,15 @@ class SelectBox extends Component {
 		const response = await fetch(url);
 		const json = await response.json();
 		const data = json.item;
+
+		// 기타위치에 코리안숏헤어 정보를 넣고 한국고양이위치에 기타정보를 넣음.
+		let dataSort = data.splice(1, 1, { KNm: "코리안숏헤어", kindCd: "000200" })
+		dataSort = data.splice(32, 1, { KNm: "기타", kindCd: "000201" })
+		console.log(dataSort)
 		return (
 			data
-				.map(x => x.KNm.replace("한국 고양이", "코리안숏헤어")).sort() // 배열재정렬
+				.map(x => x.KNm)
+				// .map(x => x.KNm.replace("한국 고양이", "코리안숏헤어")) // 배열재정렬
 				// .reduce((arr, elem) => [...arr, ...elem], []) // flatten nested array 중첩배열
 				// .filter((elem, index, arr) => arr.indexOf(elem) === index) // get array of unique values 고유키값
 				.map(category => ({ value: category, label: category }))
@@ -317,17 +324,6 @@ ValueContainer.propTypes = {
 	 * The children to be rendered.
 	 */
 	children: PropTypes.node,
-	selectProps: PropTypes.object.isRequired
-};
-
-MultiValue.propTypes = {
-	children: PropTypes.node,
-	isFocused: PropTypes.bool.isRequired,
-	removeProps: PropTypes.shape({
-		onClick: PropTypes.func.isRequired,
-		onMouseDown: PropTypes.func.isRequired,
-		onTouchEnd: PropTypes.func.isRequired
-	}).isRequired,
 	selectProps: PropTypes.object.isRequired
 };
 
