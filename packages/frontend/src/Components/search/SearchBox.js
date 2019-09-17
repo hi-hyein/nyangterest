@@ -27,6 +27,7 @@ const IconButton = styled.button`
 	color: #ccc;
 	transition: all 2s ease;
 	outline: none;
+	cursor: none;
 `;
 
 let SearchIcon = styled(InputAdornment)`
@@ -71,7 +72,7 @@ const SearchBox = ({ searchField, SearchChange }) => {
 					width: "100%"
 				},
 				startAdornment: (
-					<IconButton type="submit">
+					<IconButton>
 						<SearchIcon position="start">
 							<MdSearch />
 						</SearchIcon>

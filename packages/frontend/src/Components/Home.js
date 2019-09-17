@@ -1,5 +1,6 @@
 import React, { Component, Fragment } from "react";
 import { observer, inject } from "mobx-react";
+import throttle from "lodash.throttle";
 import DayPickerInput from "react-day-picker/DayPickerInput";
 import DayPickerStyle from "./search/DayPickerStyle";
 import MomentLocaleUtils, {
@@ -177,19 +178,29 @@ class Home extends Component {
 
 	componentDidMount() {
 		const { handleScroll, loadList } = this.props.listStore;
+		this._throttledScroll = throttle(handleScroll, 1000)
+		window.addEventListener("scroll", this._throttledScroll);
 		loadList();
-		window.addEventListener("scroll", handleScroll);
+
+		console.log("add")
 	}
 
 	componentWillUnmount() {
-		const { handleScroll } = this.props.listStore;
-		window.removeEventListener("scroll", handleScroll);
+		// const { handleScroll } = this.props.listStore;
+		window.removeEventListener("scroll", this._throttledScroll);
+		console.log("remove")
 	}
 
 	searchChange = e => {
 		this.setState({ searchField: e.target.value });
 		// console.log(this.state);
-	};
+	}
+
+	// throttleChange = (target) => {
+	// 	this.setState({ eventTarget: target.value });
+	// 	// console.log(this.state);
+	// }
+
 
 	// select filter
 	categoryChange = e => {
@@ -214,30 +225,14 @@ class Home extends Component {
 		);
 	};
 
-	// getAsyncOptions = async () => {
-	// 	// const { data } = this.state;
-	// 	const url = `/search/kind/`;
-	// 	const response = await fetch(url);
-	// 	const json = await response.json();
-	// 	const data = json.item;
-	// 	return (
-	// 		data
-	// 			.map(x => x.KNm.replace("한국 고양이", "코리안숏헤어")).sort() // 배열재정렬
-	// 			// .reduce((arr, elem) => [...arr, ...elem], []) // flatten nested array 중첩배열
-	// 			// .filter((elem, index, arr) => arr.indexOf(elem) === index) // get array of unique values 고유키값
-	// 			.map(category => ({ value: category, label: category }))
-	// 	)
-
-	// };
-
-
 	render() {
 		const { items, isLoading, hasMore } = this.props.listStore;
 		const { active, isVisible, toggleHidden } = this.props.searchStore;
 		const { searchField, selectedCategory, on } = this.state;
 		const { from, to } = this.state;
 		const modifiers = { start: from, end: to };
-		const { handleFromChange, handleToChange, handleScrollTop } = this;
+		const { handleFromChange, handleToChange } = this;
+		const { handleScrollTop, categoryChange, searchChange } = this;
 		const filteredItems = items.filter(item => {
 			return (
 				// 셀렉트박스 필터링
@@ -365,10 +360,10 @@ class Home extends Component {
 							</div>
 						</FormBox>
 						<SelectBox
-							defaultValue={this.selectedCategory}
-							onChange={this.categoryChange}
+							defaultValue={selectedCategory}
+							onChange={categoryChange}
 						/>
-						<SearchBox SearchChange={this.searchChange} />
+						<SearchBox SearchChange={searchChange} />
 					</Form>
 					<TooltipBox active={active} onClick={toggleHidden} />
 				</SearchDiv>

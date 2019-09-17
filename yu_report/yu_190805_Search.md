@@ -328,3 +328,7 @@ router.get("/search/:numOfRows", (req, res) => {
 		)
 
  ```
+
+
+ - scroll event 성능최적화를 위해 throttle()를 사용하였다.(https://lodash.com/docs/4.17.15#throttle)
+  
