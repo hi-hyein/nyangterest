@@ -1,5 +1,7 @@
 import React, { Component, Fragment } from "react";
 import { observer, inject } from "mobx-react";
+import throttle from "lodash.throttle";
+import debounce from "lodash.debounce";
 import DayPickerInput from "react-day-picker/DayPickerInput";
 import DayPickerStyle from "./search/DayPickerStyle";
 import MomentLocaleUtils, {
@@ -9,8 +11,6 @@ import MomentLocaleUtils, {
 import moment from "moment";
 import "moment/locale/ko";
 import styled from "styled-components";
-import { MdArrowUpward } from "react-icons/md";
-import { fadeInUp, fadeInDown } from "./Animations";
 import List from "./List";
 import Loading from "./Loading";
 import FormBox from "./search/FormBox";
@@ -18,6 +18,7 @@ import FormBox from "./search/FormBox";
 import SearchBox from "./search/SearchBox";
 import SelectBox from "./search/SelectBox";
 import TooltipBox from "./search/TooltipBox";
+import BtnTop from "./BtnTop";
 
 // 검색 폼
 const SearchDiv = styled.div`
@@ -135,38 +136,6 @@ const InputFromDiv = styled.div`
 		}
 `;
 
-const BtnTop = styled.button`
-  position: fixed;
-  z-index: 999;
-  bottom: 10%;
-  right: 1rem;
-  width: 2.5rem;
-  height: 2.5rem;
-  background: #ccc;
-  border: none;
-  border-radius: 50%;
-  transition: all 2s ease;
-  animation: ${fadeInDown} 1s both;
-
-  &.on {
-	bottom:unset;
-	top:25%;  
-    background: #3f51b5;
-	opacity: 0.3;
-    animation: ${fadeInUp} 1s both;
-
-	&:hover {
-		opacity: 1;
-	}
-  }
-
-  & > svg {
-    width: 2.2em;
-    height: 2em;
-    color: #fff;
-  }
-`;
-
 // 오늘 날짜 기준으로 일주일전
 const defaultFrom = new Date(Date.now() + -7 * 24 * 3600 * 1000); //-일/시/60분*60초/밀리세컨
 const todayDate = new Date();
@@ -210,19 +179,21 @@ class Home extends Component {
 
 	componentDidMount() {
 		const { handleScroll, loadList } = this.props.listStore;
+		this._throttledScroll = throttle(handleScroll, 1000)
+		window.addEventListener("scroll", this._throttledScroll);
 		loadList();
-		window.addEventListener("scroll", handleScroll);
 	}
 
 	componentWillUnmount() {
-		const { handleScroll } = this.props.listStore;
-		window.removeEventListener("scroll", handleScroll);
+		// const { handleScroll } = this.props.listStore;
+		window.removeEventListener("scroll", this._throttledScroll);
+
 	}
 
-	searchChange = e => {
-		this.setState({ searchField: e.target.value });
-		// console.log(this.state);
-	};
+	searchChange = debounce((searchField) => {
+		this.setState({ searchField });
+		console.log(this.state);
+	}, 800);
 
 	// select filter
 	categoryChange = e => {
@@ -254,6 +225,8 @@ class Home extends Component {
 		const { from, to } = this.state;
 		const modifiers = { start: from, end: to };
 		const { handleFromChange, handleToChange } = this;
+		const { handleScrollTop, categoryChange, searchChange } = this;
+    
 		const filteredItems = items.filter(item => {
 			return (
 				// 셀렉트박스 필터링
@@ -298,15 +271,15 @@ class Home extends Component {
 
 		const finalfilteredItems = filteredDateItem.filter(item => {
 			return (
-				item.kindCd.includes(selectedCategory) &&
+				item.kindCd.replace("한국 고양이", "코리안숏헤어").includes(selectedCategory) &&
 				Object.keys(item).some(
 					key =>
 						typeof item[key] === "string" &&
-						item[key].toLowerCase().includes(searchField)
+						item[key].toLowerCase().replace("한국 고양이", "코리안숏헤어").includes(searchField)
 				)
 			);
 		});
-		// console.log(`finalfilteredItems: ${finalfilteredItems}`)
+		console.log(`finalfilteredItems: ${finalfilteredItems.length}`)
 
 		// const finalfilteredItems = filteredDateItem.filter(item => {
 		// 	return (
@@ -322,12 +295,11 @@ class Home extends Component {
 		return (
 			<Fragment>
 				<BtnTop
-					className={on && "on"}
-					onClick={this.handleScrollTop}
+					on={on}
+					onClick={handleScrollTop}
 					title="맨위로 이동"
-				>
-					<MdArrowUpward />
-				</BtnTop>
+				/>
+
 				<SearchDiv>
 					<Form
 						autoComplete="off"
@@ -383,17 +355,19 @@ class Home extends Component {
 							</div>
 						</FormBox>
 						<SelectBox
-							defaultValue={this.selectedCategory}
-							onChange={this.categoryChange}
+							defaultValue={selectedCategory}
+							onChange={categoryChange}
 						/>
-						<SearchBox SearchChange={this.searchChange} />
+						<SearchBox SearchChange={e => searchChange(e.target.value)} />
+
 					</Form>
 					<TooltipBox active={active} onClick={toggleHidden} />
 				</SearchDiv>
 				{items.length > 0 && <List products={filteredItems} />}
-				{!items.length && !filteredItems.length && (
-					<div>No Guides available</div>
-				)}
+				{!items.length || (!filteredItems.length && (
+					<div><p>검색결과가 없습니다.</p></div>
+				))}
+
 				{isLoading && hasMore && (
 					<div>
 						Loading...
