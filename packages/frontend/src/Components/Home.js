@@ -182,8 +182,6 @@ class Home extends Component {
 		this._throttledScroll = throttle(handleScroll, 1000)
 		window.addEventListener("scroll", this._throttledScroll);
 		loadList();
-
-		console.log("add")
 	}
 
 	componentWillUnmount() {
@@ -196,12 +194,6 @@ class Home extends Component {
 		this.setState({ searchField });
 		console.log(this.state);
 	}, 800);
-
-	// throttleChange = (target) => {
-	// 	this.setState({ eventTarget: target.value });
-	// 	// console.log(this.state);
-	// }
-
 
 	// select filter
 	categoryChange = e => {
@@ -234,6 +226,7 @@ class Home extends Component {
 		const modifiers = { start: from, end: to };
 		const { handleFromChange, handleToChange } = this;
 		const { handleScrollTop, categoryChange, searchChange } = this;
+    
 		const filteredItems = items.filter(item => {
 			return (
 				// 셀렉트박스 필터링
@@ -306,6 +299,7 @@ class Home extends Component {
 					onClick={handleScrollTop}
 					title="맨위로 이동"
 				/>
+
 				<SearchDiv>
 					<Form
 						autoComplete="off"
@@ -365,6 +359,7 @@ class Home extends Component {
 							onChange={categoryChange}
 						/>
 						<SearchBox SearchChange={e => searchChange(e.target.value)} />
+
 					</Form>
 					<TooltipBox active={active} onClick={toggleHidden} />
 				</SearchDiv>
@@ -372,6 +367,7 @@ class Home extends Component {
 				{!items.length || (!filteredItems.length && (
 					<div><p>검색결과가 없습니다.</p></div>
 				))}
+
 				{isLoading && hasMore && (
 					<div>
 						Loading...
