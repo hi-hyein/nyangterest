@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from "react";
 import { observer, inject } from "mobx-react";
 import throttle from "lodash.throttle";
+import debounce from "lodash.debounce";
 import DayPickerInput from "react-day-picker/DayPickerInput";
 import DayPickerStyle from "./search/DayPickerStyle";
 import MomentLocaleUtils, {
@@ -188,13 +189,13 @@ class Home extends Component {
 	componentWillUnmount() {
 		// const { handleScroll } = this.props.listStore;
 		window.removeEventListener("scroll", this._throttledScroll);
-		console.log("remove")
+
 	}
 
-	searchChange = e => {
-		this.setState({ searchField: e.target.value });
-		// console.log(this.state);
-	}
+	searchChange = debounce((searchField) => {
+		this.setState({ searchField });
+		console.log(this.state);
+	}, 800);
 
 	// throttleChange = (target) => {
 	// 	this.setState({ eventTarget: target.value });
@@ -363,7 +364,7 @@ class Home extends Component {
 							defaultValue={selectedCategory}
 							onChange={categoryChange}
 						/>
-						<SearchBox SearchChange={searchChange} />
+						<SearchBox SearchChange={e => searchChange(e.target.value)} />
 					</Form>
 					<TooltipBox active={active} onClick={toggleHidden} />
 				</SearchDiv>

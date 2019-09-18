@@ -330,5 +330,37 @@ router.get("/search/:numOfRows", (req, res) => {
  ```
 
 
- - scroll event 성능최적화를 위해 throttle()를 사용하였다.(https://lodash.com/docs/4.17.15#throttle)
+ - scroll event 성능최적화를 위해 throttle()를 사용하여 handleScroll()를 제어했다.(https://lodash.com/docs/4.17.15#throttle)
   
+  ```javascript 
+ 
+	componentDidMount() {
+		const { handleScroll, loadList } = this.props.listStore;
+		this._throttledScroll = throttle(handleScroll, 1000)
+		window.addEventListener("scroll", this._throttledScroll);
+		loadList();
+
+		console.log("add")
+	}
+
+	componentWillUnmount() {
+		window.removeEventListener("scroll", this._throttledScroll);
+		console.log("remove")
+	}
+
+```
+
+ - 검색어입력시 한글자 한글자 반환하는걸 막기 위해  debounce()를 사용하여 searchChange()를 실행할때 글자를 전부 입력하고 실행할수 있게끔 시간을 조정했다.
+ (https://lodash.com/docs/4.17.15#debounce)  
+
+  ```javascript 
+ 
+	searchChange = debounce((searchField) => {
+		this.setState({ searchField });
+		// console.log(this.state);
+	}, 800);
+
+	// 중략 
+	<SearchBox SearchChange={e => searchChange(e.target.value)} />
+
+```
