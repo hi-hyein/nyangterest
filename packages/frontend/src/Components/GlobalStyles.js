@@ -17,6 +17,14 @@ const GlobalStyle = createGlobalStyle`
     	box-sizing:border-box;
   }
 
+  #wrap {
+	  		padding-top: 76px;
+
+			@media screen and (max-width:1024px) {
+				padding-top:0;
+			}
+  }	
+
   input {
 
 	  &:focus{
@@ -29,7 +37,15 @@ const GlobalStyle = createGlobalStyle`
 
   a, button {transition: all 0.3s linear}
 
-  button {cursor: pointer;}
+  a:-webkit-any-link {
+		text-decoration: none;
+  }
+
+  button {cursor: pointer;
+  	&:focus{
+		  outline:0;
+		  }
+  }
   
   img {max-width:100%;}
 

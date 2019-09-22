@@ -8,8 +8,10 @@ const TextFieldDiv = styled(TextField)`
 	&& {
 		// width: 56%;
 		flex-basis: 70%;
+
 		[placeholder] {
 			text-overflow: ellipsis;
+			padding-left: 12px;
 		}
 	}
 `;
@@ -25,6 +27,7 @@ const IconButton = styled.button`
 	color: #ccc;
 	transition: all 2s ease;
 	outline: none;
+	cursor: none;
 `;
 
 let SearchIcon = styled(InputAdornment)`
@@ -69,7 +72,7 @@ const SearchBox = ({ searchField, SearchChange }) => {
 					width: "100%"
 				},
 				startAdornment: (
-					<IconButton type="submit">
+					<IconButton>
 						<SearchIcon position="start">
 							<MdSearch />
 						</SearchIcon>

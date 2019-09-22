@@ -1,6 +1,5 @@
 import React, { Fragment } from "react";
-// import JoinModal from "../popup/JoinModal";
-// import LoginModal from "../popup/LoginModal";
+import { Link } from 'react-router-dom';
 import Button from '@material-ui/core/Button';
 import Layer from '../popup/Layer';
 import LayerLogin from '../popup/LayerLogin';
@@ -34,14 +33,29 @@ class Header extends React.Component {
 	render() {
 		const { openLogin, openJoin } = this.state;
 		const HeaderStyle = {
-			backgroundColor: 'skyblue',
+			position: 'fixed',
+			top: '0',
+			left: '0',
+			right: '0',
 			overflow: 'hidden',
-			padding: "0 20px"
+			padding: "0 20px",
+			zIndex: '999',
+			backgroundColor: 'skyblue',
+		}
+
+		const LogoStyle = {
+			position:'absolute',
+			top: '50%',
+			left: '50%',
+			transform:'translate(-50%,-50%)',
+			fontSize:'30px',
+			fontWeight: 'bold',
+			letterSpacing: '3px'
 		}
 
 		return (
 			<div className="header" style={HeaderStyle}>
-				<h1>NYANGTEREST</h1>
+				<h1 style={LogoStyle}><Link exact="true" to="/" style={{ textDecoration: 'none', color: '#000' }}>NYANGTEREST</Link></h1>
 				{openLogin &&
 					<Layer onClose={this.popupCLose} layerTitle="Login">
 						<LayerLogin />
@@ -54,7 +68,7 @@ class Header extends React.Component {
 				}
 
 				{/* 로그아웃 상태 : 로그인 상태 */}
-				<div className="button-area" style={{ float: "right", marginBottom: "20px" }}>
+				<div className="button-area" style={{ float: "right", margin: "20px 0" }}>
 					{this.props.userState === 'logout' ?
 						<Fragment>
 							<Button variant="contained" onClick={this.popupOpenLogin} style={{ marginRight: "10px" }}>LOGIN</Button>
