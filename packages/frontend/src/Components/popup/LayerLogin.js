@@ -2,13 +2,16 @@ import React, { Component } from "react";
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import FormHelperText from '@material-ui/core/FormHelperText';
+import { observer, inject } from "mobx-react";
 
 const MAIL_FORMAT = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
 const PASSWORD_FORMAT = /^[a-zA-Z0-9]{6,15}$/
 
+@inject('loginStore')
+@observer
 class LayerLogin extends Component {
     state = {
-        userId:'',
+        userId: "",
         userIdValidate: false,
         userIdMatchText: "사용 가능한 이메일 주소입니다",
         userIdNotMatchText: "잘못된 이메일 형식 입니다",
@@ -16,7 +19,6 @@ class LayerLogin extends Component {
         userPasswordValidate: false,
         userPasswordMatchText: "사용 가능한 비밀번호입니다",
         userPasswordNotMatchText: "6자이상 15자 이하 입력해주세요",
-        signInState: undefined
     }
 
     validate = (format, value) => {
@@ -66,6 +68,7 @@ class LayerLogin extends Component {
     sendUserInfo = () => {
         const state = this.state
         const stateTojson = JSON.stringify(state)
+        const {changeUserId,changeUserState} = this.props.loginStore
 
         if ( state.userIdValidate && state.userPasswordValidate ){
             fetch('/signin',{
@@ -79,14 +82,11 @@ class LayerLogin extends Component {
             .then(res=>res.json()).then(json=>{
                 if(!json.sucess){
                     console.log('로그인실패')
-                    this.setState({
-                        signInState: false
-                    })
                 }else {
                     console.log('로그인성공')
-                    this.setState({
-                        signInState: true
-                    })
+                    console.log(json._userId)
+                    changeUserState()
+                    changeUserId(json._userId)
                 }
             })
         }else {
@@ -94,12 +94,9 @@ class LayerLogin extends Component {
         }
     }
 
-
     render(){
         const {userId, userIdValidate, userIdMatchText, userIdNotMatchText, userPassword, userPasswordValidate, userPasswordMatchText, userPasswordNotMatchText} = this.state
-
-        return (
-            
+        return (    
             <div>      
                 <div>
                     <TextField

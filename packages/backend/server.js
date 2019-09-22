@@ -262,7 +262,9 @@ passport.use(new LocalStrategy({ // local 전략을 세움
 router.post("/signin", passport.authenticate('local', {
 	failureRedirect: "/"
   }), (req, res) => {
-	  console.log(req.session.passport.user.user_id)
+	  
+	console.log(req.user)
+	console.log(req.session)
 	res.json({
 		sucess: true,
 		_userId: req.session.passport.user.user_id

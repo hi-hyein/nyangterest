@@ -15,36 +15,13 @@ const Wrapper = styled.div`
 `;
 
 class App extends Component {
-	constructor() {
-		super();
-		this.state = {
-			userState: "logout",
-			userId:undefined
-		};
-	}
-
-	changeUserState = ()=>{
-		this.setState({
-			userState: "login"
-		})
-	}
-
-	changeUserId = (name)=>{
-		this.setState({
-			userId: name
-		})
-	}
-
 	render() {
 		return (
 			<Router>
 				<Fragment>
 					<div id="wrap">
 						{/* 헤더 */}
-						<Header
-							userState={this.state.userState}
-							changeUserState={this.changeUserState}
-						/>
+						<Header/>
 						<Wrapper>
 							<GlobalStyle />
 							<Nav />
