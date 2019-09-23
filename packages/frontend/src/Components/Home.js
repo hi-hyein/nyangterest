@@ -198,6 +198,7 @@ class Home extends Component {
 	// select filter
 	categoryChange = e => {
 		this.setState({ selectedCategory: e.value });
+		console.log(this.state);
 		// console.log(e.value);
 	};
 
@@ -226,7 +227,7 @@ class Home extends Component {
 		const modifiers = { start: from, end: to };
 		const { handleFromChange, handleToChange } = this;
 		const { handleScrollTop, categoryChange, searchChange } = this;
-    
+
 		const filteredItems = items.filter(item => {
 			return (
 				// 셀렉트박스 필터링
@@ -263,11 +264,11 @@ class Home extends Component {
 		// 달력을 포함한 코드
 
 		const filteredDateItem = items.filter(
-			item => item.happenDt >= from || item.happenDt <= to
-			// happenDt는 from보다 크고 to보다 작다.
+			item => item.happenDt >= from || item.happenDt < to
+			// happenDt는 from보다 크거나 같고 to보다 작다.
 		);
 
-		// console.log(filteredDateItem)
+		console.log(filteredDateItem)
 
 		const finalfilteredItems = filteredDateItem.filter(item => {
 			return (
@@ -280,6 +281,7 @@ class Home extends Component {
 			);
 		});
 		console.log(`finalfilteredItems: ${finalfilteredItems.length}`)
+		console.log(`filteredItems: ${filteredItems.length}`)
 
 		// const finalfilteredItems = filteredDateItem.filter(item => {
 		// 	return (
