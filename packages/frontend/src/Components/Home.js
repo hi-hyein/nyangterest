@@ -261,13 +261,11 @@ class Home extends Component {
 		// });
 
 		// 달력을 포함한 코드
-
 		const filteredDateItem = items.filter(
-			item => item.happenDt >= from || item.happenDt <= to
-			// happenDt는 from보다 크고 to보다 작다.
-		);
-
-		// console.log(filteredDateItem)
+			item => {
+				return item.happenDt.toString() >= from.toISOString().slice(0,10).replace(/-/g,"") &&
+				item.happenDt.toString() <= to.toISOString().slice(0,10).replace(/-/g,"")
+			});
 
 		const finalfilteredItems = filteredDateItem.filter(item => {
 			return (
