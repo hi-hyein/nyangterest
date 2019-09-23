@@ -262,11 +262,30 @@ class Home extends Component {
 		// });
 
 		// 달력을 포함한 코드
+
 		const filteredDateItem = items.filter(
+			// 숫자를 string으로 변환하고 날짜로 변환
+
 			item => {
-				return item.happenDt.toString() >= from.toISOString().slice(0, 10).replace(/-/g, "") &&
-					item.happenDt.toString() <= to.toISOString().slice(0, 10).replace(/-/g, "")
-			});
+				const happenDate = moment(item.happenDt.toString()).toDate()
+				// const toISOString = from.toISOString().slice(0, 10).replace(/-/g, "")
+				return happenDate >= from &&
+					happenDate <= to
+				// type확인
+				// , console.log(happenDate.constructor.name, from.constructor.name)
+
+			}
+
+		);
+
+		// 달력을 포함한 코드
+		// const filteredDateItem = items.filter(
+		// 	item => {
+		// 		return item.happenDt.toString() >= from.toISOString().slice(0, 10).replace(/-/g, "") &&
+		// 			item.happenDt.toString() <= to.toISOString().slice(0, 10).replace(/-/g, ""), console.log(typeof item.happenDt.toString())
+		// 	}
+		// );
+
 
 		const finalfilteredItems = filteredDateItem.filter(item => {
 			return (
@@ -280,6 +299,7 @@ class Home extends Component {
 		});
 		console.log(`finalfilteredItems: ${finalfilteredItems.length}`)
 		console.log(`filteredItems: ${filteredItems.length}`)
+		console.log(`filteredDateItem: ${filteredDateItem.length}`)
 
 		// const finalfilteredItems = filteredDateItem.filter(item => {
 		// 	return (
