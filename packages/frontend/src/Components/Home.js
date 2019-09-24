@@ -136,8 +136,8 @@ const InputFromDiv = styled.div`
 		}
 `;
 
-// 오늘 날짜 기준으로 일주일전
-const defaultFrom = new Date(Date.now() + -7 * 24 * 3600 * 1000); //-일/시/60분*60초/밀리세컨
+// 오늘 날짜 기준으로 한달전
+const defaultFrom = new Date(Date.now() + -30 * 24 * 3600 * 1000); //-일/시/60분*60초/밀리세컨
 const todayDate = new Date();
 
 @inject("listStore", "searchStore")
@@ -150,7 +150,6 @@ class Home extends Component {
 		to: todayDate,
 		isDisabled: false,
 		on: false
-		// isOpen: false
 	};
 
 	showFromMonth = () => {
@@ -226,9 +225,8 @@ class Home extends Component {
 		// 달력을 포함한 코드
 		const filteredDateItem = items.filter(
 
-			// 숫자를 string으로 변환하고 날짜로 변환
-
 			item => {
+				// number를 string으로 변환하고 date로 변환
 				const happenDate = moment((item.happenDt).toString()).toDate()
 				const happenFrom = moment((from)).add(-1, "day").toDate()
 				return happenDate >= happenFrom &&
@@ -331,7 +329,7 @@ class Home extends Component {
 				{isLoading && hasMore && (
 					<div>
 						Loading...
-            <Loading />
+            			<Loading />
 					</div>
 				)}
 			</Fragment>

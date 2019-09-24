@@ -2,7 +2,7 @@ import { observable, action, runInAction } from "mobx";
 
 export default class ListStore {
 	@observable items = [];
-	@observable numOfRows = 360;
+	@observable numOfRows = 72;
 	@observable pageNo = 1;
 	@observable scrolling = false;
 	@observable hasMore = true;
@@ -54,23 +54,25 @@ export default class ListStore {
 
 	@action
 	handleScroll = () => {
-		// debugger;
 		const { isLoading, hasMore, error } = this;
 		if (error || isLoading || !hasMore) return;
-		// if (numOfRows <= pageNo) return;
-		const lastLi = document.querySelector("ul.item-list > li:last-child");
-		const lastLiOffset = lastLi.offsetTop + lastLi.clientHeight;
-		const pageOffset = window.pageYOffset + window.innerHeight;
-		const bottomOffset = 20;
-		// if (lastLi.scrollHeight - lastLi.scrollTop === lastLi.clientHeight) {
-		// 		this.loadMore();
-
-		// }
-
-		if (pageOffset > lastLiOffset - bottomOffset) {
+		// 스크롤링 후 올라간 만큼의 높이
+		const scrollTop =
+			(document.documentElement && document.documentElement.scrollTop) ||
+			document.body.scrollTop;
+		// 보이는 만큼의 높이	
+		const clientHeight =
+			document.documentElement.clientHeight || window.innerHeight;
+		// 스크롤링 없는 전체 높이
+		const scrollHeight =
+			(document.documentElement && document.documentElement.scrollHeight) ||
+			document.body.scrollHeight;
+		const scrolledToBottom =
+			Math.ceil(scrollTop + clientHeight) >= scrollHeight;
+		if (scrolledToBottom) {
 			this.loadMore();
-
 		}
+		// console.log(scrollTop, scrollHeight, clientHeight, scrolledToBottom)
 	};
 
 }
