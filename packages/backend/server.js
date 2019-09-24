@@ -38,24 +38,6 @@ router.get("/page/:numOfRows/:id/", (req, res) => {
 		});
 });
 
-
-// 시군구
-
-router.get("/search/sido", (req, res) => {
-	const url = `${api}/sido?ServiceKey=${serviceKey}_type=json`;
-
-	fetch(url)
-		.then(response => response.json())
-		.then(json => {
-			res.send(json.response.body.items);
-			// console.log(json.response.body.items)
-
-		})
-		.catch(() => {
-			res.send(JSON.stringify({ message: "System Error" }));
-		});
-});
-
 // 품종
 
 router.get("/search/kind", (req, res) => {
@@ -72,27 +54,6 @@ router.get("/search/kind", (req, res) => {
 			res.send(JSON.stringify({ message: "System Error" }));
 		});
 });
-
-// 필터링
-router.get("/search/:numOfRows", (req, res) => {
-	const bgnde = moment()
-		.subtract(3, "month")
-		.format("YYYYMMDD");
-	const numOfRows = req.params.numOfRows;
-	const endde = moment().format("YYYYMMDD");
-	const url = `${api}/abandonmentPublic?ServiceKey=${serviceKey}_type=json&bgnde=${bgnde}&endde=${endde}&upkind=422400&numOfRows=${numOfRows}`;
-
-	fetch(url)
-		.then(response => response.json())
-		.then(json => {
-			res.send(json.response.body.items);
-		})
-		.catch(() => {
-			res.send(JSON.stringify({ message: "System Error" }));
-		});
-});
-
-
 
 // db접속
 const data = fs.readFileSync(__dirname + "/db.json");

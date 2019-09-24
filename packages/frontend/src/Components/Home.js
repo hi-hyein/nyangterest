@@ -163,11 +163,6 @@ class Home extends Component {
 		}
 	};
 
-	// handleDayClick(day) {
-	// 	const range = DateUtils.addDayToRange(day, this.state);
-	// 	this.setState(range);
-	// }
-
 	handleFromChange = from => {
 		this.setState({ from });
 	};
@@ -228,64 +223,22 @@ class Home extends Component {
 		const { handleFromChange, handleToChange } = this;
 		const { handleScrollTop, categoryChange, searchChange } = this;
 
-		const filteredItems = items.filter(item => {
-			return (
-				// 셀렉트박스 필터링
-				item.kindCd
-					.replace("한국 고양이", "코리안숏헤어")
-					.includes(selectedCategory) &&
-				// item.kindCd.includes(searchField)
-				// 검색바
-				Object.keys(item).some(
-					key =>
-						typeof item[key] === "string" &&
-						item[key]
-							.toLowerCase()
-							.replace("한국 고양이", "코리안숏헤어")
-							.includes(searchField)
-				)
-			);
-		});
-		// const filteredItems = items.filter(item => {
-		// 	return (
-		// 		// 셀렉트박스 필터링
-
-		// 		item.kindCd.includes(selectedCategory) &&
-		// 		// item.kindCd.includes(searchField)
-		// 		// 검색바
-		// 		Object.keys(item).some(
-		// 			key =>
-		// 				typeof item[key] === "string" &&
-		// 				item[key].toLowerCase().includes(searchField)
-		// 		)
-		// 	);
-		// });
-
 		// 달력을 포함한 코드
-
 		const filteredDateItem = items.filter(
+
 			// 숫자를 string으로 변환하고 날짜로 변환
 
 			item => {
-				const happenDate = moment(item.happenDt.toString()).toDate()
-				// const toISOString = from.toISOString().slice(0, 10).replace(/-/g, "")
-				return happenDate >= from &&
+				const happenDate = moment((item.happenDt).toString()).toDate()
+				const happenFrom = moment((from)).add(-1, "day").toDate()
+				return happenDate >= happenFrom &&
 					happenDate <= to
 				// type확인
-				// , console.log(happenDate.constructor.name, from.constructor.name)
+				// , console.log(happenDate.constructor.name, from.constructor.name, to.constructor.name)
 
 			}
 
 		);
-
-		// 달력을 포함한 코드
-		// const filteredDateItem = items.filter(
-		// 	item => {
-		// 		return item.happenDt.toString() >= from.toISOString().slice(0, 10).replace(/-/g, "") &&
-		// 			item.happenDt.toString() <= to.toISOString().slice(0, 10).replace(/-/g, ""), console.log(typeof item.happenDt.toString())
-		// 	}
-		// );
-
 
 		const finalfilteredItems = filteredDateItem.filter(item => {
 			return (
@@ -297,20 +250,7 @@ class Home extends Component {
 				)
 			);
 		});
-		console.log(`finalfilteredItems: ${finalfilteredItems.length}`)
-		console.log(`filteredItems: ${filteredItems.length}`)
-		console.log(`filteredDateItem: ${filteredDateItem.length}`)
-
-		// const finalfilteredItems = filteredDateItem.filter(item => {
-		// 	return (
-		// 		item.kindCd.includes(selectedCategory) &&
-		// 		Object.keys(item).some(
-		// 			key =>
-		// 				typeof item[key] === "string" &&
-		// 				item[key].toLowerCase().includes(searchField)
-		// 		)
-		// 	);
-		// });
+		// console.log(`finalfilteredItems: ${finalfilteredItems.length} ${JSON.stringify(finalfilteredItems)}`)
 
 		return (
 			<Fragment>
@@ -383,8 +323,8 @@ class Home extends Component {
 					</Form>
 					<TooltipBox active={active} onClick={toggleHidden} />
 				</SearchDiv>
-				{items.length > 0 && <List products={filteredItems} />}
-				{!items.length || (!filteredItems.length && (
+				{items.length > 0 && <List products={finalfilteredItems} />}
+				{!items.length || (!finalfilteredItems.length && (
 					<div><p>검색결과가 없습니다.</p></div>
 				))}
 

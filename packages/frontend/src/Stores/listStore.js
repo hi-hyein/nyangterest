@@ -2,7 +2,7 @@ import { observable, action, runInAction } from "mobx";
 
 export default class ListStore {
 	@observable items = [];
-	@observable numOfRows = 72;
+	@observable numOfRows = 360;
 	@observable pageNo = 1;
 	@observable scrolling = false;
 	@observable hasMore = true;
@@ -15,8 +15,7 @@ export default class ListStore {
 	}
 
 	@action
-	// 매개변수로 pageNo를 넣어준다.
-	loadList = async (pageNo) => {
+	loadList = async () => {
 
 		try {
 			const { items, pageNo, numOfRows } = this;
@@ -63,8 +62,6 @@ export default class ListStore {
 		const lastLiOffset = lastLi.offsetTop + lastLi.clientHeight;
 		const pageOffset = window.pageYOffset + window.innerHeight;
 		const bottomOffset = 20;
-		console.log(lastLi.clientHeight)
-		// console.log(element)
 		// if (lastLi.scrollHeight - lastLi.scrollTop === lastLi.clientHeight) {
 		// 		this.loadMore();
 
@@ -75,8 +72,6 @@ export default class ListStore {
 
 		}
 	};
-
-
 
 }
 
