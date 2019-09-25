@@ -224,7 +224,6 @@ class Home extends Component {
 
 		// 달력을 포함한 코드
 		const filteredDateItem = items.filter(
-
 			item => {
 				// number를 string으로 변환하고 date로 변환
 				const happenDate = moment((item.happenDt).toString()).toDate()
@@ -233,9 +232,7 @@ class Home extends Component {
 					happenDate <= to
 				// type확인
 				// , console.log(happenDate.constructor.name, from.constructor.name, to.constructor.name)
-
 			}
-
 		);
 
 		const finalfilteredItems = filteredDateItem.filter(item => {
