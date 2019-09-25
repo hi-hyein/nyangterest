@@ -136,8 +136,8 @@ const InputFromDiv = styled.div`
 		}
 `;
 
-// 오늘 날짜 기준으로 일주일전
-const defaultFrom = new Date(Date.now() + -7 * 24 * 3600 * 1000); //-일/시/60분*60초/밀리세컨
+// 오늘 날짜 기준으로 한달전
+const defaultFrom = new Date(Date.now() + -30 * 24 * 3600 * 1000); //-일/시/60분*60초/밀리세컨
 const todayDate = new Date();
 
 @inject("listStore", "searchStore")
@@ -150,7 +150,6 @@ class Home extends Component {
 		to: todayDate,
 		isDisabled: false,
 		on: false
-		// isOpen: false
 	};
 
 	showFromMonth = () => {
@@ -162,11 +161,6 @@ class Home extends Component {
 			this.to.getDayPicker().showMonth(from);
 		}
 	};
-
-	// handleDayClick(day) {
-	// 	const range = DateUtils.addDayToRange(day, this.state);
-	// 	this.setState(range);
-	// }
 
 	handleFromChange = from => {
 		this.setState({ from });
@@ -198,6 +192,7 @@ class Home extends Component {
 	// select filter
 	categoryChange = e => {
 		this.setState({ selectedCategory: e.value });
+		console.log(this.state);
 		// console.log(e.value);
 	};
 
@@ -226,46 +221,22 @@ class Home extends Component {
 		const modifiers = { start: from, end: to };
 		const { handleFromChange, handleToChange } = this;
 		const { handleScrollTop, categoryChange, searchChange } = this;
-    
-		const filteredItems = items.filter(item => {
-			return (
-				// 셀렉트박스 필터링
-				item.kindCd
-					.replace("한국 고양이", "코리안숏헤어")
-					.includes(selectedCategory) &&
-				// item.kindCd.includes(searchField)
-				// 검색바
-				Object.keys(item).some(
-					key =>
-						typeof item[key] === "string" &&
-						item[key]
-							.toLowerCase()
-							.replace("한국 고양이", "코리안숏헤어")
-							.includes(searchField)
-				)
-			);
-		});
-		// const filteredItems = items.filter(item => {
-		// 	return (
-		// 		// 셀렉트박스 필터링
-
-		// 		item.kindCd.includes(selectedCategory) &&
-		// 		// item.kindCd.includes(searchField)
-		// 		// 검색바
-		// 		Object.keys(item).some(
-		// 			key =>
-		// 				typeof item[key] === "string" &&
-		// 				item[key].toLowerCase().includes(searchField)
-		// 		)
-		// 	);
-		// });
 
 		// 달력을 포함한 코드
 		const filteredDateItem = items.filter(
+
 			item => {
-				return item.happenDt.toString() >= from.toISOString().slice(0,10).replace(/-/g,"") &&
-				item.happenDt.toString() <= to.toISOString().slice(0,10).replace(/-/g,"")
-			});
+				// number를 string으로 변환하고 date로 변환
+				const happenDate = moment((item.happenDt).toString()).toDate()
+				const happenFrom = moment((from)).add(-1, "day").toDate()
+				return happenDate >= happenFrom &&
+					happenDate <= to
+				// type확인
+				// , console.log(happenDate.constructor.name, from.constructor.name, to.constructor.name)
+
+			}
+
+		);
 
 		const finalfilteredItems = filteredDateItem.filter(item => {
 			return (
@@ -277,18 +248,7 @@ class Home extends Component {
 				)
 			);
 		});
-		console.log(`finalfilteredItems: ${finalfilteredItems.length}`)
-
-		// const finalfilteredItems = filteredDateItem.filter(item => {
-		// 	return (
-		// 		item.kindCd.includes(selectedCategory) &&
-		// 		Object.keys(item).some(
-		// 			key =>
-		// 				typeof item[key] === "string" &&
-		// 				item[key].toLowerCase().includes(searchField)
-		// 		)
-		// 	);
-		// });
+		// console.log(`finalfilteredItems: ${finalfilteredItems.length} ${JSON.stringify(finalfilteredItems)}`)
 
 		return (
 			<Fragment>
@@ -361,15 +321,15 @@ class Home extends Component {
 					</Form>
 					<TooltipBox active={active} onClick={toggleHidden} />
 				</SearchDiv>
-				{items.length > 0 && <List products={filteredItems} />}
-				{!items.length || (!filteredItems.length && (
+				{items.length > 0 && <List products={finalfilteredItems} />}
+				{!items.length || (!finalfilteredItems.length && (
 					<div><p>검색결과가 없습니다.</p></div>
 				))}
 
 				{isLoading && hasMore && (
 					<div>
 						Loading...
-            <Loading />
+            			<Loading />
 					</div>
 				)}
 			</Fragment>
