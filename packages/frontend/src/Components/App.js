@@ -15,22 +15,13 @@ const Wrapper = styled.div`
 `;
 
 class App extends Component {
-	constructor() {
-		super();
-		this.state = {
-			userState: "logout",
-		};
-	}
-
 	render() {
 		return (
 			<Router>
 				<Fragment>
 					<div id="wrap">
 						{/* 헤더 */}
-						<Header
-							userState={this.state.userState}
-						/>
+						<Header/>
 						<Wrapper>
 							<GlobalStyle />
 							<Nav />

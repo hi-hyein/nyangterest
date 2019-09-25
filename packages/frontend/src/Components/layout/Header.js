@@ -4,6 +4,10 @@ import Button from '@material-ui/core/Button';
 import Layer from '../popup/Layer';
 import LayerLogin from '../popup/LayerLogin';
 import LayerJoin from '../popup/LayerJoin';
+import { observer, inject } from "mobx-react";
+
+@inject('loginStore')
+@observer
 class Header extends React.Component {
 	state = {
 		openLogin: false,
@@ -31,6 +35,7 @@ class Header extends React.Component {
 
 
 	render() {
+		const {userId,userState} = this.props.loginStore;
 		const { openLogin, openJoin } = this.state;
 		const HeaderStyle = {
 			position: 'fixed',
@@ -58,7 +63,7 @@ class Header extends React.Component {
 				<h1 style={LogoStyle}><Link exact="true" to="/" style={{ textDecoration: 'none', color: '#000' }}>NYANGTEREST</Link></h1>
 				{openLogin &&
 					<Layer onClose={this.popupCLose} layerTitle="Login">
-						<LayerLogin />
+						<LayerLogin/>
 					</Layer>
 				}
 				{openJoin &&
@@ -69,12 +74,15 @@ class Header extends React.Component {
 
 				{/* 로그아웃 상태 : 로그인 상태 */}
 				<div className="button-area" style={{ float: "right", margin: "20px 0" }}>
-					{this.props.userState === 'logout' ?
+					{userState === 'logout' ?
 						<Fragment>
 							<Button variant="contained" onClick={this.popupOpenLogin} style={{ marginRight: "10px" }}>LOGIN</Button>
 							<Button variant="contained" color="primary" onClick={this.popupOpenJoin}>JOIN</Button>
 						</Fragment> :
+						<>
+						<span>{userId}님 안녕하세요</span>
 						<button type="button">MENU</button>
+						</>
 					}
 				</div>
 			</div>
