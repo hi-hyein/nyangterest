@@ -12,6 +12,7 @@ const nodemailer = require('nodemailer');
 const passport = require('passport');
 const LocalStrategy   = require('passport-local').Strategy;
 const session = require('express-session');
+const FileStore = require('session-file-store')(session);
 
 const serviceKey = `P3gvH0LsdoPkxFnZU2Ee98hGDDEwVTJndJFa8NDUhznSLlZG6OOxBopFWLBmiCPOfWXsF8Wz8LFHJguz41qJvA%3D%3D&`;
 const api = 'http://openapi.animal.go.kr/openapi/service/rest/abandonmentPublicSrvc';
@@ -215,16 +216,20 @@ router.get("/welcome", (req, res) => {
 });
 
 // 로그인
-app.use(session({ secret: 'abcde', resave: true, saveUninitialized: false })); // 세션 활성화
+app.use(session({ secret: 'abcde', resave: true, saveUninitialized: false, store:new FileStore() })); // 세션 활성화
 app.use(passport.initialize()); // passport 구동
 app.use(passport.session()); // 세션 연결
 
 passport.serializeUser((user, done) => { // Strategy 성공 시 호출됨
-    done(null, user); // 여기의 user가 deserializeUser의 첫 번째 매개변수로 이동
+	console.log('serializeUser',user[0].email)
+    done(null, user[0].email); // 여기의 user가 deserializeUser의 첫 번째 매개변수로 이동
 });
 
-passport.deserializeUser((user, done) => { // 매개변수 user는 serializeUser의 done의 인자 user를 받은 것
-	done(null, user); // 여기의 user가 req.user가 됨
+passport.deserializeUser((id, done) => { // 매개변수 user는 serializeUser의 done의 인자 user를 받은 것
+	console.log('deserializeUser',id)
+	connection.query(`SELECT * FROM member WHERE email='${id}'`,(err, rows, fields)=>{
+		done(null, rows[0].email); // 여기의 user가 req.user가 됨
+	})
 });
 
 passport.use(new LocalStrategy({ // local 전략을 세움
@@ -249,10 +254,7 @@ passport.use(new LocalStrategy({ // local 전략을 세움
 			  return done(false, null);
 			} else {
 					console.log(result[0].email,'님 :로그인 성공');
-					
-					return done(null, {
-					  user_id: result[0].email
-					});
+					return done(null, result)
 				}
 			}
 		}
@@ -262,32 +264,13 @@ passport.use(new LocalStrategy({ // local 전략을 세움
 router.post("/signin", passport.authenticate('local', {
 	failureRedirect: "/"
   }), (req, res) => {
-	  
 	console.log(req.user)
 	console.log(req.session)
 	res.json({
 		sucess: true,
-		_userId: req.session.passport.user.user_id
+		_userId: req.session.passport.user
 	})
   });
-
-// router.post("/signin",(req, res)=>{
-// 	const body = req.body
-// 	const userId = body.userId
-// 	const userPw = body.userPassword
-// 	const userPwHash = hash.sha256().update(userPw).digest('hex');
-// 	connection.query(`SELECT * FROM member WHERE email='${userId}' AND password='${userPwHash}'`, (err, rows, fields) => {
-// 		if(rows[0]===undefined){
-// 			res.send({
-// 				sucess: false
-// 			})
-// 		}else {
-// 			res.send({
-// 				sucess: true
-// 			})
-// 		}
-// 	})
-// });
 
 app.use(express.json());
 
