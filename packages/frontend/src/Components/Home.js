@@ -137,8 +137,9 @@ const InputFromDiv = styled.div`
 `;
 
 // 오늘 날짜 기준으로 한달전
-const defaultFrom = new Date(Date.now() + -30 * 24 * 3600 * 1000); //-일/시/60분*60초/밀리세컨
-const todayDate = new Date();
+
+// const bgnde = new Date(Date.now() + -7 * 24 * 3600 * 1000); //-일/시/60분*60초/밀리세컨
+// const endde = new Date();
 
 @inject("listStore", "searchStore")
 @observer
@@ -146,30 +147,67 @@ class Home extends Component {
 	state = {
 		searchField: "",
 		selectedCategory: "",
-		from: defaultFrom,
-		to: todayDate,
 		isDisabled: false,
-		on: false
+		on: false,
+
 	};
 
-	showFromMonth = () => {
-		const { from, to } = this.state;
-		if (!from) {
-			return;
-		}
-		if (moment(to).diff(moment(from), "months") < 1) {
-			this.to.getDayPicker().showMonth(from);
-		}
-	};
+	// showFromMonth = () => {
+	// 	const { from, to } = this.props.listStore;
+	// 	if (!from) {
+	// 		return;
+	// 	}
+	// 	if (moment(to).diff(moment(from), "months") < 1) {
+	// 		this.to.getDayPicker().showMonth(from);
+	// 	}
+	// };
 
-	handleFromChange = from => {
-		this.setState({ from });
-	};
+	// handleFromChange = from => {
+	// 	const { loadList } = this.props.listStore;
+	// 	this.setState({ from });
+	// 	loadList();
 
-	handleToChange = to => {
-		this.setState({ to }, this.showFromMonth);
-		// this.setState({ to }, this.showFromMonth, console.log(typeof to))
-	};
+	// };
+
+	// handleToChange = to => {
+	// 	const { loadList } = this.props.listStore;
+	// 	this.setState({ to }, this.showFromMonth);
+	// 	loadList();
+	// 	// this.setState({ to }, this.showFromMonth, console.log(to))
+
+	// };
+
+	// searchList = async () => {
+	// 	try {
+	// 		const { items, numOfRows } = this.props.listStore;
+	// 		const { from, to } = this.state;
+	// 		const happenFrom = moment(from).format("YYYYMMDD")
+	// 		const happenTo = moment(to).format("YYYYMMDD")
+	// 		const url = `/search/date/${happenFrom}/${happenTo}/${numOfRows}`;
+	// 		const response = await fetch(url);
+	// 		const json = await response.json();
+
+	// 		this.setState(
+	// 			{
+	// 				items: [...items, ...json.items.item],
+
+	// 				numOfRows: json.numOfRows,
+
+	// 				// from: moment().format("YYYYMMDD"),
+	// 				// to: moment().format("YYYYMMDD")
+
+	// 				// hasMore: this.state.items.length
+	// 			},
+	// 			() => console.log(typeof happenFrom, happenTo, items)
+	// 			// () => console.log(items, numOfRows, pageNo)
+	// 		);
+	// 	} catch (err) {
+	// 		// console.log(err);
+	// 		this.setState({
+	// 			error: err.message
+	// 		});
+	// 	}
+	// };
 
 	componentDidMount() {
 		const { handleScroll, loadList } = this.props.listStore;
@@ -179,8 +217,9 @@ class Home extends Component {
 	}
 
 	componentWillUnmount() {
-		// const { handleScroll } = this.props.listStore;
+		// const { intervalID } = this.props.listStore;
 		window.removeEventListener("scroll", this._throttledScroll);
+		// clearTimeout(intervalID());
 
 	}
 
@@ -214,28 +253,28 @@ class Home extends Component {
 	};
 
 	render() {
-		const { items, isLoading, hasMore } = this.props.listStore;
+		const { items, isLoading, hasMore, from, to } = this.props.listStore;
 		const { active, isVisible, toggleHidden } = this.props.searchStore;
 		const { searchField, selectedCategory, on } = this.state;
-		const { from, to } = this.state;
+		// const { from, to } = this.state;
 		const modifiers = { start: from, end: to };
-		const { handleFromChange, handleToChange } = this;
+		const { handleFromChange, handleToChange } = this.props.listStore;
 		const { handleScrollTop, categoryChange, searchChange } = this;
 
 		// 달력을 포함한 코드
-		const filteredDateItem = items.filter(
+		const filteredDateItem = items.map(
 			item => {
 				// number를 string으로 변환하고 date로 변환
 				const happenDate = moment((item.happenDt).toString()).toDate()
-				const happenFrom = moment((from)).add(-1, "day").toDate()
-				return happenDate >= happenFrom &&
-					happenDate <= to
+				const happenFr = moment((from)).add(-1, "day").toDate()
+				return happenDate >= happenFr && happenDate <= to
 				// type확인
+				// , () => console.log(filteredDateItem)
 				// , console.log(happenDate.constructor.name, from.constructor.name, to.constructor.name)
 			}
 		);
 
-		const finalfilteredItems = filteredDateItem.filter(item => {
+		const finalfilteredItems = items.filter(item => {
 			return (
 				item.kindCd.replace("한국 고양이", "코리안숏헤어").includes(selectedCategory) &&
 				Object.keys(item).some(
@@ -304,6 +343,7 @@ class Home extends Component {
 												numberOfMonths: 1
 											}}
 											onDayChange={handleToChange}
+
 										/>
 									</InputFromDiv>
 								</div>

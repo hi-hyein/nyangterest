@@ -1,9 +1,13 @@
 import { observable, action, runInAction } from "mobx";
+import moment from "moment";
 
 export default class ListStore {
 	@observable items = [];
+	@observable test = [];
 	@observable numOfRows = 72;
 	@observable pageNo = 1;
+	@observable from = undefined;
+	@observable to = undefined;
 	@observable scrolling = false;
 	@observable hasMore = true;
 	@observable isLoading = false;
@@ -18,14 +22,26 @@ export default class ListStore {
 	loadList = async () => {
 
 		try {
-			const { items, pageNo, numOfRows } = this;
-			const url = `/page/${numOfRows}/${pageNo}`;
+			const { items, pageNo, numOfRows, from, to } = this;
+			const happenFrom = moment(from).format("YYYYMMDD")
+			const happenTo = moment(to).format("YYYYMMDD")
+			const url = `/page/${happenFrom}/${happenTo}/${numOfRows}/${pageNo}`;
+			// const url = `/page/${numOfRows}/${pageNo}`;
 			const response = await fetch(url);
 			const json = await response.json();
-
 			runInAction(() => {
-				// console.log(`${this}, "numOfRows:" ${numOfRows}, "pageNo:" ${pageNo}`);
+				console.log(`${from}, "numOfRows:" ${numOfRows}, "pageNo:" ${pageNo}`);
 				this.setItems([...items, ...json.items.item]);
+				// if (from === undefined && to === undefined) {
+
+				// 	this.setItems([...items, ...json.items.item]);
+
+				// } else {
+				// 	this.intervalID = setTimeout(() => {
+				// 		this.items = []
+				// 	}, 2000)
+				// 	this.setItems([...items, ...json.items.item]);
+				// }
 
 			});
 
@@ -72,7 +88,37 @@ export default class ListStore {
 		if (scrolledToBottom) {
 			this.loadMore();
 		}
-		// console.log(scrollTop, scrollHeight, clientHeight, scrolledToBottom)
+	};
+
+	@action
+	handleFromChange = from => {
+		this.from = from
+		this.loadList();
+
+	};
+
+	@action
+	handleToChange = to => {
+		this.to = to;
+		this.loadList();
+
+	};
+
+
+	// @action
+	// handleReset = () => {
+	// 	this.items = []
+	// 	// this.isLoading = true;
+	// };
+
+	showFromMonth = () => {
+		const { from, to } = this;
+		if (!from) {
+			return;
+		}
+		if (moment(to).diff(moment(from), "months") < 1) {
+			this.to.getDayPicker().showMonth(from);
+		}
 	};
 
 }
