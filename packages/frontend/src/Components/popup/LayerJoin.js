@@ -9,6 +9,7 @@ import Service from "../agree/Service";
 import Privacy from "../agree/Privacy";
 
 
+// eslint-disable-next-line
 const MAIL_FORMAT = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
 const PASSWORD_FORMAT = /^[a-zA-Z0-9]{6,15}$/
 
