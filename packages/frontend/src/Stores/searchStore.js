@@ -1,51 +1,48 @@
 import { observable, action } from "mobx";
+import debounce from "lodash.debounce";
 
 export default class SearchStore {
-	@observable search = "";
-	@observable isVisible = false;
-	@observable active = false;
+	@observable from = undefined;
+	@observable to = undefined;
+	@observable searchField = "";
+	@observable selectedCategory = "";
+	// @observable isDisabled = false;
 
 	constructor(root) {
 		this.root = root;
 	}
 
+	// DayPicker 날짜 선택기
 	@action
-	handleChange = (e) => {
-		this.search = e.target.value;
-		console.log(this.search)
-	}
+	handleFromChange = from => {
+		this.from = from
+	};
 
 	@action
-	toggleHidden = () => {
-		this.active = !this.active;
-		this.isVisible = !this.isVisible;
-		console.log('toggle show. ..')
-	}
+	handleToChange = to => {
+		const { loadList, resetList } = this.root.listStore;
+		this.to = to;
+		console.log(typeof to)
+		// to의 날짜를 선택했을때 최근날짜의 리스트는 리셋해야 한다.
+		if (typeof to === "object") {
+			resetList();
+			loadList();
+		} else {
+			loadList();
+		}
 
-	// @action
-	// handleKeyPress = (e) => {
-	// 	if (e.key === "Enter") {
-	// 		console.log("test!")
-	// 		// e.preventDefault();
-	// 		const { pageNo, numOfRows, loadList } = this.root.listStore;
-	// 		const url = `/search/${numOfRows}/${pageNo}`;
+	};
 
-	// 		runInAction(() => {
-	// 			return loadList(), this.search = "";
-	// 		});
-	// 	}
+	// 품종 카테고리 셀렉트박스
+	@action
+	categoryChange = e => {
+		this.selectedCategory = e.value
+	};
 
-	// }
-
-	// @action
-	// handleSubmit = (e) => {
-	// 	e.preventDefault();
-	// 	const data = new FormData(e.target);
-
-	// 	fetch('/search/submit', {
-	// 		method: 'POST',
-	// 		body: data,
-	// 	});
-	// }
+	// 검색어 입력
+	@action
+	searchChange = debounce((searchField) => {
+		this.searchField = searchField;
+	}, 800);
 
 }

@@ -5,8 +5,6 @@ export default class ListStore {
 	@observable items = [];
 	@observable numOfRows = 72;
 	@observable pageNo = 1;
-	@observable from = undefined;
-	@observable to = undefined;
 	@observable scrolling = false;
 	@observable hasMore = true;
 	@observable isLoading = false;
@@ -21,7 +19,8 @@ export default class ListStore {
 	loadList = async () => {
 
 		try {
-			const { items, pageNo, numOfRows, from, to } = this;
+			const { items, pageNo, numOfRows } = this;
+			const { from, to } = this.root.searchStore;
 			const happenFrom = moment(from).format("YYYYMMDD")
 			const happenTo = moment(to).format("YYYYMMDD")
 			const url = `/page/${happenFrom}/${happenTo}/${numOfRows}/${pageNo}`;
@@ -78,30 +77,12 @@ export default class ListStore {
 	};
 
 	@action
-	handleFromChange = from => {
-		this.from = from
-
-	};
-
-	@action
-	handleToChange = to => {
-		this.to = to;
-		console.log(typeof to)
-		// to의 날짜를 선택했을때 최근날짜의 리스트는 리셋해야 한다.
-		if (typeof to === "object") {
-			this.resetList();
-			this.loadList();
-		} else {
-			this.loadList();
-		}
-
-	};
-
-	@action
 	resetList = () => {
 		this.items = []
 		this.isLoading = false;
 	};
+
+
 
 }
 

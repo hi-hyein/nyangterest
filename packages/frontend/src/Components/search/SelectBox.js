@@ -171,7 +171,6 @@ const components = {
 class SelectBox extends Component {
 
 	getAsyncOptions = async () => {
-		// const { data } = this.state;
 		const url = `/search/kind/`;
 		const response = await fetch(url);
 		const json = await response.json();
@@ -184,10 +183,10 @@ class SelectBox extends Component {
 		return (
 			data
 				.map(x => x.KNm)
-				// .map(x => x.KNm.replace("한국 고양이", "코리안숏헤어")) // 배열재정렬
-				// .reduce((arr, elem) => [...arr, ...elem], []) // flatten nested array 중첩배열
-				// .filter((elem, index, arr) => arr.indexOf(elem) === index) // get array of unique values 고유키값
 				.map(category => ({ value: category, label: category }))
+			// .map(x => x.KNm.replace("한국 고양이", "코리안숏헤어")) // 배열재정렬
+			// .reduce((arr, elem) => [...arr, ...elem], []) // flatten nested array 중첩배열
+			// .filter((elem, index, arr) => arr.indexOf(elem) === index) // get array of unique values 고유키값
 		)
 
 	};

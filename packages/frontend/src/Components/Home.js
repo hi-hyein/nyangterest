@@ -1,14 +1,12 @@
 import React, { Component, Fragment } from "react";
 import { observer, inject } from "mobx-react";
 import throttle from "lodash.throttle";
-import debounce from "lodash.debounce";
 import DayPickerInput from "react-day-picker/DayPickerInput";
 import DayPickerStyle from "./search/DayPickerStyle";
 import MomentLocaleUtils, {
 	formatDate,
 	parseDate
 } from "react-day-picker/moment";
-import moment from "moment";
 import "moment/locale/ko";
 import styled from "styled-components";
 import List from "./List";
@@ -137,69 +135,31 @@ const InputFromDiv = styled.div`
 `;
 
 
-@inject("listStore", "searchStore")
+@inject("listStore", "searchStore", "btnStore")
 @observer
 class Home extends Component {
-	state = {
-		searchField: "",
-		selectedCategory: "",
-		isDisabled: false,
-		on: false,
-
-	};
 
 	componentDidMount() {
 		const { handleScroll, loadList } = this.props.listStore;
+		// 스크롤링 제어
 		this._throttledScroll = throttle(handleScroll, 1000)
 		window.addEventListener("scroll", this._throttledScroll);
 		loadList();
 	}
 
 	componentWillUnmount() {
-		// const { intervalID } = this.props.listStore;
 		window.removeEventListener("scroll", this._throttledScroll);
-		// clearTimeout(intervalID());
 
 	}
 
-	searchChange = debounce((searchField) => {
-		this.setState({ searchField });
-		console.log(this.state);
-	}, 800);
-
-	// select filter
-	categoryChange = e => {
-		this.setState({ selectedCategory: e.value });
-		console.log(this.state);
-		// console.log(e.value);
-	};
-
-	//   맨위로 이동 버튼
-	handleScrollTop = () => {
-		this.setState({ on: true });
-		window.scrollTo(
-			{
-				top: 0,
-				behavior: "smooth"
-
-				// document.body.scrollTop = 0;
-				// document.documentElement.scrollTop = 0;
-			},
-			setTimeout(() => {
-				this.setState({ on: false });
-			}, 2000)
-		);
-	};
-
 	render() {
-		const { items, isLoading, hasMore, from, to } = this.props.listStore;
-		const { active, isVisible, toggleHidden } = this.props.searchStore;
-		const { searchField, selectedCategory, on } = this.state;
-		// const { from, to } = this.state;
+		const { items, isLoading, hasMore } = this.props.listStore;
+		const { active, isVisible, toggleHidden, on, handleScrollTop } = this.props.btnStore;
+		const { from, to, handleFromChange, handleToChange, searchField, selectedCategory, categoryChange, searchChange } = this.props.searchStore;
 		const modifiers = { start: from, end: to };
-		const { handleFromChange, handleToChange } = this.props.listStore;
-		const { handleScrollTop, categoryChange, searchChange } = this;
-		const finalfilteredItems = items.filter(item => {
+
+		// 품종 카테고리 셀렉트박스  && 검색어 입력
+		const filteredItems = items.filter(item => {
 			return (
 				item.kindCd.replace("한국 고양이", "코리안숏헤어").includes(selectedCategory) &&
 				Object.keys(item).some(
@@ -209,7 +169,6 @@ class Home extends Component {
 				)
 			);
 		});
-		// console.log(`finalfilteredItems: ${finalfilteredItems.length} ${JSON.stringify(finalfilteredItems)}`)
 
 		return (
 			<Fragment>
@@ -268,7 +227,6 @@ class Home extends Component {
 												numberOfMonths: 1
 											}}
 											onDayChange={handleToChange}
-
 										/>
 									</InputFromDiv>
 								</div>
@@ -283,8 +241,8 @@ class Home extends Component {
 					</Form>
 					<TooltipBox active={active} onClick={toggleHidden} />
 				</SearchDiv>
-				{items.length > 0 && <List products={finalfilteredItems} />}
-				{!items.length || (!finalfilteredItems.length && (
+				{items.length > 0 && <List products={filteredItems} />}
+				{!items.length || (!filteredItems.length && (
 					<div><p>검색결과가 없습니다.</p></div>
 				))}
 
