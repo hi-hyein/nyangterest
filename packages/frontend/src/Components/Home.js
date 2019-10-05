@@ -1,18 +1,12 @@
 import React, { Component, Fragment } from "react";
 import { observer, inject } from "mobx-react";
 import throttle from "lodash.throttle";
-import DayPickerInput from "react-day-picker/DayPickerInput";
-import DayPickerStyle from "./search/DayPickerStyle";
-import MomentLocaleUtils, {
-	formatDate,
-	parseDate
-} from "react-day-picker/moment";
+import DayPicker from "./search/DayPicker";
 import "moment/locale/ko";
 import styled from "styled-components";
 import List from "./List";
 import Loading from "./Loading";
 import FormBox from "./search/FormBox";
-// import DayPicker from "./search/DayPicker";
 import SearchBox from "./search/SearchBox";
 import SelectBox from "./search/SelectBox";
 import TooltipBox from "./search/TooltipBox";
@@ -116,25 +110,6 @@ const Form = styled.form`
   }
 `;
 
-const InputFromDiv = styled.div`
-	display: inline-block;
-
-	input {
-			max-width:127px; 
-			border:none
-			// border-bottom: 1px dotted #f00;
-			font-size: 1rem;
-			line-height: 1.5rem;
-			text-align: center;
-
-			&::placeholder {
-				color: #ccc;
-				// text-align: center;
-			}
-		}
-`;
-
-
 @inject("listStore", "searchStore", "btnStore")
 @observer
 class Home extends Component {
@@ -156,7 +131,6 @@ class Home extends Component {
 		const { items, isLoading, hasMore } = this.props.listStore;
 		const { active, isVisible, toggleHidden, on, handleScrollTop } = this.props.btnStore;
 		const { from, to, handleFromChange, handleToChange, searchField, selectedCategory, categoryChange, searchChange } = this.props.searchStore;
-		const modifiers = { start: from, end: to };
 
 		// 품종 카테고리 셀렉트박스  && 검색어 입력
 		const filteredItems = items.filter(item => {
@@ -184,53 +158,7 @@ class Home extends Component {
 						className={isVisible ? "slide-in" : "slide-out"}
 					>
 						<FormBox>
-							<div>
-								<DayPickerStyle />
-								<div className="InputFromTo">
-									<InputFromDiv>
-										<DayPickerInput
-											value={from}
-											placeholder={`${formatDate(new Date(), "LL", "ko")}`}
-											format={"LL"}
-											formatDate={formatDate}
-											parseDate={parseDate}
-											dayPickerProps={{
-												locale: "ko",
-												localeUtils: MomentLocaleUtils,
-												selectedDays: [from, { from, to }],
-												disabledDays: { after: to },
-												toMonth: to,
-												modifiers,
-												numberOfMonths: 1,
-												onDayClick: () => this.to.getInput().focus()
-											}}
-											onDayChange={handleFromChange}
-										/>
-									</InputFromDiv>{" "}
-									-{" "}
-									<InputFromDiv className="InputFromTo-to">
-										<DayPickerInput
-											ref={el => (this.to = el)}
-											value={to}
-											placeholder={`${formatDate(new Date(), "LL", "ko")}`}
-											format={"LL"}
-											formatDate={formatDate}
-											parseDate={parseDate}
-											dayPickerProps={{
-												locale: "ko",
-												localeUtils: MomentLocaleUtils,
-												selectedDays: [from, { from, to }],
-												disabledDays: { before: from },
-												modifiers,
-												month: from,
-												fromMonth: from,
-												numberOfMonths: 1
-											}}
-											onDayChange={handleToChange}
-										/>
-									</InputFromDiv>
-								</div>
-							</div>
+							<DayPicker className="Selectable" from={from} to={to} onFromChange={handleFromChange} onToChange={handleToChange} />
 						</FormBox>
 						<SelectBox
 							defaultValue={selectedCategory}
