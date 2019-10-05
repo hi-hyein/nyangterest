@@ -3,7 +3,6 @@ import moment from "moment";
 
 export default class ListStore {
 	@observable items = [];
-	@observable test = [];
 	@observable numOfRows = 72;
 	@observable pageNo = 1;
 	@observable from = undefined;
@@ -30,19 +29,7 @@ export default class ListStore {
 			const response = await fetch(url);
 			const json = await response.json();
 			runInAction(() => {
-				console.log(`${from}, "numOfRows:" ${numOfRows}, "pageNo:" ${pageNo}`);
 				this.setItems([...items, ...json.items.item]);
-				// if (from === undefined && to === undefined) {
-
-				// 	this.setItems([...items, ...json.items.item]);
-
-				// } else {
-				// 	this.intervalID = setTimeout(() => {
-				// 		this.items = []
-				// 	}, 2000)
-				// 	this.setItems([...items, ...json.items.item]);
-				// }
-
 			});
 
 		} catch (err) {
@@ -93,32 +80,27 @@ export default class ListStore {
 	@action
 	handleFromChange = from => {
 		this.from = from
-		this.loadList();
 
 	};
 
 	@action
 	handleToChange = to => {
 		this.to = to;
-		this.loadList();
+		console.log(typeof to)
+		// to의 날짜를 선택했을때 최근날짜의 리스트는 리셋해야 한다.
+		if (typeof to === "object") {
+			this.resetList();
+			this.loadList();
+		} else {
+			this.loadList();
+		}
 
 	};
 
-
-	// @action
-	// handleReset = () => {
-	// 	this.items = []
-	// 	// this.isLoading = true;
-	// };
-
-	showFromMonth = () => {
-		const { from, to } = this;
-		if (!from) {
-			return;
-		}
-		if (moment(to).diff(moment(from), "months") < 1) {
-			this.to.getDayPicker().showMonth(from);
-		}
+	@action
+	resetList = () => {
+		this.items = []
+		this.isLoading = false;
 	};
 
 }

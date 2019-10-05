@@ -136,10 +136,6 @@ const InputFromDiv = styled.div`
 		}
 `;
 
-// 오늘 날짜 기준으로 한달전
-
-// const bgnde = new Date(Date.now() + -7 * 24 * 3600 * 1000); //-일/시/60분*60초/밀리세컨
-// const endde = new Date();
 
 @inject("listStore", "searchStore")
 @observer
@@ -151,63 +147,6 @@ class Home extends Component {
 		on: false,
 
 	};
-
-	// showFromMonth = () => {
-	// 	const { from, to } = this.props.listStore;
-	// 	if (!from) {
-	// 		return;
-	// 	}
-	// 	if (moment(to).diff(moment(from), "months") < 1) {
-	// 		this.to.getDayPicker().showMonth(from);
-	// 	}
-	// };
-
-	// handleFromChange = from => {
-	// 	const { loadList } = this.props.listStore;
-	// 	this.setState({ from });
-	// 	loadList();
-
-	// };
-
-	// handleToChange = to => {
-	// 	const { loadList } = this.props.listStore;
-	// 	this.setState({ to }, this.showFromMonth);
-	// 	loadList();
-	// 	// this.setState({ to }, this.showFromMonth, console.log(to))
-
-	// };
-
-	// searchList = async () => {
-	// 	try {
-	// 		const { items, numOfRows } = this.props.listStore;
-	// 		const { from, to } = this.state;
-	// 		const happenFrom = moment(from).format("YYYYMMDD")
-	// 		const happenTo = moment(to).format("YYYYMMDD")
-	// 		const url = `/search/date/${happenFrom}/${happenTo}/${numOfRows}`;
-	// 		const response = await fetch(url);
-	// 		const json = await response.json();
-
-	// 		this.setState(
-	// 			{
-	// 				items: [...items, ...json.items.item],
-
-	// 				numOfRows: json.numOfRows,
-
-	// 				// from: moment().format("YYYYMMDD"),
-	// 				// to: moment().format("YYYYMMDD")
-
-	// 				// hasMore: this.state.items.length
-	// 			},
-	// 			() => console.log(typeof happenFrom, happenTo, items)
-	// 			// () => console.log(items, numOfRows, pageNo)
-	// 		);
-	// 	} catch (err) {
-	// 		// console.log(err);
-	// 		this.setState({
-	// 			error: err.message
-	// 		});
-	// 	}
-	// };
 
 	componentDidMount() {
 		const { handleScroll, loadList } = this.props.listStore;
@@ -260,20 +199,6 @@ class Home extends Component {
 		const modifiers = { start: from, end: to };
 		const { handleFromChange, handleToChange } = this.props.listStore;
 		const { handleScrollTop, categoryChange, searchChange } = this;
-
-		// 달력을 포함한 코드
-		const filteredDateItem = items.map(
-			item => {
-				// number를 string으로 변환하고 date로 변환
-				const happenDate = moment((item.happenDt).toString()).toDate()
-				const happenFr = moment((from)).add(-1, "day").toDate()
-				return happenDate >= happenFr && happenDate <= to
-				// type확인
-				// , () => console.log(filteredDateItem)
-				// , console.log(happenDate.constructor.name, from.constructor.name, to.constructor.name)
-			}
-		);
-
 		const finalfilteredItems = items.filter(item => {
 			return (
 				item.kindCd.replace("한국 고양이", "코리안숏헤어").includes(selectedCategory) &&
