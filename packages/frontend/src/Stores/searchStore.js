@@ -6,7 +6,6 @@ export default class SearchStore {
 	@observable to = undefined;
 	@observable searchField = "";
 	@observable selectedCategory = "";
-	// @observable isDisabled = false;
 
 	constructor(root) {
 		this.root = root;

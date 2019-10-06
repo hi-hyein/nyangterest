@@ -29,7 +29,7 @@ router.get("/page/:bgnde/:endde/:numOfRows/:id/", (req, res) => {
 		.then(response => response.json())
 		.then(json => {
 			res.send(json.response.body);
-			console.log(bgnde, endde);
+			console.log(bgnde, endde, json.response.body.totalCount);
 		})
 		.catch(() => {
 			res.send(JSON.stringify({ message: "System Error" }));
