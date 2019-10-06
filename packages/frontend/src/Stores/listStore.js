@@ -28,7 +28,7 @@ export default class ListStore {
 			const response = await fetch(url);
 			const json = await response.json();
 			runInAction(() => {
-				this.setItems([...items, ...json.items.item])
+				this.setItems([...items, ...json.items.item || []])
 				this.setCount(json.totalCount)
 			}, console.log(json.totalCount));
 
@@ -45,6 +45,8 @@ export default class ListStore {
 		this.items = items;
 		this.isLoading = false;
 		this.scrolling = false;
+		console.log(items.length)
+		// console.log(items.constructor.name)
 	}
 
 	@action
@@ -56,23 +58,26 @@ export default class ListStore {
 	@action
 	loadMore = () => {
 		const { pageNo, numOfRows, totalCount } = this;
-		const totalPage = Math.ceil(numOfRows * pageNo) >= totalCount;
+		let totalPage = Math.ceil(numOfRows * pageNo) >= totalCount;
+
 		let message = observable({
 			return: "마지막 페이지입니다.",
 			continue: "데이터가 남아있습니다."
 
 		})
+
 		console.log(totalPage, totalCount)
+
 		// totalPage의 갯수가 totalCount의 수보다 크거나 같으면 리턴
 		if (totalPage) {
 			return console.log(message.return)
 		}
 		else {
 			console.log(message.continue)
-			this.pageNo++;
 			this.isLoading = true;
 			this.scrolling = true;
 			this.loadList();
+			this.pageNo++;
 		}
 	}
 
@@ -102,6 +107,7 @@ export default class ListStore {
 	@action
 	resetList = () => {
 		this.items = []
+		this.pageNo = 1;
 		this.isLoading = false;
 	};
 
