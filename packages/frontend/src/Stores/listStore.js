@@ -1,14 +1,15 @@
 import { observable, action, runInAction } from "mobx";
+import moment from "moment";
 
 export default class ListStore {
 	@observable items = [];
+	@observable totalCount = 0;
 	@observable numOfRows = 72;
 	@observable pageNo = 1;
 	@observable scrolling = false;
 	@observable hasMore = true;
 	@observable isLoading = false;
 	@observable error = false;
-
 
 	constructor(root) {
 		this.root = root;
@@ -19,15 +20,17 @@ export default class ListStore {
 
 		try {
 			const { items, pageNo, numOfRows } = this;
-			const url = `/page/${numOfRows}/${pageNo}`;
+			const { from, to } = this.root.searchStore;
+			const happenFrom = moment(from).format("YYYYMMDD")
+			const happenTo = moment(to).format("YYYYMMDD")
+			const url = `/page/${happenFrom}/${happenTo}/${numOfRows}/${pageNo}`;
+			// const url = `/page/${numOfRows}/${pageNo}`;
 			const response = await fetch(url);
 			const json = await response.json();
-
 			runInAction(() => {
-				// console.log(`${this}, "numOfRows:" ${numOfRows}, "pageNo:" ${pageNo}`);
-				this.setItems([...items, ...json.items.item]);
-
-			});
+				this.setItems([...items, ...json.items.item || []])
+				this.setCount(json.totalCount)
+			}, console.log(json.totalCount));
 
 		} catch (err) {
 			runInAction(() => {
@@ -42,15 +45,42 @@ export default class ListStore {
 		this.items = items;
 		this.isLoading = false;
 		this.scrolling = false;
+		console.log(items.length)
+		// console.log(items.constructor.name)
+	}
+
+	@action
+	setCount = (totalCount) => {
+		this.totalCount = totalCount;
+
 	}
 
 	@action
 	loadMore = () => {
-		this.pageNo++;
-		this.isLoading = true;
-		this.scrolling = true;
-		this.loadList();
+		const { pageNo, numOfRows, totalCount } = this;
+		let totalPage = Math.ceil(numOfRows * pageNo) >= totalCount;
+
+		let message = observable({
+			return: "마지막 페이지입니다.",
+			continue: "데이터가 남아있습니다."
+
+		})
+
+		console.log(totalPage, totalCount)
+
+		// totalPage의 갯수가 totalCount의 수보다 크거나 같으면 리턴
+		if (totalPage) {
+			return console.log(message.return)
+		}
+		else {
+			console.log(message.continue)
+			this.isLoading = true;
+			this.scrolling = true;
+			this.pageNo++;
+			this.loadList();
+		}
 	}
+
 
 	@action
 	handleScroll = () => {
@@ -72,8 +102,16 @@ export default class ListStore {
 		if (scrolledToBottom) {
 			this.loadMore();
 		}
-		// console.log(scrollTop, scrollHeight, clientHeight, scrolledToBottom)
 	};
+
+	@action
+	resetList = () => {
+		this.items = []
+		this.pageNo = 1;
+		this.isLoading = true;
+	};
+
+
 
 }
 
