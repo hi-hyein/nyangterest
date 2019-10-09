@@ -6,7 +6,6 @@ import { fadeOutDown } from "../Animations";
 
 // 툴팁
 
-
 const TooltipBoxWrapper = styled.div`
 	position: relative;
 	top: 42px;
@@ -53,7 +52,7 @@ const IconButton = styled.button`
 			width: 166px;
 			height: 50px;
 			// bottom: 18%;
-			right: -85%;	
+			right: -98%;	
 			z-index: 99;
 			opacity: 1;
 			padding: 10px 24px 5px 13px;

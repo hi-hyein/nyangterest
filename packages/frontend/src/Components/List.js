@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { observer, inject } from "mobx-react";
 import Item from "./Item";
 import styled from "styled-components";
 import Layer from './popup/Layer';
@@ -43,34 +44,23 @@ const Button = styled.button`
 		grid-column: span 1 !important;
 	}
 `
+@inject("popupStore")
+@observer
 class List extends Component {
-
-	state = { isOpen: 0 }
-
-	popupClick = (value) => {
-		this.setState({
-			isOpen: value,
-		})
-	}
-
-	popupClose = (value) => {
-		this.setState({
-			isOpen: 0,
-		})
-	}
 
 	render() {
 		const { products } = this.props;
+		const { isOpen, popupOpen, popupClose } = this.props.popupStore;
 		return (
 			<ListWrapper className="item-list">
 				{products.map((product) => {
 					return (
 						<li key={product.desertionNo}>
-							<Button onClick={() => this.popupClick(product.desertionNo)}>
+							<Button onClick={() => popupOpen(product.desertionNo)}>
 								<Item {...product} />
 							</Button>
-							{this.state.isOpen === product.desertionNo &&
-								<Layer layerTitle={`${product.kindCd}`.replace("한국 고양이", "코리안숏헤어")} onClose={() => this.popupClose(product.desertionNo)}>
+							{isOpen === product.desertionNo &&
+								<Layer layerTitle={`${product.kindCd}`.replace("한국 고양이", "코리안숏헤어")} onClose={() => popupClose(product.desertionNo)}>
 									<ListDetail {...product} />
 								</Layer>}
 						</li>

@@ -364,3 +364,63 @@ router.get("/search/:numOfRows", (req, res) => {
 	<SearchBox SearchChange={e => searchChange(e.target.value)} />
 
 ```
+
+- 멘토님이 주신 힌트대로 happenDt 타입을 기존의 number에서 date로 변경하였다.
+- 기존에 moment 라이브러리를 사용하고 있어서 를 이용하여 코드를 작성하였다.
+
+	```javascript
+	// 달력을 포함한 코드
+			const filteredDateItem = items.filter(
+				item => {
+					// number type을 string으로 변환하고 date로 변환
+					const happenDate = moment((item.happenDt).toString()).toDate()
+					const happenFrom = moment((from)).add(-1, "day").toDate()
+					return happenDate >= happenFrom &&
+						happenDate <= to
+					// type확인
+					// , console.log(happenDate.constructor.name, from.constructor.name, to.constructor.name)
+
+				}
+
+			);
+	```
+
+- 기본 일주일치 날짜 데이터는  제대로 검색이 된걸 확인하였다.
+- 그러나 출력되지 않은 일자에 대한 예를들어 17일에서 18일치는 내용이 나오지 않았다.
+- 해결방법 모색
+
+  1. 백엔드에서 numOfRows 갯수조절
+	- 프론트엔드에서 갯수를 늘리는거와 똑같은 결과물 오히려 더 느린 느낌
+  2. 프론트 시작일 & 종료일 기본 일주일 검색을 한달로 변경
+
+   ```javascript
+   // 오늘 날짜 기준으로 한달전
+	const defaultFrom = new Date(Date.now() + -30 * 24 * 3600 * 1000); //-일/시/60분*60초/밀리세컨
+   ```
+
+- 스크롤링 offsetTop null error때문에 기존 코드를 아예 변경하였다.
+  
+  ```javascript
+		@action
+		handleScroll = () => {
+			const { isLoading, hasMore, error } = this;
+			if (error || isLoading || !hasMore) return;
+			// 스크롤링 후 올라간 만큼의 높이
+			const scrollTop =
+				(document.documentElement && document.documentElement.scrollTop) ||
+				document.body.scrollTop;
+			// 보이는 만큼의 높이	
+			const clientHeight =
+				document.documentElement.clientHeight || window.innerHeight;
+			// 스크롤링 없는 전체 높이
+			const scrollHeight =
+				(document.documentElement && document.documentElement.scrollHeight) ||
+				document.body.scrollHeight;
+			const scrolledToBottom =
+				Math.ceil(scrollTop + clientHeight) >= scrollHeight;
+			if (scrolledToBottom) {
+				this.loadMore();
+			}
+			// console.log(scrollTop, scrollHeight, clientHeight, scrolledToBottom)
+		};
+	```

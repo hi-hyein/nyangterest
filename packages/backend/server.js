@@ -9,47 +9,27 @@ const app = express();
 const PORT = 8080;
 const hash = require('hash.js');
 const nodemailer = require('nodemailer');
+const passport = require('passport');
+const LocalStrategy = require('passport-local').Strategy;
+const session = require('express-session');
+const FileStore = require('session-file-store')(session);
 
-const serviceKey = `P3gvH0LsdoPkxFnZU2Ee98hGDDEwVTJndJFa8NDUhznSLlZG6OOxBopFWLBmiCPOfWXsF8Wz8LFHJguz41qJvA%3D%3D&`;
+const serviceKey = `P3gvH0LsdoPkxFnZU2Ee98hGDDEwVTJndJFa8NDUhznSLlZG6OOxBopFWLBmiCPOfWXsF8Wz8LFHJguz41qJvA%3D%3D`;
 const api = 'http://openapi.animal.go.kr/openapi/service/rest/abandonmentPublicSrvc';
 // 기본주소
 
-router.get("/page/:numOfRows/:id/", (req, res) => {
-	const bgnde = moment()
-		.subtract(1, "month")
-		.format("YYYYMMDD");
-	const endde = moment().format("YYYYMMDD");
+router.get("/page/:bgnde/:endde/:numOfRows/:id/", (req, res) => {
+	const bgnde = req.params.bgnde;
+	const endde = req.params.endde;
 	const numOfRows = req.params.numOfRows;
 	const pageNo = req.params.id;
-	const url = `${api}/abandonmentPublic?ServiceKey=${serviceKey}_type=json&bgnde=${bgnde}&endde=${endde}&upkind=422400&numOfRows=${numOfRows}&pageNo=${pageNo}`;
+	const url = `${api}/abandonmentPublic?ServiceKey=${serviceKey}&_type=json&bgnde=${bgnde}&endde=${endde}&upkind=422400&numOfRows=${numOfRows}&pageNo=${pageNo}`;
 
 	fetch(url)
 		.then(response => response.json())
 		.then(json => {
 			res.send(json.response.body);
-			// console.log(json.response.body.items)
-			// console.log("key:" + req.params.id);
-			// console.log("key2:" + req.params.numOfRows);
-			// console.log("today:" + endde);
-			// console.log("3month:" + bgnde);
-		})
-		.catch(() => {
-			res.send(JSON.stringify({ message: "System Error" }));
-		});
-});
-
-
-// 시군구
-
-router.get("/search/sido", (req, res) => {
-	const url = `${api}/sido?ServiceKey=${serviceKey}_type=json`;
-
-	fetch(url)
-		.then(response => response.json())
-		.then(json => {
-			res.send(json.response.body.items);
-			// console.log(json.response.body.items)
-
+			console.log(bgnde, endde, json.response.body.totalCount);
 		})
 		.catch(() => {
 			res.send(JSON.stringify({ message: "System Error" }));
@@ -59,7 +39,7 @@ router.get("/search/sido", (req, res) => {
 // 품종
 
 router.get("/search/kind", (req, res) => {
-	const url = `${api}/kind?ServiceKey=${serviceKey}_type=json&up_kind_cd=422400`;
+	const url = `${api}/kind?ServiceKey=${serviceKey}&_type=json&up_kind_cd=422400`;
 
 	fetch(url)
 		.then(response => response.json())
@@ -74,24 +54,34 @@ router.get("/search/kind", (req, res) => {
 });
 
 // 필터링
-router.get("/search/:numOfRows", (req, res) => {
-	const bgnde = moment()
-		.subtract(3, "month")
-		.format("YYYYMMDD");
-	const numOfRows = req.params.numOfRows;
-	const endde = moment().format("YYYYMMDD");
-	const url = `${api}/abandonmentPublic?ServiceKey=${serviceKey}_type=json&bgnde=${bgnde}&endde=${endde}&upkind=422400&numOfRows=${numOfRows}`;
 
-	fetch(url)
-		.then(response => response.json())
-		.then(json => {
-			res.send(json.response.body.items);
-		})
-		.catch(() => {
-			res.send(JSON.stringify({ message: "System Error" }));
-		});
-});
+// router.post("/search/date/", (req, res) => {
+// 	const body = req.body;
+// 	const bgnde = body.bgnde || null;
+// 	const endde = body.endde || null;
+// 	const numOfRows = body.numOfRows;
 
+// 	// bgnde = moment()
+// 	// 	.subtract(1, "month")
+// 	// 	.format("YYYYMMDD");
+// 	// endde = moment().format("YYYYMMDD");
+
+// 	const url = `${api}/abandonmentPublic?ServiceKey=${serviceKey}&_type=json&bgnde=${bgnde}&endde=${endde}&upkind=422400&numOfRows=${numOfRows}`;
+
+
+// 	fetch(url)
+// 		.then(response => response.json())
+// 		.then(res.send(json.response.body))
+// 		.then(req => {
+// 			res.send(req.body);
+// 			console.log(req.body)
+
+// 		})
+// 		.catch(() => {
+// 			res.send(JSON.stringify({ message: "System Error" }));
+// 		});
+
+// });
 
 
 // db접속
@@ -117,6 +107,7 @@ app.get("/admin/member", (req, res) => {
 	});
 });
 
+// 회원가입
 router.post("/", (req, res) => {
 	const body = req.body;
 	console.log('test', body);
@@ -185,6 +176,7 @@ router.post("/", (req, res) => {
 	})
 });
 
+// 회원가입 완료
 router.get("/welcome", (req, res) => {
 	// 인증메일 인증작업
 	// 1. 쿼리로 가져온 이메일로 디비의 row를 뽑아온다
@@ -211,7 +203,62 @@ router.get("/welcome", (req, res) => {
 	})
 });
 
+// 로그인
+app.use(session({ secret: 'abcde', resave: true, saveUninitialized: false, store: new FileStore() })); // 세션 활성화
+app.use(passport.initialize()); // passport 구동
+app.use(passport.session()); // 세션 연결
 
+passport.serializeUser((user, done) => { // Strategy 성공 시 호출됨
+	console.log('serializeUser', user[0].email)
+	done(null, user[0].email); // 여기의 user가 deserializeUser의 첫 번째 매개변수로 이동
+});
+
+passport.deserializeUser((id, done) => { // 매개변수 user는 serializeUser의 done의 인자 user를 받은 것
+	console.log('deserializeUser', id)
+	connection.query(`SELECT * FROM member WHERE email='${id}'`, (err, rows, fields) => {
+		done(null, rows[0].email); // 여기의 user가 req.user가 됨
+	})
+});
+
+passport.use(new LocalStrategy({ // local 전략을 세움
+	usernameField: 'userId',
+	passwordField: 'userPassword',
+	session: true, // 세션에 저장 여부
+	passReqToCallback: false,
+}, (id, password, done) => {
+	console.log("id:", id, "pw:", password, "done:", done)
+	const userPwHash = hash.sha256().update(password).digest('hex');
+	connection.query(`SELECT * FROM member WHERE email='${id}'`, function (err, result) {
+		if (err) {
+			console.log('err :' + err);
+			return done(false, null);
+		} else {
+			if (result.length === 0) {
+				console.log('해당 유저가 없습니다');
+				return done(false, null);
+			} else {
+				if (userPwHash !== result[0].password) {
+					console.log('패스워드가 일치하지 않습니다');
+					return done(false, null);
+				} else {
+					console.log(result[0].email, '님 :로그인 성공');
+					return done(null, result)
+				}
+			}
+		}
+	});
+}));
+
+router.post("/signin", passport.authenticate('local', {
+	failureRedirect: "/"
+}), (req, res) => {
+	console.log(req.user)
+	console.log(req.session)
+	res.json({
+		sucess: true,
+		_userId: req.session.passport.user
+	})
+});
 
 app.use(express.json());
 
@@ -226,9 +273,6 @@ app.use(cors());
 app.use("/", router);
 // app.use("/search", router);
 // app.use("/admin/member", router);
-
-
-
 
 app.listen(PORT, function () {
 	console.log("enabled web server listening !");

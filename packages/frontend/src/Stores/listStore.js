@@ -1,7 +1,9 @@
 import { observable, action, runInAction } from "mobx";
+import moment from "moment";
 
 export default class ListStore {
 	@observable items = [];
+	@observable totalCount = 0;
 	@observable numOfRows = 72;
 	@observable pageNo = 1;
 	@observable scrolling = false;
@@ -9,39 +11,30 @@ export default class ListStore {
 	@observable isLoading = false;
 	@observable error = false;
 
-
 	constructor(root) {
 		this.root = root;
 	}
 
 	@action
-	// 매개변수로 pageNo를 넣어준다.
-	loadList = async (pageNo) => {
+	loadList = async () => {
 
 		try {
 			const { items, pageNo, numOfRows } = this;
-			const url = `/page/${numOfRows}/${pageNo}`;
+			const { from, to } = this.root.searchStore;
+			const happenFrom = moment(from).format("YYYYMMDD")
+			const happenTo = moment(to).format("YYYYMMDD")
+			const url = `/page/${happenFrom}/${happenTo}/${numOfRows}/${pageNo}`;
+			// const url = `/page/${numOfRows}/${pageNo}`;
 			const response = await fetch(url);
 			const json = await response.json();
-
 			runInAction(() => {
-				// console.log(`${this}, "numOfRows:" ${numOfRows}, "pageNo:" ${pageNo}`);
-				this.setItems([...items, ...json.items.item]);
-				return { error: "" }
-
-			});
-
-			// 스크롤을 내릴때 리스트 보여줄게 있으면 loadmore함수를 실행해서 다음 페이지를 보여줘라.이걸 어떻게 해야 하나
-
-			// if (pageNo.length !== 0) {
-			// 	this.pageNo++;
-			// 	this.scrolling = true;
-			// 	console.log(this.loadMore = "loadMore 굴러간다잉")
-			// }
+				this.setItems([...items, ...json.items.item || []])
+				this.setCount(json.totalCount)
+			}, console.log(json.totalCount));
 
 		} catch (err) {
 			runInAction(() => {
-				// console.log(err);
+				console.log(err);
 				this.isLoading = false;
 			})
 		}
@@ -52,30 +45,73 @@ export default class ListStore {
 		this.items = items;
 		this.isLoading = false;
 		this.scrolling = false;
+		console.log(items.length)
+		// console.log(items.constructor.name)
+	}
+
+	@action
+	setCount = (totalCount) => {
+		this.totalCount = totalCount;
+
 	}
 
 	@action
 	loadMore = () => {
-		this.pageNo++;
-		this.isLoading = true;
-		this.scrolling = true;
-		this.loadList();
+		const { pageNo, numOfRows, totalCount } = this;
+		let totalPage = Math.ceil(numOfRows * pageNo) >= totalCount;
+
+		let message = observable({
+			return: "마지막 페이지입니다.",
+			continue: "데이터가 남아있습니다."
+
+		})
+
+		console.log(totalPage, totalCount)
+
+		// totalPage의 갯수가 totalCount의 수보다 크거나 같으면 리턴
+		if (totalPage) {
+			return console.log(message.return)
+		}
+		else {
+			console.log(message.continue)
+			this.isLoading = true;
+			this.scrolling = true;
+			this.pageNo++;
+			this.loadList();
+		}
 	}
+
 
 	@action
 	handleScroll = () => {
 		const { isLoading, hasMore, error } = this;
 		if (error || isLoading || !hasMore) return;
-		// if (numOfRows <= pageNo) return;
-		const lastLi = document.querySelector("ul.item-list > li:last-child");
-		const lastLiOffset = lastLi.offsetTop + lastLi.clientHeight;
-		const pageOffset = window.pageYOffset + window.innerHeight;
-		const bottomOffset = 20;
-
-		if (pageOffset > lastLiOffset - bottomOffset) {
+		// 스크롤링 후 올라간 만큼의 높이
+		const scrollTop =
+			(document.documentElement && document.documentElement.scrollTop) ||
+			document.body.scrollTop;
+		// 보이는 만큼의 높이	
+		const clientHeight =
+			document.documentElement.clientHeight || window.innerHeight;
+		// 스크롤링 없는 전체 높이
+		const scrollHeight =
+			(document.documentElement && document.documentElement.scrollHeight) ||
+			document.body.scrollHeight;
+		const scrolledToBottom =
+			Math.ceil(scrollTop + clientHeight) >= scrollHeight;
+		if (scrolledToBottom) {
 			this.loadMore();
 		}
 	};
+
+	@action
+	resetList = () => {
+		this.items = []
+		this.pageNo = 1;
+		this.isLoading = true;
+	};
+
+
 
 }
 
