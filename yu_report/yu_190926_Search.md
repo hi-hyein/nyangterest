@@ -105,15 +105,96 @@ handleFromChange와 handleToChange 함수를 실행할때 (from과 to에 날짜�
 
  ```
 
-3.  검색한 날짜의 아이템이 더 이상 없을때 로딩이 멈추고 메세지를 띄워줘야 할거 같다. 
+3. searchList()를 만들었었다가 기존 url에  bgnde와 endde을 파라미터로 추가해도 될거 같아서 loadList()에 코드를 추가하였다.
+   달력라이브러리에서 제공하는 변수인 input value값 from과 to는 검색에 관련되었으니 searchStore에 다시 분리해줬다.
 
-4. get함수를 만들어서 예쁘게 wrapping할 코드들이 많다.
+4. 달력에서 from과 to에  날짜를 선택한 후  더이상 보여줄 페이지가 없을때도 로딩중이 되는 에러 해결방법 모색
+     * json정보에 totalCount라는 응답변수가 있다 이걸 이용해서 조건문을 걸면 될거 같아서 코드를 추가하였다.
 
-5. 검색할때 결국 같은 url을 불러도 될거 같아서 searchList()를 만들었었다가 loadList()에 코드를 추가하였다.
-   그런데 검색에 관련된 코드니 searchStore에 다시 분리해줘야 할거 같다.
+5. 기본 세팅한 날짜는 현재날짜로 설정해두었는데 가령 새벽에는 유기 데이터가 전혀 없을때가 있다. 
+ 	이럴때 콘솔창에서 TypeError: Invalid attempt to spread non-iterable instance 에러가 나는데 
+	 loadlist안에 코드를 수정하니 에러메세지는 더이상 나오지 않는데 맞는건지는 잘 모르겠다.
 
-6. 달력라이브러리 코드를 다시 분리해보자.
 
-7. 이건 남자친구의 피드백인데 만약 사용자가 날짜 선택전에 품종 카테고리나 검색어를 입력할때는 어떻게 해야 할까? 
+  ``` javascript 
+  // 중략
+  @observable totalCount = 0;
 
-   
+  	@action
+	loadList = async () => {
+
+		try {
+			// 중략 
+			runInAction(() => {
+				this.setItems([...items, ...json.items.item || []])
+				this.setCount(json.totalCount)
+			}, console.log(json.totalCount));
+		} catch (err) {
+			runInAction(() => {
+				console.log(err);
+				this.isLoading = false;
+			})
+		}
+	};
+
+	@action
+	setCount = (totalCount) => {
+		this.totalCount = totalCount;
+
+	}
+
+	@action
+	loadMore = () => {
+		const { pageNo, numOfRows, totalCount } = this;
+		let totalPage = Math.ceil(numOfRows * pageNo) >= totalCount;
+
+		let message = observable({
+			return: "마지막 페이지입니다.",
+			continue: "데이터가 남아있습니다."
+
+		})
+
+		// totalPage의 갯수가 totalCount의 수보다 크거나 같으면 리턴
+		if (totalPage) {
+			return console.log(message.return)
+		}
+		else {
+			console.log(message.continue)
+			this.isLoading = true;
+			this.scrolling = true;
+			this.pageNo++;
+			this.loadList();
+		}
+	}
+
+  ```
+
+6. 마지막페이지까지 스크롤링 후 새로고침을 하지 않고 날짜변경을 여러번 하면 기존 검색한 페이지 + 1이 된다.
+
+   1. resetList()에 this.pageNo = 1을 추가해서 해결한줄 알았는데  여러번 검색시 간헐적으로 한페이지가 홀랑 넘어가는 오류가 생기길래
+   여러번 테스트해본결과 to나 from에서 기존 날짜를 겹쳐서 검색하면 스킵되는거 같더라.
+
+   2. resetList()에 isLoading을 true로 바꾸고 원하는 대로 보여진다. flase일때는 기존에 불러온 데이터라 스킵되는 느낌인데 확실하지는 않다.
+
+ ``` javascript
+ 	@action
+	resetList = () => {
+		this.items = []
+		this.pageNo = 1;
+		this.isLoading = true;
+	};
+ ```
+
+7. get함수를 만들어서 예쁘게 wrapping할 코드들이 많다.
+
+8. 달력라이브러리 코드를 Home.js에서 분리하여 DayPicker.js에  액션로직을 분리하여 listStore.js와 searchStore.js에 추가하였다.
+
+9. 이건 남자친구의 피드백인데 만약 사용자가 날짜 선택전에 품종 카테고리나 검색어를 입력할때는 어떻게 해야 할지도 생각해보자. 
+
+10. store파일(listStore.js,searchStore.js)에서 화면에 경고 메세지를 띄우는 방법은 없으려나. 
+
+     * 이건 생각해보니 로직만 담는 파일에 뷰코드가 있는건 철학에 맞지 않는거 아닐까 싶다.
+  
+11. store파일에 if문 코드 중  삼항연산자로 변경할 수 있는 코드가 있는지 찾아보고 수정
+
+	 * 마땅히 수정할 코드가 없는듯 하다.

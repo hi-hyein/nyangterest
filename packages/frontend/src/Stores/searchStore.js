@@ -21,13 +21,17 @@ export default class SearchStore {
 	handleToChange = to => {
 		const { loadList, resetList } = this.root.listStore;
 		this.to = to;
-		console.log(typeof to)
+		console.log(typeof to, to)
 		// to의 날짜를 선택했을때 최근날짜의 리스트는 리셋해야 한다.
+
 		if (typeof to === "object") {
 			resetList();
+			console.log("reset")
 			loadList();
+			console.log("load")
 		} else {
 			loadList();
+			console.log("load")
 		}
 
 	};

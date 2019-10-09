@@ -76,8 +76,8 @@ export default class ListStore {
 			console.log(message.continue)
 			this.isLoading = true;
 			this.scrolling = true;
-			this.loadList();
 			this.pageNo++;
+			this.loadList();
 		}
 	}
 
@@ -108,7 +108,7 @@ export default class ListStore {
 	resetList = () => {
 		this.items = []
 		this.pageNo = 1;
-		this.isLoading = false;
+		this.isLoading = true;
 	};
 
 
