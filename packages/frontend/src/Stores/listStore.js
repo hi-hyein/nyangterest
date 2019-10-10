@@ -19,12 +19,12 @@ export default class ListStore {
 	loadList = async () => {
 
 		try {
-			const { items, pageNo, numOfRows } = this;
-			const { from, to } = this.root.searchStore;
-			const happenFrom = moment(from).format("YYYYMMDD")
-			const happenTo = moment(to).format("YYYYMMDD")
-			const url = `/page/${happenFrom}/${happenTo}/${numOfRows}/${pageNo}`;
-			// const url = `/page/${numOfRows}/${pageNo}`;
+			// const { from, to } = this.root.searchStore;
+			// const happenFrom = moment(from).format("YYYYMMDD")
+			// const happenTo = moment(to).format("YYYYMMDD")
+			// const url = `/page/${happenFrom}/${happenTo}/${numOfRows}/${pageNo}`;
+			const { items, pageNo, numOfRows, getHappenFrom, getHappenTo } = this;
+			const url = `/page/${getHappenFrom()}/${getHappenTo()}/${numOfRows}/${pageNo}`;
 			const response = await fetch(url);
 			const json = await response.json();
 			runInAction(() => {
@@ -39,6 +39,21 @@ export default class ListStore {
 			})
 		}
 	};
+
+	@action
+	getHappenFrom = () => {
+		const { from } = this.root.searchStore;
+		const happenFrom = moment(from).format("YYYYMMDD")
+		return happenFrom
+	}
+
+	@action
+	getHappenTo = () => {
+		const { to } = this.root.searchStore;
+		const happenTo = moment(to).format("YYYYMMDD")
+		return happenTo
+	}
+
 
 	@action
 	setItems = (items) => {
