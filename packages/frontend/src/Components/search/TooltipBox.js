@@ -1,6 +1,6 @@
 import React, { Fragment } from "react";
 import CookieConsent from "react-cookie-consent";
-import { MdPets, MdClose } from "react-icons/md";
+import { MdPets } from "react-icons/md";
 import styled from "styled-components";
 import { fadeOutDown } from "../Animations";
 
@@ -28,12 +28,11 @@ const TooltipBoxWrapper = styled.div`
 const IconButton = styled.button`
 	width: 3.2rem;
 	height: 3rem;
-	border: none;
 	background: none;
+	margin-right: 3.2rem;
 	font-size: 2.3rem;
 	color: #ccc;
 	transition: all 2s ease;
-	outline: none;
 
 		&.active {
 			color: #45B3E0;
@@ -50,12 +49,12 @@ const IconButton = styled.button`
 
 			position: absolute;
 			width: 166px;
-			height: 50px;
+			height: 60px;
 			// bottom: 18%;
-			right: -98%;	
+			right: 0;	
 			z-index: 99;
 			opacity: 1;
-			padding: 10px 24px 5px 13px;
+			padding: 5px 15px 5px 13px;
 			background-color: #808080;
 			border: 1px solid rgba(115, 115, 115, 0.8);
 			border-radius: 5px;
@@ -63,40 +62,12 @@ const IconButton = styled.button`
 			text-align: center;
 			-webkit-box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.15);
 			box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.15);
-			
-			& > button {
-				position: absolute;
-				top: 0;
-				right: 0;
-				padding: 0;
-				font-size: 1.2rem;
-				color: #fff;
-				background: transparent;
-				border: 0;
 
-				& svg {
-					vertical-align: top;
-				}
-
-				 &:hover {
-				 	top: -0.8rem;
-				 	left: 1rem;
-				 	// right: 0;
-				 	// text-align: center; 
-
-				 	 &:before {
-				 	 	position: relative;
-						padding: 5px 2px;
-				 	 	font-size: 0.8rem;
-				 	 	font-weight: 600;
-				 	 	content:"오늘 하루 보이지 않기 X";
-				 	 	color: #333;
-						background: #fff;
-						border: 1px solid #000;
-						border-radius: 3px;
-						 
-				 	}
-				 }
+			> button {
+						padding:2px 3px;
+						background: #eee;
+						font-size: 12px;
+					
 			}
 
 			&  p {color: #fff;line-height: 1.5rem;}
@@ -125,13 +96,12 @@ const IconButton = styled.button`
 		}
 `;
 
-
 const TooltipBox = (props) => {
 	return (
 		<Fragment>
 			<TooltipBoxWrapper className="btn-wrap">
 				<IconButton className={props.active ? 'active' : ''} onClick={props.onClick} ><MdPets /></IconButton>
-				<CookieConsent disableStyles cookieName="TooltipBox" location="none" onAccept={() => { alert("오늘 하루 툴팁박스가 보이지 않게 되었습니다! ") }} buttonText={<MdClose />} expires={1}>
+				<CookieConsent disableStyles cookieName="TooltipBox" buttonText={"오늘 하루 보이지 않기 X"} location="none" onAccept={() => { alert("24시간 동안 툴팁박스가 보이지 않게 되었습니다! ") }} expires={1} >
 					<p>날짜/종류/상태 필터</p>
 				</CookieConsent>
 			</TooltipBoxWrapper>
