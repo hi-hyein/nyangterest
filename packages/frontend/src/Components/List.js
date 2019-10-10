@@ -36,7 +36,6 @@ const Button = styled.button`
 	width: 100%;
     padding: 0;
 	font-size: inherit;
-    border: 0;
 	cursor: zoom-in;
 	background: unset;
 

@@ -18,7 +18,7 @@ const GlobalStyle = createGlobalStyle`
   }
 
   #wrap {
-	  		padding-top: 76px;
+			padding-top: 76px;
 
 			@media screen and (max-width:1024px) {
 				padding-top:0;
@@ -41,7 +41,10 @@ const GlobalStyle = createGlobalStyle`
 		text-decoration: none;
   }
 
-  button {cursor: pointer;
+  button {
+	cursor: pointer;
+	border: none;
+
   	&:focus{
 		  outline:0;
 		  }
