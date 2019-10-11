@@ -43,15 +43,15 @@ export default class ListStore {
 	@action
 	getHappenFrom = () => {
 		const { from } = this.root.searchStore;
-		const happenFrom = moment(from).format("YYYYMMDD")
-		return happenFrom
+		const happenFrom = moment(from).format("YYYYMMDD");
+		return happenFrom;
 	}
 
 	@action
 	getHappenTo = () => {
 		const { to } = this.root.searchStore;
-		const happenTo = moment(to).format("YYYYMMDD")
-		return happenTo
+		const happenTo = moment(to).format("YYYYMMDD");
+		return happenTo;
 	}
 
 
