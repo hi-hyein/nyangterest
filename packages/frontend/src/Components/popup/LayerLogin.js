@@ -88,6 +88,10 @@ class LayerLogin extends Component {
                     console.log(json._userId)
                     changeUserState()
                     changeUserId(json._userId)
+                    localStorage.setItem(
+                        "userInfo",
+                        JSON.stringify(json._userId)
+                    )
                 }
             })
         }else {

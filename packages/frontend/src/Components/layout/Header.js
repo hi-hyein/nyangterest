@@ -109,7 +109,7 @@ class Header extends React.Component {
 							<Button variant="contained" color="primary" onClick={this.popupOpenJoin}>JOIN</Button>
 						</Fragment> :
 						<>
-						<span>{userId}님 안녕하세요</span>
+						<span>{localStorage.getItem('userInfo')}님 안녕하세요</span>
 						<div className="btn-menu-area" style={menuBtnArea}>
 							<button type="button" title="메뉴" onClick={this.menuToggle} style={{background: "none"}}>
 								<DehazeIcon />
@@ -121,6 +121,7 @@ class Header extends React.Component {
 									<MenuItem onClick={()=>{
 										changeUserState()
 										fetch('/logout')
+										localStorage.removeItem('userInfo')
 									}}>로그아웃</MenuItem>
 									<MenuItem>회원정보수정</MenuItem>
 									<MenuItem>회원탈퇴</MenuItem>
