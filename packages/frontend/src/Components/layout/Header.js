@@ -5,6 +5,10 @@ import Layer from '../popup/Layer';
 import LayerLogin from '../popup/LayerLogin';
 import LayerJoin from '../popup/LayerJoin';
 import { observer, inject } from "mobx-react";
+import DehazeIcon from '@material-ui/icons/Dehaze';
+import MenuItem from '@material-ui/core/MenuItem';
+import MenuList from '@material-ui/core/MenuList';
+import Paper from '@material-ui/core/Paper';
 
 @inject('loginStore')
 @observer
@@ -12,6 +16,7 @@ class Header extends React.Component {
 	state = {
 		openLogin: false,
 		openJoin: false,
+		btnMenuArea: false,
 	}
 
 	popupOpenLogin = () => {
@@ -33,16 +38,27 @@ class Header extends React.Component {
 		})
 	}
 
+	menuToggle = () => {
+		if(this.state.btnMenuArea===true){
+			this.setState({
+				btnMenuArea: false
+			})
+		}else {
+			this.setState({
+				btnMenuArea: true
+			})
+		}
+	}
+
 
 	render() {
 		const {userId,userState} = this.props.loginStore;
-		const { openLogin, openJoin } = this.state;
+		const { openLogin, openJoin, btnMenuArea } = this.state;
 		const HeaderStyle = {
 			position: 'fixed',
 			top: '0',
 			left: '0',
 			right: '0',
-			overflow: 'hidden',
 			padding: "0 20px",
 			zIndex: '999',
 			backgroundColor: 'skyblue',
@@ -56,6 +72,19 @@ class Header extends React.Component {
 			fontSize:'30px',
 			fontWeight: 'bold',
 			letterSpacing: '3px'
+		}
+
+		const menuBtnArea = {
+			position: 'relative',
+			display: 'inline-block',
+			verticalAlign: 'middle',
+			marginLeft: '10px'
+		}
+
+		const myMenuList = {
+			position: 'absolute',
+			top: '100%',
+			right: '0',
 		}
 
 		return (
@@ -81,7 +110,22 @@ class Header extends React.Component {
 						</Fragment> :
 						<>
 						<span>{userId}님 안녕하세요</span>
-						<button type="button">MENU</button>
+						<div className="btn-menu-area" style={menuBtnArea}>
+							<button type="button" title="메뉴" onClick={this.menuToggle} style={{background: "none"}}>
+								<DehazeIcon />
+							</button>
+							{btnMenuArea === true && 
+							<div clasName="my-menu-list" style={myMenuList}>
+								<Paper>
+									<MenuList>
+									<MenuItem>로그아웃</MenuItem>
+									<MenuItem>회원정보수정</MenuItem>
+									<MenuItem>회원탈퇴</MenuItem>
+									</MenuList>
+								</Paper>
+							</div>
+							}
+						</div>
 						</>
 					}
 				</div>
