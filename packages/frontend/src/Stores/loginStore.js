@@ -2,7 +2,7 @@ import { observable, action } from "mobx";
 
 export default class loginStore {
 	@observable userId = "";
-	@observable userState = "login";
+	@observable userState = "logout";
 
 	constructor(root) {
 		this.root = root;
