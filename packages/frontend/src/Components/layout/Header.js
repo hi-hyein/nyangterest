@@ -52,7 +52,7 @@ class Header extends React.Component {
 
 
 	render() {
-		const {userId,userState} = this.props.loginStore;
+		const {userId,userState,changeUserState} = this.props.loginStore;
 		const { openLogin, openJoin, btnMenuArea } = this.state;
 		const HeaderStyle = {
 			position: 'fixed',
@@ -115,10 +115,13 @@ class Header extends React.Component {
 								<DehazeIcon />
 							</button>
 							{btnMenuArea === true && 
-							<div clasName="my-menu-list" style={myMenuList}>
+							<div className="my-menu-list" style={myMenuList}>
 								<Paper>
 									<MenuList>
-									<MenuItem>로그아웃</MenuItem>
+									<MenuItem onClick={()=>{
+										changeUserState()
+										fetch('/logout')
+									}}>로그아웃</MenuItem>
 									<MenuItem>회원정보수정</MenuItem>
 									<MenuItem>회원탈퇴</MenuItem>
 									</MenuList>
