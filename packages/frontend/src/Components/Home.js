@@ -68,6 +68,8 @@ const Form = styled.form`
       + .btn-wrap {
         margin-top: 24px;
         top: unset;
+		min-width: auto;
+		margin-left: 10px;
       }
     }
 
