@@ -4,6 +4,7 @@ export default class BtnStore {
 	@observable isVisible = false;
 	@observable active = false;
 	@observable on = false;
+	@observable timer = null;
 
 	constructor(root) {
 		this.root = root;
@@ -20,15 +21,14 @@ export default class BtnStore {
 	// 맨위로 이동 버튼
 	@action
 	handleScrollTop = () => {
+
 		this.on = true;
-		window.scrollTo(
-			{
-				top: 0,
-				behavior: "smooth"
-			},
-			setTimeout(() => {
-				this.on = false;
-			}, 2000)
-		)
+		document.body.scrollTop = 0;
+		document.documentElement.scrollTop = 0
+
+		this.timer = setTimeout(() => {
+			this.on = false;
+		}, 2000);
+
 	};
 }

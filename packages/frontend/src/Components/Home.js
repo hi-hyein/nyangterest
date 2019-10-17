@@ -125,8 +125,9 @@ class Home extends Component {
 	}
 
 	componentWillUnmount() {
+		const { timer } = this.props.btnStore;
+		clearTimeout(timer);
 		window.removeEventListener("scroll", this._throttledScroll);
-
 	}
 
 	render() {
