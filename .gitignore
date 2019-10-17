@@ -154,3 +154,7 @@ packages/backend/db.json
 *.sql
 *.txt
 *.csv
+
+
+#session
+sessions/*

@@ -204,7 +204,7 @@ router.get("/welcome", (req, res) => {
 });
 
 // 로그인
-app.use(session({ secret: 'abcde', resave: true, saveUninitialized: false, store: new FileStore() })); // 세션 활성화
+app.use(session({ secret: 'abcde', resave: false, saveUninitialized: false, store: new FileStore() })); // 세션 활성화
 app.use(passport.initialize()); // passport 구동
 app.use(passport.session()); // 세션 연결
 
@@ -259,6 +259,14 @@ router.post("/signin", passport.authenticate('local', {
 		_userId: req.session.passport.user
 	})
 });
+
+router.get('/logout',(req,res)=>{
+	console.log('로그아웃')
+	req.logout();//passportjs에 있는 기능
+	req.session.save(function(){//세션작업이 끝난상태에서 안전하게 welcome페이지로 이동
+	res.redirect('/');
+	});
+})
 
 app.use(express.json());
 

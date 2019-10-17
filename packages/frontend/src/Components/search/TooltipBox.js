@@ -10,7 +10,7 @@ const TooltipBoxWrapper = styled.div`
 	position: relative;
 	top: 42px;
 	margin-left: auto;
-	// min-width: 180px;
+	min-width: 166px;
 	height: 100px;
 
 	@media screen and (max-width: 1024px) {
@@ -29,7 +29,6 @@ const IconButton = styled.button`
 	width: 3.2rem;
 	height: 3rem;
 	background: none;
-	margin-right: 3.2rem;
 	font-size: 2.3rem;
 	color: #ccc;
 	transition: all 2s ease;
@@ -48,7 +47,7 @@ const IconButton = styled.button`
 		& + div {
 
 			position: absolute;
-			width: 166px;
+			width: 100%;
 			height: 60px;
 			// bottom: 18%;
 			right: 0;	
@@ -77,7 +76,7 @@ const IconButton = styled.button`
 		& + div:before {
 
 			position: absolute;
-			left: 84px;
+			left: 77px;
 			top: -6px;
 			width: 9px;
 			height: 9px;
