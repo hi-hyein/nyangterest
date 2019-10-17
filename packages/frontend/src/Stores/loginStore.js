@@ -2,7 +2,7 @@ import { observable, action } from "mobx";
 
 export default class loginStore {
 	@observable userId = "";
-	@observable userState = "logout";
+	@observable userState = localStorage.getItem('userInfo')?"login":"logout"
 
 	constructor(root) {
 		this.root = root;
@@ -10,7 +10,11 @@ export default class loginStore {
 
 	@action
 	changeUserState = ()=>{
-		this.userState = "login"
+		if(this.userState === "logout"){
+			this.userState = "login"	
+		}else {
+			this.userState = "logout"
+		}
 	}
 
 	@action

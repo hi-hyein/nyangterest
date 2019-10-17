@@ -4,6 +4,7 @@ import Button from '@material-ui/core/Button';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import { observer, inject } from "mobx-react";
 
+// eslint-disable-next-line
 const MAIL_FORMAT = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
 const PASSWORD_FORMAT = /^[a-zA-Z0-9]{6,15}$/
 
@@ -87,6 +88,10 @@ class LayerLogin extends Component {
                     console.log(json._userId)
                     changeUserState()
                     changeUserId(json._userId)
+                    localStorage.setItem(
+                        "userInfo",
+                        JSON.stringify(json._userId)
+                    )
                 }
             })
         }else {

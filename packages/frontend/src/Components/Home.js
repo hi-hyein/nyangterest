@@ -1,20 +1,12 @@
 import React, { Component, Fragment } from "react";
 import { observer, inject } from "mobx-react";
 import throttle from "lodash.throttle";
-import debounce from "lodash.debounce";
-import DayPickerInput from "react-day-picker/DayPickerInput";
-import DayPickerStyle from "./search/DayPickerStyle";
-import MomentLocaleUtils, {
-	formatDate,
-	parseDate
-} from "react-day-picker/moment";
-import moment from "moment";
+import DayPicker from "./search/DayPicker";
 import "moment/locale/ko";
 import styled from "styled-components";
 import List from "./List";
 import Loading from "./Loading";
 import FormBox from "./search/FormBox";
-// import DayPicker from "./search/DayPicker";
 import SearchBox from "./search/SearchBox";
 import SelectBox from "./search/SelectBox";
 import TooltipBox from "./search/TooltipBox";
@@ -76,6 +68,8 @@ const Form = styled.form`
       + .btn-wrap {
         margin-top: 24px;
         top: unset;
+		min-width: auto;
+		margin-left: 10px;
       }
     }
 
@@ -118,124 +112,30 @@ const Form = styled.form`
   }
 `;
 
-const InputFromDiv = styled.div`
-	display: inline-block;
-
-	input {
-			max-width:127px; 
-			border:none
-			// border-bottom: 1px dotted #f00;
-			font-size: 1rem;
-			line-height: 1.5rem;
-			text-align: center;
-
-			&::placeholder {
-				color: #ccc;
-				// text-align: center;
-			}
-		}
-`;
-
-// 오늘 날짜 기준으로 한달전
-const defaultFrom = new Date(Date.now() + -30 * 24 * 3600 * 1000); //-일/시/60분*60초/밀리세컨
-const todayDate = new Date();
-
-@inject("listStore", "searchStore")
+@inject("listStore", "searchStore", "btnStore")
 @observer
 class Home extends Component {
-	state = {
-		searchField: "",
-		selectedCategory: "",
-		from: defaultFrom,
-		to: todayDate,
-		isDisabled: false,
-		on: false
-	};
-
-	showFromMonth = () => {
-		const { from, to } = this.state;
-		if (!from) {
-			return;
-		}
-		if (moment(to).diff(moment(from), "months") < 1) {
-			this.to.getDayPicker().showMonth(from);
-		}
-	};
-
-	handleFromChange = from => {
-		this.setState({ from });
-	};
-
-	handleToChange = to => {
-		this.setState({ to }, this.showFromMonth);
-		// this.setState({ to }, this.showFromMonth, console.log(typeof to))
-	};
 
 	componentDidMount() {
 		const { handleScroll, loadList } = this.props.listStore;
+		// 스크롤링 제어
 		this._throttledScroll = throttle(handleScroll, 1000)
 		window.addEventListener("scroll", this._throttledScroll);
 		loadList();
 	}
 
 	componentWillUnmount() {
-		// const { handleScroll } = this.props.listStore;
 		window.removeEventListener("scroll", this._throttledScroll);
 
 	}
 
-	searchChange = debounce((searchField) => {
-		this.setState({ searchField });
-		console.log(this.state);
-	}, 800);
-
-	// select filter
-	categoryChange = e => {
-		this.setState({ selectedCategory: e.value });
-		console.log(this.state);
-		// console.log(e.value);
-	};
-
-	//   맨위로 이동 버튼
-	handleScrollTop = () => {
-		this.setState({ on: true });
-		window.scrollTo(
-			{
-				top: 0,
-				behavior: "smooth"
-
-				// document.body.scrollTop = 0;
-				// document.documentElement.scrollTop = 0;
-			},
-			setTimeout(() => {
-				this.setState({ on: false });
-			}, 2000)
-		);
-	};
-
 	render() {
 		const { items, isLoading, hasMore } = this.props.listStore;
-		const { active, isVisible, toggleHidden } = this.props.searchStore;
-		const { searchField, selectedCategory, on } = this.state;
-		const { from, to } = this.state;
-		const modifiers = { start: from, end: to };
-		const { handleFromChange, handleToChange } = this;
-		const { handleScrollTop, categoryChange, searchChange } = this;
+		const { active, isVisible, toggleHidden, on, handleScrollTop } = this.props.btnStore;
+		const { from, to, handleFromChange, handleToChange, searchField, selectedCategory, categoryChange, searchChange } = this.props.searchStore;
 
-		// 달력을 포함한 코드
-		const filteredDateItem = items.filter(
-			item => {
-				// number를 string으로 변환하고 date로 변환
-				const happenDate = moment((item.happenDt).toString()).toDate()
-				const happenFrom = moment((from)).add(-1, "day").toDate()
-				return happenDate >= happenFrom &&
-					happenDate <= to
-				// type확인
-				// , console.log(happenDate.constructor.name, from.constructor.name, to.constructor.name)
-			}
-		);
-
-		const finalfilteredItems = filteredDateItem.filter(item => {
+		// 품종 카테고리 셀렉트박스  && 검색어 입력
+		const filteredItems = items.filter(item => {
 			return (
 				item.kindCd.replace("한국 고양이", "코리안숏헤어").includes(selectedCategory) &&
 				Object.keys(item).some(
@@ -245,7 +145,6 @@ class Home extends Component {
 				)
 			);
 		});
-		// console.log(`finalfilteredItems: ${finalfilteredItems.length} ${JSON.stringify(finalfilteredItems)}`)
 
 		return (
 			<Fragment>
@@ -261,53 +160,7 @@ class Home extends Component {
 						className={isVisible ? "slide-in" : "slide-out"}
 					>
 						<FormBox>
-							<div>
-								<DayPickerStyle />
-								<div className="InputFromTo">
-									<InputFromDiv>
-										<DayPickerInput
-											value={from}
-											placeholder={`${formatDate(new Date(), "LL", "ko")}`}
-											format={"LL"}
-											formatDate={formatDate}
-											parseDate={parseDate}
-											dayPickerProps={{
-												locale: "ko",
-												localeUtils: MomentLocaleUtils,
-												selectedDays: [from, { from, to }],
-												disabledDays: { after: to },
-												toMonth: to,
-												modifiers,
-												numberOfMonths: 1,
-												onDayClick: () => this.to.getInput().focus()
-											}}
-											onDayChange={handleFromChange}
-										/>
-									</InputFromDiv>{" "}
-									-{" "}
-									<InputFromDiv className="InputFromTo-to">
-										<DayPickerInput
-											ref={el => (this.to = el)}
-											value={to}
-											placeholder={`${formatDate(new Date(), "LL", "ko")}`}
-											format={"LL"}
-											formatDate={formatDate}
-											parseDate={parseDate}
-											dayPickerProps={{
-												locale: "ko",
-												localeUtils: MomentLocaleUtils,
-												selectedDays: [from, { from, to }],
-												disabledDays: { before: from },
-												modifiers,
-												month: from,
-												fromMonth: from,
-												numberOfMonths: 1
-											}}
-											onDayChange={handleToChange}
-										/>
-									</InputFromDiv>
-								</div>
-							</div>
+							<DayPicker className="Selectable" from={from} to={to} onFromChange={handleFromChange} onToChange={handleToChange} />
 						</FormBox>
 						<SelectBox
 							defaultValue={selectedCategory}
@@ -318,8 +171,8 @@ class Home extends Component {
 					</Form>
 					<TooltipBox active={active} onClick={toggleHidden} />
 				</SearchDiv>
-				{items.length > 0 && <List products={finalfilteredItems} />}
-				{!items.length || (!finalfilteredItems.length && (
+				{items.length > 0 && <List products={filteredItems} />}
+				{!items.length || (!filteredItems.length && (
 					<div><p>검색결과가 없습니다.</p></div>
 				))}
 
