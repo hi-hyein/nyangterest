@@ -139,11 +139,16 @@ class Home extends Component {
 
 		const filteredItems = items.filter(item => {
 
-			const replaceKind = item.kindCd.replace("한국 고양이", "코리안숏헤어");
-			const category = replaceKind.includes(selectedCategory)
+			const replaceText = () => {
+				const kindCd = item.kindCd;
+				const replaceKind = kindCd.replace("한국 고양이", "코리안숏헤어")
+				const category = replaceKind.includes(selectedCategory)
+
+				return category;
+			}
 
 			return (
-				category &&
+				replaceText() &&
 				Object.keys(item).some(
 					key =>
 						typeof item[key] === "string" &&

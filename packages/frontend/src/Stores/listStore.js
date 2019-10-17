@@ -1,4 +1,4 @@
-import { observable, action, runInAction } from "mobx";
+import { observable, action, runInAction, computed } from "mobx";
 import moment from "moment";
 
 export default class ListStore {
@@ -10,6 +10,7 @@ export default class ListStore {
 	@observable hasMore = true;
 	@observable isLoading = false;
 	@observable error = false;
+	@observable message = null;
 
 	constructor(root) {
 		this.root = root;
@@ -19,12 +20,8 @@ export default class ListStore {
 	loadList = async () => {
 
 		try {
-			// const { from, to } = this.root.searchStore;
-			// const happenFrom = moment(from).format("YYYYMMDD")
-			// const happenTo = moment(to).format("YYYYMMDD")
-			// const url = `/page/${happenFrom}/${happenTo}/${numOfRows}/${pageNo}`;
-			const { items, pageNo, numOfRows, getHappenFrom, getHappenTo } = this;
-			const url = `/page/${getHappenFrom()}/${getHappenTo()}/${numOfRows}/${pageNo}`;
+			const { items, pageNo, numOfRows, happenFrom, happenTo } = this;
+			const url = `/page/${happenFrom}/${happenTo}/${numOfRows}/${pageNo}`;
 			const response = await fetch(url);
 			const json = await response.json();
 			runInAction(() => {
@@ -40,15 +37,15 @@ export default class ListStore {
 		}
 	};
 
-	@action
-	getHappenFrom = () => {
+	@computed
+	get happenFrom() {
 		const { from } = this.root.searchStore;
 		const happenFrom = moment(from).format("YYYYMMDD");
 		return happenFrom;
 	}
 
-	@action
-	getHappenTo = () => {
+	@computed
+	get happenTo() {
 		const { to } = this.root.searchStore;
 		const happenTo = moment(to).format("YYYYMMDD");
 		return happenTo;
@@ -78,7 +75,6 @@ export default class ListStore {
 		let message = observable({
 			return: "마지막 페이지입니다.",
 			continue: "데이터가 남아있습니다."
-
 		})
 
 		console.log(totalPage, totalCount)
