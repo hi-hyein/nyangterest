@@ -9,10 +9,7 @@ const app = express();
 const PORT = 8080;
 const hash = require('hash.js');
 const nodemailer = require('nodemailer');
-const passport = require('passport');
-const LocalStrategy = require('passport-local').Strategy;
-const session = require('express-session');
-const FileStore = require('session-file-store')(session);
+const login = require('./login');
 
 const serviceKey = `P3gvH0LsdoPkxFnZU2Ee98hGDDEwVTJndJFa8NDUhznSLlZG6OOxBopFWLBmiCPOfWXsF8Wz8LFHJguz41qJvA%3D%3D`;
 const api = 'http://openapi.animal.go.kr/openapi/service/rest/abandonmentPublicSrvc';
@@ -203,71 +200,6 @@ router.get("/welcome", (req, res) => {
 	})
 });
 
-// 로그인
-app.use(session({ secret: 'abcde', resave: false, saveUninitialized: false, store: new FileStore() })); // 세션 활성화
-app.use(passport.initialize()); // passport 구동
-app.use(passport.session()); // 세션 연결
-
-passport.serializeUser((user, done) => { // Strategy 성공 시 호출됨
-	console.log('serializeUser', user[0].email)
-	done(null, user[0].email); // 여기의 user가 deserializeUser의 첫 번째 매개변수로 이동
-});
-
-passport.deserializeUser((id, done) => { // 매개변수 user는 serializeUser의 done의 인자 user를 받은 것
-	console.log('deserializeUser', id)
-	connection.query(`SELECT * FROM member WHERE email='${id}'`, (err, rows, fields) => {
-		done(null, rows[0].email); // 여기의 user가 req.user가 됨
-	})
-});
-
-passport.use(new LocalStrategy({ // local 전략을 세움
-	usernameField: 'userId',
-	passwordField: 'userPassword',
-	session: true, // 세션에 저장 여부
-	passReqToCallback: false,
-}, (id, password, done) => {
-	console.log("id:", id, "pw:", password, "done:", done)
-	const userPwHash = hash.sha256().update(password).digest('hex');
-	connection.query(`SELECT * FROM member WHERE email='${id}'`, function (err, result) {
-		if (err) {
-			console.log('err :' + err);
-			return done(false, null);
-		} else {
-			if (result.length === 0) {
-				console.log('해당 유저가 없습니다');
-				return done(false, null);
-			} else {
-				if (userPwHash !== result[0].password) {
-					console.log('패스워드가 일치하지 않습니다');
-					return done(false, null);
-				} else {
-					console.log(result[0].email, '님 :로그인 성공');
-					return done(null, result)
-				}
-			}
-		}
-	});
-}));
-
-router.post("/signin", passport.authenticate('local', {
-	failureRedirect: "/"
-}), (req, res) => {
-	console.log(req.user)
-	console.log(req.session)
-	res.json({
-		sucess: true,
-		_userId: req.session.passport.user
-	})
-});
-
-router.get('/logout',(req,res)=>{
-	console.log('로그아웃')
-	req.logout();//passportjs에 있는 기능
-	req.session.save(function(){//세션작업이 끝난상태에서 안전하게 welcome페이지로 이동
-	res.redirect('/');
-	});
-})
-
 app.use(express.json());
 
 // // 중첩된 객체표현 허용여부
@@ -281,6 +213,9 @@ app.use(cors());
 app.use("/", router);
 // app.use("/search", router);
 // app.use("/admin/member", router);
+
+// 로그인 미들웨어
+app.use("/",login);
 
 app.listen(PORT, function () {
 	console.log("enabled web server listening !");
