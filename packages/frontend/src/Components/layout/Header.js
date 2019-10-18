@@ -52,7 +52,7 @@ class Header extends React.Component {
 
 
 	render() {
-		const {userId,userState,changeUserState} = this.props.loginStore;
+		const {userState,changeUserState} = this.props.loginStore;
 		const { openLogin, openJoin, btnMenuArea } = this.state;
 		const HeaderStyle = {
 			position: 'fixed',
@@ -120,7 +120,9 @@ class Header extends React.Component {
 									<MenuList>
 									<MenuItem onClick={()=>{
 										changeUserState()
-										fetch('/logout')
+										fetch('/logout').then(res=>{
+											console.log(res)
+										})
 										localStorage.removeItem('userInfo')
 									}}>로그아웃</MenuItem>
 									<MenuItem>회원정보수정</MenuItem>

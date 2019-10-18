@@ -72,7 +72,7 @@ class LayerLogin extends Component {
         const {changeUserId,changeUserState} = this.props.loginStore
 
         if ( state.userIdValidate && state.userPasswordValidate ){
-            fetch('/signin',{
+            fetch('/login',{
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json'
