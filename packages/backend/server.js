@@ -13,14 +13,13 @@ const login = require('./login');
 
 const serviceKey = `P3gvH0LsdoPkxFnZU2Ee98hGDDEwVTJndJFa8NDUhznSLlZG6OOxBopFWLBmiCPOfWXsF8Wz8LFHJguz41qJvA%3D%3D`;
 const api = 'http://openapi.animal.go.kr/openapi/service/rest/abandonmentPublicSrvc';
+
 // 기본주소
 
 router.get("/page/:bgnde/:endde/:numOfRows/:id/", (req, res) => {
-	const bgnde = req.params.bgnde;
-	const endde = req.params.endde;
-	const numOfRows = req.params.numOfRows;
-	const pageNo = req.params.id;
-	const url = `${api}/abandonmentPublic?ServiceKey=${serviceKey}&_type=json&bgnde=${bgnde}&endde=${endde}&upkind=422400&numOfRows=${numOfRows}&pageNo=${pageNo}`;
+
+	const { bgnde, endde, numOfRows, id } = req.params;
+	const url = `${api}/abandonmentPublic?ServiceKey=${serviceKey}&_type=json&bgnde=${bgnde}&endde=${endde}&upkind=422400&numOfRows=${numOfRows}&pageNo=${id}`;
 
 	fetch(url)
 		.then(response => response.json())
@@ -32,6 +31,32 @@ router.get("/page/:bgnde/:endde/:numOfRows/:id/", (req, res) => {
 			res.send(JSON.stringify({ message: "System Error" }));
 		});
 });
+
+// 기본주소
+
+// post방식
+// router.post("/page/", (req, res) => {
+// 	const body = req.body;
+// 	const bgnde = body.bgnde || null;
+// 	const endde = body.endde || null;
+// 	const numOfRows = body.numOfRows;
+// 	const pageNo = body.pageNo;
+
+// 	const url = `${api}/abandonmentPublic?ServiceKey=${serviceKey}&_type=json&bgnde=${bgnde}&endde=${endde}&upkind=422400&numOfRows=${numOfRows}&pageNo=${pageNo}`;
+
+// 	fetch(url)
+// 		// .then(res.send(body))
+// 		.then(console.log(body, url))
+// 		.then(response => response.json())
+// 		.then(json => {
+// 			res.send(json.response.body)
+// 			console.log(bgnde, endde, json.response.body.totalCount)
+// 		})
+// 		.catch(() => {
+// 			res.send(JSON.stringify({ message: "System Error" }));
+// 		});
+
+// });
 
 // 품종
 
@@ -49,37 +74,6 @@ router.get("/search/kind", (req, res) => {
 			res.send(JSON.stringify({ message: "System Error" }));
 		});
 });
-
-// 필터링
-
-// router.post("/search/date/", (req, res) => {
-// 	const body = req.body;
-// 	const bgnde = body.bgnde || null;
-// 	const endde = body.endde || null;
-// 	const numOfRows = body.numOfRows;
-
-// 	// bgnde = moment()
-// 	// 	.subtract(1, "month")
-// 	// 	.format("YYYYMMDD");
-// 	// endde = moment().format("YYYYMMDD");
-
-// 	const url = `${api}/abandonmentPublic?ServiceKey=${serviceKey}&_type=json&bgnde=${bgnde}&endde=${endde}&upkind=422400&numOfRows=${numOfRows}`;
-
-
-// 	fetch(url)
-// 		.then(response => response.json())
-// 		.then(res.send(json.response.body))
-// 		.then(req => {
-// 			res.send(req.body);
-// 			console.log(req.body)
-
-// 		})
-// 		.catch(() => {
-// 			res.send(JSON.stringify({ message: "System Error" }));
-// 		});
-
-// });
-
 
 // db접속
 const data = fs.readFileSync(__dirname + "/db.json");
@@ -215,7 +209,7 @@ app.use("/", router);
 // app.use("/admin/member", router);
 
 // 로그인 미들웨어
-app.use("/",login);
+app.use("/", login);
 
 app.listen(PORT, function () {
 	console.log("enabled web server listening !");
