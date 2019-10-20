@@ -10,7 +10,7 @@ const NavWrapper = styled.div`
 	bottom: 0;
 	left: 0;
 	z-index: 100;
-	background: rgba(255,255,255,0.6);
+	background: rgba(255,255,255,0.2);
 	border-top: 1px solid #f8f9fa;
 		
 `
