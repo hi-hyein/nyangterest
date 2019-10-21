@@ -143,9 +143,19 @@ class Home extends Component {
 		let totalPage = Math.ceil(numOfRows * pageNo) >= totalCount;
 
 		// 품종 카테고리 셀렉트박스  && 검색어 입력
+
 		const filteredItems = items.filter(item => {
+
+			const replaceText = () => {
+				const kindCd = item.kindCd;
+				const replaceKind = kindCd.replace("한국 고양이", "코리안숏헤어")
+				const category = replaceKind.includes(selectedCategory)
+
+				return category;
+			}
+
 			return (
-				item.kindCd.replace("한국 고양이", "코리안숏헤어").includes(selectedCategory) &&
+				replaceText() &&
 				Object.keys(item).some(
 					key =>
 						typeof item[key] === "string" &&
@@ -196,9 +206,10 @@ class Home extends Component {
 					<div>
 						Loading...
             			<Loading />
-					</div>
-				)}
-			</Fragment>
+						</div>
+					)
+				}
+			</Fragment >
 		);
 	}
 }
