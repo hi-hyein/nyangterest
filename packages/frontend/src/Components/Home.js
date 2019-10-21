@@ -112,6 +112,11 @@ const Form = styled.form`
   }
 `;
 
+const Message = styled.div`
+	padding-top: 130px;
+	color: #f00;
+`;
+
 @inject("listStore", "searchStore", "btnStore")
 @observer
 class Home extends Component {
@@ -131,10 +136,11 @@ class Home extends Component {
 	}
 
 	render() {
-		const { items, isLoading, hasMore } = this.props.listStore;
+		const { items, isLoading, hasMore, totalCount, numOfRows, pageNo } = this.props.listStore;
 		const { active, isVisible, toggleHidden, on, handleScrollTop } = this.props.btnStore;
 		const { from, to, handleFromChange, handleToChange, searchField, selectedCategory, categoryChange, searchChange } = this.props.searchStore;
 
+		let totalPage = Math.ceil(numOfRows * pageNo) >= totalCount;
 
 		// 품종 카테고리 셀렉트박스  && 검색어 입력
 
@@ -183,17 +189,22 @@ class Home extends Component {
 					</Form>
 					<TooltipBox active={active} onClick={toggleHidden} />
 				</SearchDiv>
+
+				{(totalCount === 0 && items.length === 0) && (<Message><p>해당 날짜 데이터가 없습니다.</p></Message>)}
+
 				{items.length > 0 && <List products={filteredItems} />}
-				{
-					!items.length || (!filteredItems.length && (
-						<div><p>검색결과가 없습니다.</p></div>
-					))
+
+				{!items.length || (!filteredItems.length && (
+					<div><p>검색결과가 없습니다.</p></div>
+				))}
+
+				{totalPage && (items.length === totalCount) && (items.length > 0 && filteredItems.length > 0) &&
+					(<Message><p>마지막 페이지입니다!</p></Message>)
 				}
 
-				{
-					isLoading && hasMore && (
-						<div>
-							Loading...
+				{isLoading && hasMore && (
+					<div>
+						Loading...
             			<Loading />
 						</div>
 					)

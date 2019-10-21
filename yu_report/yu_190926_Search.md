@@ -55,7 +55,7 @@ react bgnde와 endde 값을 백엔드에 요청한다?
 
 ### 나의 착각
 
-1. 요청변수를 post로 받으면 그값이 json에 담겨야 한다는 큰 착각을 하였었다.
+1. 요청변수를 post로 받으면 그값이 응답 json에 담겨야 한다는 큰 착각을 하였었다.
 내가 이렇게 착각한 이유중 하나는 검색해서 본 유툽영상이나 글들은 새로운 값을 넣는 예시였기 때문에 그리 생각을 하였다.
 
 2. 달력연동에서 fetch는 어떻게 연결을 해야하나 라이브러리 api를 찾아보았으나 없어서 막막했었다.
@@ -65,6 +65,41 @@ react bgnde와 endde 값을 백엔드에 요청한다?
    그래서 요청변수 bgnde와 endde에  날짜 value값 from과 to을 어떻게 넣어야 하나라고만 생각을 했었다가 
    파라미터이름이 동일하지 않아도 된다는게 기억나서 url에 파라미터로 바로 넣으면 되지 않을까라는 생각이 들었고 
    바로 들어가지네 살짝 허무하면서도 신기방기하다.
+
+#### POST로 할시에 React에서 body에 각 변수에 해당하는 값을 넣었는데 이걸 server에 어떻게 넘겨야 할지 모르겠다.
+* 공공데이터 API 주소가 있어서 헷갈린걸까?  res.send에 req.body와 res.body를 같이 넣으려니 에러가 난다.
+
+* react에서 넘긴 body값이 백엔드에 넘어온것은 확인이 되었다.
+* 이걸 url안의 파라미터값으로 어떻게 넘겨야 할지를 모르겠다.
+* req.body를 fetch로 넘겨질 이유가 있을까?
+  
+``` javascript
+
+router.post("/page/", (req, res) => {
+	const body = req.body;
+	const bgnde = body.bgnde;
+	const endde = body.endde;
+	const numOfRows = body.numOfRows;
+	const pageNo = body.pageNo;
+	const group = `bgnde=${bgnde}&endde=${endde}&numOfRows=${numOfRows}&pageNo=${pageNo}`
+	const url = `${api}/abandonmentPublic?ServiceKey=${serviceKey}&_type=json&upkind=422400&${group}`;
+
+	res.send(body)	
+	fetch(url)
+		.then(
+			res.send(body),
+			console.log(body,url)
+		)
+		.catch(() => {
+			res.send(JSON.stringify({ message: "System Error" }));
+		});
+
+});
+
+
+
+```
+
 
 ### 날짜 검색시 나타나는 잔잔한 오류(?) 와 코드 리팩토링의 필요성  
 

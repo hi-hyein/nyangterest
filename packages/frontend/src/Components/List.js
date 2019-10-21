@@ -8,7 +8,7 @@ import { fadeInUp } from './Animations';
 
 // 리스트
 const ListWrapper = styled.ul`
-	padding: 150px 50px 100px;
+	padding: 150px 50px 70px;
 	display: grid;
 	grid-template-columns: repeat(auto-fill, 250px);
 	grid-gap: 20px;
@@ -19,6 +19,10 @@ const ListWrapper = styled.ul`
 	& > li {
 		grid-column: span 1;
 		animation: ${fadeInUp} 1s both;
+	}
+
+	& + div {
+		padding: 20px 0;
 	}
 
 	@media screen and (max-width: 1024px) {

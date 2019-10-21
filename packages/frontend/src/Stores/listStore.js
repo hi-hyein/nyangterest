@@ -16,6 +16,7 @@ export default class ListStore {
 		this.root = root;
 	}
 
+	// get방식일때
 	@action
 	loadList = async () => {
 
@@ -37,6 +38,40 @@ export default class ListStore {
 		}
 	};
 
+	// post방식일때
+	// @action
+	// loadList = async () => {
+
+	// 	try {
+	// 		const { items, pageNo, numOfRows } = this;
+	// 		const { from, to } = this.root.searchStore;
+	// 		const bgnde = moment(from).format("YYYYMMDD")
+	// 		const endde = moment(to).format("YYYYMMDD")
+	// 		const url = `/page/`;
+	// 		// const url = `/page/${numOfRows}/${pageNo}`;
+	// 		const response = await fetch(url, {
+	// 			headers: {
+	// 				'Accept': 'application/json',
+	// 				'Content-Type': 'application/json'
+	// 			},
+	// 			method: 'POST',
+	// 			body: JSON.stringify({ bgnde, endde, numOfRows, pageNo })
+
+	// 		})
+	// 		const json = await response.json();
+	// 		runInAction(() => {
+	// 			this.setItems([...items, ...json.items.item || []])
+	// 			this.setCount(json.totalCount)
+	// 		}, console.log(json.totalCount));
+
+	// 	} catch (err) {
+	// 		runInAction(() => {
+	// 			console.log(err);
+	// 			this.isLoading = false;
+	// 		})
+	// 	}
+	// };
+
 	@computed
 	get happenFrom() {
 		const { from } = this.root.searchStore;
@@ -50,7 +85,6 @@ export default class ListStore {
 		const happenTo = moment(to).format("YYYYMMDD");
 		return happenTo;
 	}
-
 
 	@action
 	setItems = (items) => {
@@ -121,8 +155,5 @@ export default class ListStore {
 		this.pageNo = 1;
 		this.isLoading = true;
 	};
-
-
-
 }
 
