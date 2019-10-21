@@ -135,10 +135,21 @@ class Home extends Component {
 		const { active, isVisible, toggleHidden, on, handleScrollTop } = this.props.btnStore;
 		const { from, to, handleFromChange, handleToChange, searchField, selectedCategory, categoryChange, searchChange } = this.props.searchStore;
 
+
 		// 품종 카테고리 셀렉트박스  && 검색어 입력
+
 		const filteredItems = items.filter(item => {
+
+			const replaceText = () => {
+				const kindCd = item.kindCd;
+				const replaceKind = kindCd.replace("한국 고양이", "코리안숏헤어")
+				const category = replaceKind.includes(selectedCategory)
+
+				return category;
+			}
+
 			return (
-				item.kindCd.replace("한국 고양이", "코리안숏헤어").includes(selectedCategory) &&
+				replaceText() &&
 				Object.keys(item).some(
 					key =>
 						typeof item[key] === "string" &&
@@ -173,17 +184,21 @@ class Home extends Component {
 					<TooltipBox active={active} onClick={toggleHidden} />
 				</SearchDiv>
 				{items.length > 0 && <List products={filteredItems} />}
-				{!items.length || (!filteredItems.length && (
-					<div><p>검색결과가 없습니다.</p></div>
-				))}
+				{
+					!items.length || (!filteredItems.length && (
+						<div><p>검색결과가 없습니다.</p></div>
+					))
+				}
 
-				{isLoading && hasMore && (
-					<div>
-						Loading...
+				{
+					isLoading && hasMore && (
+						<div>
+							Loading...
             			<Loading />
-					</div>
-				)}
-			</Fragment>
+						</div>
+					)
+				}
+			</Fragment >
 		);
 	}
 }

@@ -180,16 +180,27 @@ class SelectBox extends Component {
 		let dataSort = data.splice(1, 1, { KNm: "코리안숏헤어", kindCd: "000200" })
 		dataSort = data.splice(32, 1, { KNm: "기타", kindCd: "000201" })
 		console.log(dataSort)
+
 		return (
-			data
-				.map(x => x.KNm)
-				.map(category => ({ value: category, label: category }))
+			this.getData(data)
+			// data
+			// 	.map(x => x.KNm)
+			// 	.map(category => ({ value: category, label: category }))
 			// .map(x => x.KNm.replace("한국 고양이", "코리안숏헤어")) // 배열재정렬
 			// .reduce((arr, elem) => [...arr, ...elem], []) // flatten nested array 중첩배열
 			// .filter((elem, index, arr) => arr.indexOf(elem) === index) // get array of unique values 고유키값
 		)
 
 	};
+
+	getData = (data) => {
+		const dataCategory = data
+			.map(x => x.KNm)
+			.map(category => ({ value: category, label: category }))
+
+		return dataCategory
+
+	}
 
 	render() {
 		return (
