@@ -50,9 +50,17 @@ class Header extends React.Component {
 		}
 	}
 
+	logout = () => {
+		this.props.loginStore.changeUserState()
+		fetch('/logout').then(res=>{
+			console.log(res)
+		})
+		localStorage.removeItem('userInfo')
+	}
+
 
 	render() {
-		const {userState,changeUserState} = this.props.loginStore;
+		const {userState} = this.props.loginStore;
 		const { openLogin, openJoin, btnMenuArea } = this.state;
 		const HeaderStyle = {
 			position: 'fixed',
@@ -118,13 +126,7 @@ class Header extends React.Component {
 							<div className="my-menu-list" style={myMenuList}>
 								<Paper>
 									<MenuList>
-									<MenuItem onClick={()=>{
-										changeUserState()
-										fetch('/logout').then(res=>{
-											console.log(res)
-										})
-										localStorage.removeItem('userInfo')
-									}}>로그아웃</MenuItem>
+									<MenuItem onClick={this.logout}>로그아웃</MenuItem>
 									<MenuItem>회원정보수정</MenuItem>
 									<MenuItem>회원탈퇴</MenuItem>
 									</MenuList>
