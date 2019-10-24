@@ -173,7 +173,7 @@ class Home extends Component {
 				/>
 
 				<SearchDiv>
-					<Form
+					<Form onSubmit={(e) => { e.preventDefault(); }}
 						autoComplete="off"
 						className={isVisible ? "slide-in" : "slide-out"}
 					>
@@ -190,9 +190,9 @@ class Home extends Component {
 					<TooltipBox active={active} onClick={toggleHidden} />
 				</SearchDiv>
 
-				{(totalCount === 0 && items.length === 0) && (<Message><p>해당 날짜 데이터가 없습니다.</p></Message>)}
-
 				{items.length > 0 && <List products={filteredItems} />}
+
+				{(totalCount === 0 && items.length === 0) && (<Message><p>해당 날짜 데이터가 없습니다.</p></Message>)}
 
 				{!items.length || (!filteredItems.length && (
 					<div><p>검색결과가 없습니다.</p></div>
@@ -206,9 +206,8 @@ class Home extends Component {
 					<div>
 						Loading...
             			<Loading />
-						</div>
-					)
-				}
+					</div>
+				)}
 			</Fragment >
 		);
 	}

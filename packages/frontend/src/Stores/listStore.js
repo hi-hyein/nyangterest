@@ -3,20 +3,21 @@ import moment from "moment";
 
 export default class ListStore {
 	@observable items = [];
+	@observable newItems = [];
 	@observable totalCount = 0;
-	@observable numOfRows = 72;
+	@observable numOfRows = 147;
 	@observable pageNo = 1;
 	@observable scrolling = false;
 	@observable hasMore = true;
 	@observable isLoading = false;
 	@observable error = false;
-	@observable message = null;
 
 	constructor(root) {
 		this.root = root;
 	}
 
 	// get방식일때
+
 	@action
 	loadList = async () => {
 
@@ -25,10 +26,21 @@ export default class ListStore {
 			const url = `/page/${happenFrom}/${happenTo}/${numOfRows}/${pageNo}`;
 			const response = await fetch(url);
 			const json = await response.json();
+
 			runInAction(() => {
-				this.setItems([...items, ...json.items.item || []])
+				if (Array.isArray(json.items.item) && []) {
+					this.setItems([...items, ...json.items.item || []])
+				} else {
+					//  객체를 배열로 만드는 코드
+					// items.push(json.items.item)
+					this.items = items.concat(json.items.item)
+					// // // // // console.log(items)
+					return items;
+					// console.log(items)
+				}
+				this.newItems.replace(items)
 				this.setCount(json.totalCount)
-			}, console.log(json.totalCount));
+			}, console.log(items.constructor.name, items.length, `총갯수 : ${json.totalCount}`));
 
 		} catch (err) {
 			runInAction(() => {
@@ -79,6 +91,13 @@ export default class ListStore {
 		return happenFrom;
 	}
 
+	// @computed
+	// get happenWeek() {
+	// 	const { from } = this.root.searchStore;
+	// 	const happenWeek = moment(from).add('days', -7).format("YYYYMMDD");
+	// 	return happenWeek;
+	// }
+
 	@computed
 	get happenTo() {
 		const { to } = this.root.searchStore;
@@ -91,7 +110,7 @@ export default class ListStore {
 		this.items = items;
 		this.isLoading = false;
 		this.scrolling = false;
-		console.log(items.length)
+		console.log(`items의 갯수 : ${items.length}`)
 		// console.log(items.constructor.name)
 	}
 
@@ -103,8 +122,9 @@ export default class ListStore {
 
 	@action
 	loadMore = () => {
-		const { pageNo, numOfRows, totalCount } = this;
+		const { pageNo, items, numOfRows, totalCount } = this;
 		let totalPage = Math.ceil(numOfRows * pageNo) >= totalCount;
+		// let totalPage = Math.max((numOfRows * pageNo), totalCount)
 
 		let message = observable({
 			return: "마지막 페이지입니다.",
@@ -113,7 +133,7 @@ export default class ListStore {
 
 		console.log(totalPage, totalCount)
 
-		// totalPage의 갯수가 totalCount의 수보다 크거나 같으면 리턴
+		// totalPage의 갯수가 totalCount의 수보다 크거나 같으면 리턴 (올림)
 		if (totalPage) {
 			return console.log(message.return)
 		}
@@ -124,8 +144,14 @@ export default class ListStore {
 			this.pageNo++;
 			this.loadList();
 		}
-	}
 
+		if (totalPage || totalCount >= items.length) {
+
+			return false
+		}
+
+
+	}
 
 	@action
 	handleScroll = () => {
