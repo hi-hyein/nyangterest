@@ -3,7 +3,8 @@ import moment from "moment";
 
 export default class ListStore {
 	@observable items = [];
-	@observable newItems = [];
+	@observable loading = false;
+	@observable timer = null;
 	@observable totalCount = 0;
 	@observable numOfRows = 147;
 	@observable pageNo = 1;
@@ -31,16 +32,14 @@ export default class ListStore {
 				if (Array.isArray(json.items.item) && []) {
 					this.setItems([...items, ...json.items.item || []])
 				} else {
-					//  객체를 배열로 만드는 코드
-					// items.push(json.items.item)
+
+					// 객체를 배열로 만들어서 기존배열에 추가하여 새배열을 만드는 코드
 					this.items = items.concat(json.items.item)
-					// // // // // console.log(items)
 					return items;
-					// console.log(items)
+
 				}
-				this.newItems.replace(items)
 				this.setCount(json.totalCount)
-			}, console.log(items.constructor.name, items.length, `총갯수 : ${json.totalCount}`));
+			}, console.log(items.constructor.name, items, items.length, `총갯수 : ${json.totalCount}`));
 
 		} catch (err) {
 			runInAction(() => {
@@ -50,7 +49,106 @@ export default class ListStore {
 		}
 	};
 
+	@computed
+	get happenFrom() {
+		const { from } = this.root.searchStore;
+		const happenFrom = moment(from).format("YYYYMMDD");
+		return happenFrom;
+	}
+
+	@computed
+	get happenTo() {
+		const { to } = this.root.searchStore;
+		const happenTo = moment(to).format("YYYYMMDD");
+		return happenTo;
+	}
+
+	@action
+	setItems = (items) => {
+		this.items = items;
+		this.isLoading = false;
+		this.scrolling = false;
+		console.log(`items의 갯수 : ${items.length}`)
+		// console.log(items.constructor.name)
+	}
+
+	@action
+	setCount = (totalCount) => {
+		this.totalCount = totalCount;
+	}
+
+	@action
+	loadMore = () => {
+		const { pageNo, numOfRows, totalCount } = this;
+		let totalPage = Math.ceil(numOfRows * pageNo) >= totalCount;
+		// let totalPage = Math.max((numOfRows * pageNo), totalCount)
+
+		let message = observable({
+			return: "마지막 페이지입니다.",
+			continue: "데이터가 남아있습니다."
+		})
+
+		console.log(totalPage, totalCount)
+
+		// totalPage의 갯수가 totalCount의 수보다 크거나 같으면 리턴 (올림)
+		if (totalPage) {
+			return console.log(message.return)
+		}
+		else {
+			console.log(message.continue)
+			this.isLoading = true;
+			this.scrolling = true;
+			this.pageNo++;
+			this.loadList();
+		}
+
+	}
+
+	@action
+	handleScroll = () => {
+		const { isLoading, hasMore, error } = this;
+		if (error || isLoading || !hasMore) return;
+		// 스크롤링 후 올라간 만큼의 높이
+		const scrollTop =
+			(document.documentElement && document.documentElement.scrollTop) ||
+			document.body.scrollTop;
+		// 보이는 만큼의 높이	
+		const clientHeight =
+			document.documentElement.clientHeight || window.innerHeight;
+		// 스크롤링 없는 전체 높이
+		const scrollHeight =
+			(document.documentElement && document.documentElement.scrollHeight) ||
+			document.body.scrollHeight;
+		const scrolledToBottom =
+			Math.ceil(scrollTop + clientHeight) >= scrollHeight;
+		if (scrolledToBottom) {
+			this.loadMore();
+		}
+	};
+
+	@action
+	resetList = () => {
+		this.items = []
+		this.pageNo = 1;
+		this.isLoading = true;
+	};
+
+	@action
+	// 프리로더
+	preloader = () => {
+		this.loading = true
+
+		this.timer = setTimeout(() => {
+			this.loading = false
+
+			clearTimeout(this.timer)
+		}, 5000);
+
+	}
+
+
 	// post방식일때
+
 	// @action
 	// loadList = async () => {
 
@@ -83,103 +181,5 @@ export default class ListStore {
 	// 		})
 	// 	}
 	// };
-
-	@computed
-	get happenFrom() {
-		const { from } = this.root.searchStore;
-		const happenFrom = moment(from).format("YYYYMMDD");
-		return happenFrom;
-	}
-
-	// @computed
-	// get happenWeek() {
-	// 	const { from } = this.root.searchStore;
-	// 	const happenWeek = moment(from).add('days', -7).format("YYYYMMDD");
-	// 	return happenWeek;
-	// }
-
-	@computed
-	get happenTo() {
-		const { to } = this.root.searchStore;
-		const happenTo = moment(to).format("YYYYMMDD");
-		return happenTo;
-	}
-
-	@action
-	setItems = (items) => {
-		this.items = items;
-		this.isLoading = false;
-		this.scrolling = false;
-		console.log(`items의 갯수 : ${items.length}`)
-		// console.log(items.constructor.name)
-	}
-
-	@action
-	setCount = (totalCount) => {
-		this.totalCount = totalCount;
-
-	}
-
-	@action
-	loadMore = () => {
-		const { pageNo, items, numOfRows, totalCount } = this;
-		let totalPage = Math.ceil(numOfRows * pageNo) >= totalCount;
-		// let totalPage = Math.max((numOfRows * pageNo), totalCount)
-
-		let message = observable({
-			return: "마지막 페이지입니다.",
-			continue: "데이터가 남아있습니다."
-		})
-
-		console.log(totalPage, totalCount)
-
-		// totalPage의 갯수가 totalCount의 수보다 크거나 같으면 리턴 (올림)
-		if (totalPage) {
-			return console.log(message.return)
-		}
-		else {
-			console.log(message.continue)
-			this.isLoading = true;
-			this.scrolling = true;
-			this.pageNo++;
-			this.loadList();
-		}
-
-		if (totalPage || totalCount >= items.length) {
-
-			return false
-		}
-
-
-	}
-
-	@action
-	handleScroll = () => {
-		const { isLoading, hasMore, error } = this;
-		if (error || isLoading || !hasMore) return;
-		// 스크롤링 후 올라간 만큼의 높이
-		const scrollTop =
-			(document.documentElement && document.documentElement.scrollTop) ||
-			document.body.scrollTop;
-		// 보이는 만큼의 높이	
-		const clientHeight =
-			document.documentElement.clientHeight || window.innerHeight;
-		// 스크롤링 없는 전체 높이
-		const scrollHeight =
-			(document.documentElement && document.documentElement.scrollHeight) ||
-			document.body.scrollHeight;
-		const scrolledToBottom =
-			Math.ceil(scrollTop + clientHeight) >= scrollHeight;
-		if (scrolledToBottom) {
-			this.loadMore();
-		}
-	};
-
-	@action
-	resetList = () => {
-		this.items = []
-		this.pageNo = 1;
-		this.isLoading = true;
-	};
 }
 

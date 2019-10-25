@@ -20,7 +20,15 @@ export const fadeOutDown = keyframes`
 		to   { transform: translate3d(0,40,0); opacity: 0; }
 `;
 
+export const moveMent = keyframes`
+		from {transform:translateY(0px);}
+		to {transform: translateY(-5px);}
 
+`
+export const fadeInLeft = keyframes`
+		from {transform:translateX(-300px); opacity: 0;}
+		to {transform:translateX(0); opacity: 1;}
 
+`
 
 
