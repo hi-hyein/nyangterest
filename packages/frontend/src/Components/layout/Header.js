@@ -9,6 +9,7 @@ import DehazeIcon from '@material-ui/icons/Dehaze';
 import MenuItem from '@material-ui/core/MenuItem';
 import MenuList from '@material-ui/core/MenuList';
 import Paper from '@material-ui/core/Paper';
+import LayerModifyInfo from "../admin/LayerModifyInfo";
 
 @inject('loginStore')
 @observer
@@ -16,6 +17,7 @@ class Header extends React.Component {
 	state = {
 		openLogin: false,
 		openJoin: false,
+		openModify: false,
 		btnMenuArea: false,
 	}
 
@@ -31,10 +33,18 @@ class Header extends React.Component {
 		})
 	}
 
+	popupOpenModify = () => {
+		this.setState({
+			openModify: true,
+		})
+	}
+
+
 	popupCLose = () => {
 		this.setState({
 			openLogin: false,
 			openJoin: false,
+			openModify: false,
 		})
 	}
 
@@ -50,10 +60,18 @@ class Header extends React.Component {
 		}
 	}
 
+	logout = () => {
+		this.props.loginStore.changeUserState()
+		fetch('/logout').then(res=>{
+			console.log(res)
+		})
+		localStorage.removeItem('userInfo')
+	}
+
 
 	render() {
-		const {userState,changeUserState} = this.props.loginStore;
-		const { openLogin, openJoin, btnMenuArea } = this.state;
+		const {userState} = this.props.loginStore;
+		const { openLogin, openJoin, openModify, btnMenuArea } = this.state;
 		const HeaderStyle = {
 			position: 'fixed',
 			top: '0',
@@ -88,8 +106,40 @@ class Header extends React.Component {
 		}
 
 		return (
-			<div className="header" style={HeaderStyle}>
-				<h1 style={LogoStyle}><Link exact="true" to="/" style={{ textDecoration: 'none', color: '#000' }}>NYANGTEREST</Link></h1>
+			<>
+				<div className="header" style={HeaderStyle}>
+					<h1 style={LogoStyle}><Link exact="true" to="/" style={{ textDecoration: 'none', color: '#000' }}>NYANGTEREST</Link></h1>
+
+					{/* 로그아웃 상태 : 로그인 상태 */}
+					<div className="button-area" style={{ float: "right", margin: "20px 0" }}>
+						{userState === 'logout' ?
+							<Fragment>
+								<Button variant="contained" onClick={this.popupOpenLogin} style={{ marginRight: "10px" }}>LOGIN</Button>
+								<Button variant="contained" color="primary" onClick={this.popupOpenJoin}>JOIN</Button>
+							</Fragment> :
+							<>
+							<span>{localStorage.getItem('userInfo')}님 안녕하세요</span>
+							<div className="btn-menu-area" style={menuBtnArea}>
+								<button type="button" title="메뉴" onClick={this.menuToggle} style={{background: "none"}}>
+									<DehazeIcon />
+								</button>
+								{btnMenuArea === true && 
+								<div className="my-menu-list" style={myMenuList}>
+									<Paper>
+										<MenuList>
+										<MenuItem onClick={this.logout}>로그아웃</MenuItem>
+										<MenuItem onClick={this.popupOpenModify}>회원정보수정</MenuItem>
+										<MenuItem>회원탈퇴</MenuItem>
+										</MenuList>
+									</Paper>
+								</div>
+								}
+							</div>
+							</>
+						}
+					</div>
+				</div>
+				{/* 레이어 */}
 				{openLogin &&
 					<Layer onClose={this.popupCLose} layerTitle="Login">
 						<LayerLogin/>
@@ -100,42 +150,12 @@ class Header extends React.Component {
 						<LayerJoin />
 					</Layer>
 				}
-
-				{/* 로그아웃 상태 : 로그인 상태 */}
-				<div className="button-area" style={{ float: "right", margin: "20px 0" }}>
-					{userState === 'logout' ?
-						<Fragment>
-							<Button variant="contained" onClick={this.popupOpenLogin} style={{ marginRight: "10px" }}>LOGIN</Button>
-							<Button variant="contained" color="primary" onClick={this.popupOpenJoin}>JOIN</Button>
-						</Fragment> :
-						<>
-						<span>{localStorage.getItem('userInfo')}님 안녕하세요</span>
-						<div className="btn-menu-area" style={menuBtnArea}>
-							<button type="button" title="메뉴" onClick={this.menuToggle} style={{background: "none"}}>
-								<DehazeIcon />
-							</button>
-							{btnMenuArea === true && 
-							<div className="my-menu-list" style={myMenuList}>
-								<Paper>
-									<MenuList>
-									<MenuItem onClick={()=>{
-										changeUserState()
-										fetch('/logout').then(res=>{
-											console.log(res)
-										})
-										localStorage.removeItem('userInfo')
-									}}>로그아웃</MenuItem>
-									<MenuItem>회원정보수정</MenuItem>
-									<MenuItem>회원탈퇴</MenuItem>
-									</MenuList>
-								</Paper>
-							</div>
-							}
-						</div>
-						</>
-					}
-				</div>
-			</div>
+				{openModify &&
+					<Layer onClose={this.popupCLose} layerTitle="회원정보수정">
+						<LayerModifyInfo />
+					</Layer>
+				}
+			</>
 		);
 	}
 }
