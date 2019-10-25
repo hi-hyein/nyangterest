@@ -18,7 +18,6 @@ export default class ListStore {
 	}
 
 	// get방식일때
-
 	@action
 	loadList = async () => {
 
@@ -145,7 +144,6 @@ export default class ListStore {
 		}, 5000);
 
 	}
-
 
 	// post방식일때
 
