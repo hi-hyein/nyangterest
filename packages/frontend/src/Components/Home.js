@@ -133,9 +133,8 @@ const Preloader = styled.div`
 `;
 
 const NoData = styled.div`
-	overflow: hidden;
 	color: #f00;
-	opacity: 0;
+	opacity: 1;
 
 	 &.on {
 	    opacity: 1;
@@ -162,15 +161,19 @@ class Home extends Component {
 	}
 
 	render() {
-		const { items, isLoading, loading, hasMore, totalCount, numOfRows, pageNo } = this.props.listStore;
+		const { items, isLoading, loading, hasMore, totalPage, totalCount } = this.props.listStore;
 		const { active, isVisible, toggleHidden, on, handleScrollTop } = this.props.btnStore;
 		const { from, to, handleFromChange, handleToChange, searchField, selectedCategory, categoryChange, searchChange } = this.props.searchStore;
 
-		let totalPage = Math.ceil(numOfRows * pageNo) >= totalCount;
-
 		// 품종 카테고리 셀렉트박스  && 검색어 입력
 
+
 		const filteredItems = items.filter(item => {
+
+			if (item === undefined) {
+
+				return item;
+			}
 
 			const replaceText = () => {
 				const kindCd = item.kindCd;
@@ -181,6 +184,7 @@ class Home extends Component {
 			}
 
 			return (
+
 				replaceText() &&
 				Object.keys(item).some(
 					key =>
@@ -218,13 +222,15 @@ class Home extends Component {
 
 				{<Preloader className={loading && "on"}><div><Loading /></div></Preloader>}
 
-				{items.length > 0 ? <List products={filteredItems} /> : (<NoData><p>해당 날짜 데이터가 없습니다.</p></NoData>)}
+				{items.length > 0 && <List products={filteredItems} />}
 
-				{/* {(totalCount === 0 && items.length === 0) && (<Message><p>해당 날짜 데이터가 없습니다.</p></Message>)} */}
+				{!loading && !(items.length && filteredItems.length) && (
+					<NoData><p>해당 데이터가 없습니다.</p></NoData>
+				)}
 
-				{!items.length || (!filteredItems.length && (
-					<div><p>검색결과가 없습니다.</p></div>
-				))}
+				{/* {!loading && (totalCount === 0 && items.length === 0) && (
+					(<NoData><p>해당 데이터가 없습니다.</p></NoData>)
+				)} */}
 
 				{totalPage && (items.length === totalCount) && (items.length > 0 && filteredItems.length > 0) &&
 					(<Message><p>마지막 페이지입니다!</p></Message>)
