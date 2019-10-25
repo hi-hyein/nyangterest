@@ -99,7 +99,7 @@ app.get("/admin/member", (req, res) => {
 });
 
 // 회원가입
-router.post("/", (req, res) => {
+router.post("/join", (req, res) => {
 	const body = req.body;
 	console.log('test', body);
 	const memberMail = body.email;
@@ -193,6 +193,7 @@ router.get("/welcome", (req, res) => {
 		}
 	})
 });
+
 
 app.use(express.json());
 

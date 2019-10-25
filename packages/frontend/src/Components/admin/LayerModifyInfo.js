@@ -6,13 +6,43 @@ import FormHelperText from '@material-ui/core/FormHelperText';
 
 // eslint-disable-next-line
 const NAME_FORMAT = /^[가-힣a-zA-Z]{2,20}$/;
-const PASSWORD_FORMAT = /^(?=[a-zA-Z0-9!@$%^*])(?!.*[^a-zA-Z0-9!@$%^*]).{6,15}$/;
+// const PASSWORD_FORMAT = /^(?=[a-zA-Z0-9!@$%^*])(?!.*[^a-zA-Z0-9!@$%^*]).{6,15}$/;
 
 class LayerModifyInfo extends Component {
     state = {
         name: "",
+        userEmail: localStorage.getItem("userInfo"),
         nameValidate: null,
         nameValidateMessage : "",
+    }
+
+    // 임시로 보낼 데이터 설정
+    jsonData = JSON.stringify({
+        email: this.state.userEmail
+    })
+
+    setMemberData =  () => {
+        console.log(this.state.userEmail)
+		fetch("/memberInfo",{
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            method: 'POST',
+            body: this.jsonData,
+        })
+        .then(res=>res.json()).then(json=>{
+            // console.log(json)
+            // this.setState({
+            //     memberData : json
+            // })
+        })
+    }
+
+    componentDidMount (){
+        if(localStorage.getItem("userInfo")){
+            this.setMemberData()
+        }
     }
 
     render(){
