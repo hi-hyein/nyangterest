@@ -17,7 +17,7 @@ class Header extends React.Component {
 	state = {
 		openLogin: false,
 		openJoin: false,
-		openModify: true,
+		openModify: false,
 		btnMenuArea: false,
 	}
 
