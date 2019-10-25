@@ -1,10 +1,9 @@
-## 상단 필터박스 달력으로 지정한 날짜 데이터  연동 구현
+## 코드 리팩토링
 
-### 발생 문제
+### getter
 
-- 기본 일주일치 날짜 데이터는  제대로 검색이 된걸 확인하였다.
-- 그러나 출력되지 않은 일자에 대한 예를들어 17일에서 18일치는 내용이 나오지 않았다.
-- 해결방법 모색
+- get을 이용하면 호출시 ()없이 변수처럼 사용할 수 있다.
+
 
    
 ### 해결방법 모색
@@ -37,17 +36,20 @@ react bgnde와 endde 값을 백엔드에 요청한다?
 더구나 post로 요청하려하니 웹에서는 확인도 할수 없고 포스트맨으로 하는것도 한계가 있고 그래서 어제부터 get방식으로 바꿔서 시도해보았다.
 개발자도구 네트워크탭에서 fetch url이 보이니 훨씬 수월해졌다.
 
-다시 삽질끝에 알아낸 건 결국 저번과 비슷한 type의 충돌문제였다.
+* 다시 삽질끝에 알아낸 건 결국 저번과 비슷한 type의 충돌문제였다.
 백엔드 요청변수 bgnde와 endde의 타입을 string으로 변경하니 드디어 검색이 되었다!!!
 
-  // Node.js
+//  GET 방식 
+ * Node.js Code
+
   ```javascript
-
-	// get방식일때
+ 
 	router.get("/page/:bgnde/:endde/:numOfRows/:id/", (req, res) => {
-
-		const { bgnde, endde, numOfRows, id } = req.params;
-		const url = `${api}/abandonmentPublic?ServiceKey=${serviceKey}&_type=json&bgnde=${bgnde}&endde=${endde}&upkind=422400&numOfRows=${numOfRows}&pageNo=${id}`;
+		const bgnde = req.params.bgnde;
+		const endde = req.params.endde;
+		const numOfRows = req.params.numOfRows;
+		const pageNo = req.params.id;
+		const url = `${api}/abandonmentPublic?ServiceKey=${serviceKey}&_type=json&bgnde=${bgnde}&endde=${endde}&upkind=422400&numOfRows=${numOfRows}&pageNo=${pageNo}`;
 
 		fetch(url)
 			.then(response => response.json())
@@ -61,65 +63,38 @@ react bgnde와 endde 값을 백엔드에 요청한다?
 	});
 
  ```
+ * React.js Code
 
- // React.js
- ```javascript
+  ```javascript
 
-	// get방식일때
 	@action
-		loadList = async () => {
+	loadList = async () => {
 
-			// 중략...
-				const { items, pageNo, numOfRows, from, to } = this;
-				const happenFrom = moment(from).format("YYYYMMDD")
-				const happenTo = moment(to).format("YYYYMMDD")
-				const url = `/page/${happenFrom}/${happenTo}/${numOfRows}/${pageNo}`;
-			// 중략...
+	// 중략...
+	const { items, pageNo, numOfRows, from, to } = this;
+	const happenFrom = moment(from).format("YYYYMMDD")
+	const happenTo = moment(to).format("YYYYMMDD")
+	const url = `/page/${happenFrom}/${happenTo}/${numOfRows}/${pageNo}`;
+	// 중략...
 
  ```
 
-### 나의 착각, GET방식으로는 성공 
+//  POST 방식 
+ * Node.js Code
 
-1. 요청변수를 post로 받으면 그값이 응답 json에 담겨야 한다는 큰 착각을 하였었다.
-내가 이렇게 착각한 이유중 하나는 검색해서 본 유툽영상이나 글들은 새로운 값을 넣고 화면에 보여주는 예시였기 때문에 그리 생각을 하였다.
-
-2. 달력연동에서 fetch는 어떻게 연결을 해야하나 라이브러리 api를 찾아보았으나 없어서 막막했었다.
-   달력에서 입력받는 value값이 to와 from인데 fetch와 어떻게 접목(?)시켜야하나 싶어서 엉뚱하게도 fetch기능을 제공하는 달력라이브러리가 있나 검색을 열심히 하였으나 마땅한 라이브러리를 찾지 못했었다. 
-
-3. 부끄럽게도 이번에 삽질하면서야 안 사실인데 백엔드의 파라미터와 프론트에서의 파라미터이름이 동일해야 하는 줄 알았다.	
-   그래서 요청변수 bgnde와 endde에  날짜 value값 from과 to을 어떻게 넣어야 하나라고만 생각을 했었다가 
-   요청변수이름이 동일하지 않아도 된다는걸 깨닫고 url에 from과 to의 타입을 변경한 변수를 바로 넣으면 되지 않을까라는 의문이 들었고 
-   적용해보니 바로 들어가는걸 확인하고 살짝 허무하면서도 신기방기하다는 생각을 하게 되었다.
-
-4. 이 후 Post방식을 해보고서야 알게 되었는데 Get방식은 url에 요청변수를 그대로 넣기 때문에 변수이름이 달라져도 괜찮지만 Post는 Body에 싣는거기 때문에
-   백엔드와 이름이 동일해야 백엔드가 제대로 값을 받아오는듯하다.
-
-#### POST로 다시 시도
-
-1. Post 방식으로 하려니 더 어려웠다. 공공데이터 API 주소가 있어서 헷갈린걸까?  
-
-2. react에서 넘긴 body값이 백엔드에 넘어온 것은 확인이 되었다.
-
-3. 이걸 url안의 파라미터값으로 넣어줘야 한다 생각해서 req.body를 보내줘야 한다고 생각했다. res.send에 req.body와 res.body를 같이 넣으려니 에러가 났다.
-
-4. 해결이 되지 않은 상태에서 자려고 누워서 생각을 해보았다.  req.body를  화면에 보여줄 건 아닌데 보낼 이유가 있을까?
-
-5. 다음날 생각했던 내용을 코드에 적용해보았고 드디어 이제 Post방식으로도 성공하였다! 
-
-// Node.js
-``` javascript
-
-	// post방식일때
+  ```javascript
+ 
 	router.post("/page/", (req, res) => {
 		const body = req.body;
-		const bgnde = body.bgnde;
-		const endde = body.endde;
+		const bgnde = body.bgnde || null;
+		const endde = body.endde || null;
 		const numOfRows = body.numOfRows;
 		const pageNo = body.pageNo;
-		const group = `bgnde=${bgnde}&endde=${endde}&numOfRows=${numOfRows}&pageNo=${pageNo}`
-		const url = `${api}/abandonmentPublic?ServiceKey=${serviceKey}&_type=json&upkind=422400&${group}`;
+
+		const url = `${api}/abandonmentPublic?ServiceKey=${serviceKey}&_type=json&bgnde=${bgnde}&endde=${endde}&upkind=422400&numOfRows=${numOfRows}&pageNo=${pageNo}`;
 
 		fetch(url)
+			.then(console.log(body, url))
 			.then(response => response.json())
 			.then(json => {
 				res.send(json.response.body)
@@ -129,86 +104,66 @@ react bgnde와 endde 값을 백엔드에 요청한다?
 				res.send(JSON.stringify({ message: "System Error" }));
 			});
 
-	});
-
-```
-
- // React.js  
-``` javascript
-
-	// post방식일때
-	@action
-	loadList = async () => {
-
-		try {
-			const { items, pageNo, numOfRows } = this;
-			const { from, to } = this.root.searchStore;
-			const bgnde = moment(from).format("YYYYMMDD")
-			const endde = moment(to).format("YYYYMMDD")
-			const url = `/page/`;
-			const response = await fetch(url, {
-				headers: {
-					'Accept': 'application/json',
-					'Content-Type': 'application/json'
-				},
-				method: 'POST',
-				body: JSON.stringify({ bgnde, endde, numOfRows, pageNo })
-
-			})
-			const json = await response.json();
-			// 중략...
-		} catch (err) {
-			runInAction(() => {
-				console.log(err);
-				this.isLoading = false;
-			})
-		}
-	};
-
-```
-
-
-#### 다시 GET방식으로 하는 이유
-
-1. POST방식으로 하는 이유 중 하나가 url에 보안을 필요로 하는 값이 노출되는거에 대한 염려라 생각하는데 내가 넘기려는 값은 
-   날짜와 페이지갯수정도라 url에 노출된다고 문제될건 없다고 생각하였다.
-
-2. 속도도 GET방식이 POST방식보다 빠르니 POST방식은 주석처리하여 참고코드로만 남겨두었다.
-   
-
-#### POST로 할시에 React에서 body에 각 변수에 해당하는 값을 넣었는데 이걸 server에 어떻게 넘겨야 할지 모르겠다.
-* 공공데이터 API 주소가 있어서 헷갈린걸까?  res.send에 req.body와 res.body를 같이 넣으려니 에러가 난다.
-
-* react에서 넘긴 body값이 백엔드에 넘어온것은 확인이 되었다.
-* 이걸 url안의 파라미터값으로 어떻게 넘겨야 할지를 모르겠다.
-* req.body를 fetch로 넘겨질 이유가 있을까?
-  
-``` javascript
-
-router.post("/page/", (req, res) => {
-	const body = req.body;
-	const bgnde = body.bgnde;
-	const endde = body.endde;
-	const numOfRows = body.numOfRows;
-	const pageNo = body.pageNo;
-	const group = `bgnde=${bgnde}&endde=${endde}&numOfRows=${numOfRows}&pageNo=${pageNo}`
-	const url = `${api}/abandonmentPublic?ServiceKey=${serviceKey}&_type=json&upkind=422400&${group}`;
-
-	res.send(body)	
-	fetch(url)
-		.then(
-			res.send(body),
-			console.log(body,url)
-		)
-		.catch(() => {
-			res.send(JSON.stringify({ message: "System Error" }));
-		});
-
 });
 
+ ```
 
+ * React.js Code
 
-```
+  ```javascript
+	@action
+		loadList = async () => {
+
+			try {
+				const { items, pageNo, numOfRows } = this;
+				const { from, to } = this.root.searchStore;
+				const bgnde = moment(from).format("YYYYMMDD")
+				const endde = moment(to).format("YYYYMMDD")
+				const url = `/page/`;
+				// const url = `/page/${numOfRows}/${pageNo}`;
+				const response = await fetch(url, {
+					headers: {
+						'Accept': 'application/json',
+						'Content-Type': 'application/json'
+					},
+					method: 'POST',
+					body: JSON.stringify({ bgnde, endde, numOfRows, pageNo })
+
+				})
+				const json = await response.json();
+				runInAction(() => {
+					this.setItems([...items, ...json.items.item || []])
+					this.setCount(json.totalCount)
+				}, console.log(json.totalCount));
+
+			} catch (err) {
+				runInAction(() => {
+					console.log(err);
+					this.isLoading = false;
+				})
+			}
+		};
+
+ ```
+
+### 나의 착각 그리고 그냥 GET방식으로 하는 이유
+
+1. 요청변수를 POST로 받으면 그값이 res.json에 담겨야 한다는 큰 착각을 하였었다.
+내가 이렇게 착각한 이유중 하나는 검색해서 본 유툽영상이나 글들은 폼데이터로 새로운 값을 넣는 예시였기 때문에 그리 생각을 하였다.
+
+2. 달력연동에서 fetch는 어떻게 연결을 해야하나 라이브러리 api를 찾아보았으나 없어서 막막했었다.
+   달력에서 입력받는 value값이 to와 from인데 fetch와 어떻게 접목(?)시켜야하나 싶어서 엉뚱하게도 fetch기능을 제공하는 달력라이브러리가 있나 검색을 열심히 하였으나 마땅한 라이브러리를 찾지 못했었다. 
+
+3. 부끄럽게도 이번에 삽질하면서야 안 사실인데 백엔드의 요청변수와 프론트에서의 요청변수 이름이 동일해야 하는줄 알았다.	
+   그래서 요청변수 bgnde와 endde에  날짜 value값 from과 to을 어떻게 넣어야 하나라고만 생각을 했었다가 
+   요청변수 이름이 동일하지 않아도 된다는게 기억나서 url에 요청변수 이름으로 바로 넣으면 되지 않을까라는 생각이 들었고 
+   바로 들어가지네 살짝 허무하면서도 신기방기하다.
+
+4. 이후 POST방식으로 해보고 알았는데  3번의 방식은 Get방식에서 url에 바로 넣을수 있어서  가능하지만 POST방식에서는 이름이 같아야 백엔드가 자기 이름인지 알아 듣는거 같더라.
+
+5. 처음에 POST방식을 실패했던 이유를 깨달았는데  res.send로 req.body와 res.json()을 같이 시도하려니 에러가 났던 것이다. 에러가 난 상태에서 이미 새벽이라 잠을 자려고 누워서 에러 원인에 대해서 곰곰히 생각을 해보다가 res.body는 보내지 않아도 되지 않을까라는 생각이 들었고 다음날 다시 시도해보니 POST방식도 성공했다!
+
+6. 하지만 굳이 POST방식으로 안해도 될거 같았다. 날짜와 페이지정보라서 보안을 필요로 하는 데이터도 아니고 GET방식이 좀더 속도가 빠르기 때문에 그대로 GET방식으로 진행하였다.
 
 
 ### 날짜 검색시 나타나는 잔잔한 오류(?) 와 코드 리팩토링의 필요성  
@@ -259,6 +214,7 @@ handleFromChange와 handleToChange 함수를 실행할때 (from과 to에 날짜�
 5. 기본 세팅한 날짜는 현재날짜로 설정해두었는데 가령 새벽에는 유기 데이터가 전혀 없을때가 있다. 
  	이럴때 콘솔창에서 TypeError: Invalid attempt to spread non-iterable instance 에러가 나는데 
 	 loadlist안에 코드를 수정하니 에러메세지는 더이상 나오지 않는데 맞는건지는 잘 모르겠다.
+
 
   ``` javascript 
   // 중략
@@ -342,17 +298,8 @@ handleFromChange와 handleToChange 함수를 실행할때 (from과 to에 날짜�
 11. store파일에 if문 코드 중  삼항연산자로 변경할 수 있는 코드가 있는지 찾아보고 수정
 
 	 * 마땅히 수정할 코드가 없는듯 하다.
-  
-### 만약 사용자가 날짜 선택전에 품종 카테고리나 검색어를 입력할때는 어떻게 해야 할까.
-
-1. 달력에 오늘날짜를 표시해줌으로 오늘날짜에 대한 데이터만 나올것임을 인식시킨다.
-
-2. 품종이나 검색어를 입력할때 날짜를 먼저 입력해달라고 안내해준다?
-
-3. 품종이나 검색어를 입력했을때 기본 일주일치 데이터를 자동 입력해서 보여준다? 
 
 ### 느낀 점
-
  1. 혼자 고민하다가 개발자 커뮤니티나 지인 개발자분에게 질문을 하려고 보니 내용정리가 필요했고  그 과정중에 이유를 발견할 수 있었다.
    해결이 되지 않을때는 풀리지 않는 문제에 대해서 생각을 정리 해보자. 
  2. 그리고 어느정도의 휴식도 머리를 맑게 해줘서 필요하구나 생각했다.

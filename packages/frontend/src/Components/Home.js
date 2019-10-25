@@ -11,6 +11,7 @@ import SearchBox from "./search/SearchBox";
 import SelectBox from "./search/SelectBox";
 import TooltipBox from "./search/TooltipBox";
 import BtnTop from "./BtnTop";
+import { fadeInDown, fadeOutUp } from "./Animations";
 
 // 검색 폼
 const SearchDiv = styled.div`
@@ -117,15 +118,40 @@ const Message = styled.div`
 	color: #f00;
 `;
 
+const Preloader = styled.div`
+	padding-top: 0;
+	color: #5262bc;
+	animation: ${fadeOutUp} 1s both;
+	transition: all 2s ease;
+	opacity: 0
+
+	&.on {
+		padding-top: 85px;
+		animation: ${fadeInDown} 1s both;
+		opacity: 1
+	}
+`;
+
+const NoData = styled.div`
+	overflow: hidden;
+	color: #f00;
+	opacity: 0;
+
+	 &.on {
+	    opacity: 1;
+  	}
+`;
+
 @inject("listStore", "searchStore", "btnStore")
 @observer
 class Home extends Component {
 
 	componentDidMount() {
-		const { handleScroll, loadList } = this.props.listStore;
+		const { handleScroll, preloader, loadList } = this.props.listStore;
 		// 스크롤링 제어
 		this._throttledScroll = throttle(handleScroll, 1000)
 		window.addEventListener("scroll", this._throttledScroll);
+		preloader();
 		loadList();
 	}
 
@@ -136,7 +162,7 @@ class Home extends Component {
 	}
 
 	render() {
-		const { items, isLoading, hasMore, totalCount, numOfRows, pageNo } = this.props.listStore;
+		const { items, isLoading, loading, hasMore, totalCount, numOfRows, pageNo } = this.props.listStore;
 		const { active, isVisible, toggleHidden, on, handleScrollTop } = this.props.btnStore;
 		const { from, to, handleFromChange, handleToChange, searchField, selectedCategory, categoryChange, searchChange } = this.props.searchStore;
 
@@ -173,7 +199,7 @@ class Home extends Component {
 				/>
 
 				<SearchDiv>
-					<Form
+					<Form onSubmit={(e) => { e.preventDefault(); }}
 						autoComplete="off"
 						className={isVisible ? "slide-in" : "slide-out"}
 					>
@@ -190,9 +216,11 @@ class Home extends Component {
 					<TooltipBox active={active} onClick={toggleHidden} />
 				</SearchDiv>
 
-				{(totalCount === 0 && items.length === 0) && (<Message><p>해당 날짜 데이터가 없습니다.</p></Message>)}
+				{<Preloader className={loading && "on"}><div><Loading /></div></Preloader>}
 
-				{items.length > 0 && <List products={filteredItems} />}
+				{items.length > 0 ? <List products={filteredItems} /> : (<NoData><p>해당 날짜 데이터가 없습니다.</p></NoData>)}
+
+				{/* {(totalCount === 0 && items.length === 0) && (<Message><p>해당 날짜 데이터가 없습니다.</p></Message>)} */}
 
 				{!items.length || (!filteredItems.length && (
 					<div><p>검색결과가 없습니다.</p></div>
@@ -202,13 +230,13 @@ class Home extends Component {
 					(<Message><p>마지막 페이지입니다!</p></Message>)
 				}
 
-				{isLoading && hasMore && (
+				{isLoading && hasMore && (!(totalPage && (totalCount === items.length))) && (
 					<div>
 						Loading...
             			<Loading />
-						</div>
-					)
-				}
+					</div>
+				)}
+
 			</Fragment >
 		);
 	}
