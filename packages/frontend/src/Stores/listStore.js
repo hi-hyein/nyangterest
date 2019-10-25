@@ -33,7 +33,9 @@ export default class ListStore {
 				} else {
 
 					// 객체를 배열로 만들어서 기존배열에 추가하여 새배열을 만드는 코드
-					this.items = items.concat(json.items.item)
+					this.items = items.concat(json.items.item).slice();
+					console.log(this.items)
+					// this.addItems(json.items.item);
 					return items;
 
 				}
@@ -47,20 +49,6 @@ export default class ListStore {
 			})
 		}
 	};
-
-	@computed
-	get happenFrom() {
-		const { from } = this.root.searchStore;
-		const happenFrom = moment(from).format("YYYYMMDD");
-		return happenFrom;
-	}
-
-	@computed
-	get happenTo() {
-		const { to } = this.root.searchStore;
-		const happenTo = moment(to).format("YYYYMMDD");
-		return happenTo;
-	}
 
 	@action
 	setItems = (items) => {
@@ -78,8 +66,7 @@ export default class ListStore {
 
 	@action
 	loadMore = () => {
-		const { pageNo, numOfRows, totalCount } = this;
-		let totalPage = Math.ceil(numOfRows * pageNo) >= totalCount;
+		const { totalPage, totalCount } = this;
 		// let totalPage = Math.max((numOfRows * pageNo), totalCount)
 
 		let message = observable({
@@ -100,7 +87,6 @@ export default class ListStore {
 			this.pageNo++;
 			this.loadList();
 		}
-
 	}
 
 	@action
@@ -141,8 +127,30 @@ export default class ListStore {
 			this.loading = false
 
 			clearTimeout(this.timer)
-		}, 5000);
+		}, 3000);
 
+	}
+
+	@computed
+	get happenFrom() {
+		const { from } = this.root.searchStore;
+		const happenFrom = moment(from).format("YYYYMMDD");
+		return happenFrom;
+	}
+
+	@computed
+	get happenTo() {
+		const { to } = this.root.searchStore;
+		const happenTo = moment(to).format("YYYYMMDD");
+		return happenTo;
+	}
+
+	@computed
+	get totalPage() {
+		const { pageNo, numOfRows, totalCount } = this;
+		let paging = Math.ceil(numOfRows * pageNo) >= totalCount;
+
+		return paging;
 	}
 
 	// post방식일때
