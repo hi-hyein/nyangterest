@@ -3,7 +3,7 @@ import moment from "moment";
 
 export default class ListStore {
 	@observable items = [];
-	@observable loading = false;
+	@observable loading = true;
 	@observable timer = null;
 	@observable totalCount = 0;
 	@observable numOfRows = 147;
@@ -20,7 +20,6 @@ export default class ListStore {
 	// get방식일때
 	@action
 	loadList = async () => {
-
 		try {
 			const { items, pageNo, numOfRows, happenFrom, happenTo } = this;
 			const url = `/page/${happenFrom}/${happenTo}/${numOfRows}/${pageNo}`;
@@ -28,18 +27,17 @@ export default class ListStore {
 			const json = await response.json();
 
 			runInAction(() => {
+
 				if (Array.isArray(json.items.item) && []) {
 					this.setItems([...items, ...json.items.item || []])
 				} else {
-
 					// 객체를 배열로 만들어서 기존배열에 추가하여 새배열을 만드는 코드
 					this.items = items.concat(json.items.item).slice();
-					console.log(this.items)
-					// this.addItems(json.items.item);
+					this.loading = false;
+					console.log(this.items);
 					return items;
-
 				}
-				this.setCount(json.totalCount)
+				this.setCount(json.totalCount);
 			}, console.log(items.constructor.name, items, items.length, `총갯수 : ${json.totalCount}`));
 
 		} catch (err) {
@@ -53,6 +51,7 @@ export default class ListStore {
 	@action
 	setItems = (items) => {
 		this.items = items;
+		this.loading = false;
 		this.isLoading = false;
 		this.scrolling = false;
 		console.log(`items의 갯수 : ${items.length}`)
@@ -113,23 +112,11 @@ export default class ListStore {
 
 	@action
 	resetList = () => {
+		// this.loading = true;
 		this.items = []
 		this.pageNo = 1;
 		this.isLoading = true;
 	};
-
-	@action
-	// 프리로더
-	preloader = () => {
-		this.loading = true
-
-		this.timer = setTimeout(() => {
-			this.loading = false
-
-			clearTimeout(this.timer)
-		}, 3000);
-
-	}
 
 	@computed
 	get happenFrom() {
