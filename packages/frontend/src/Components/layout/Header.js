@@ -142,7 +142,7 @@ class Header extends React.Component {
 				{/* 레이어 */}
 				{openLogin &&
 					<Layer onClose={this.popupCLose} layerTitle="Login">
-						<LayerLogin/>
+						<LayerLogin onClose={this.popupCLose}/>
 					</Layer>
 				}
 				{openJoin &&

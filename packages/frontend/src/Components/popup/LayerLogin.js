@@ -69,6 +69,7 @@ class LayerLogin extends Component {
 
     sendUserInfo = () => {
         const state = this.state
+        const onClose = this.props.onClose
         const stateTojson = JSON.stringify(state)
         const {changeUserId,changeUserState} = this.props.loginStore
 
@@ -93,8 +94,11 @@ class LayerLogin extends Component {
                         "userInfo",
                         JSON.stringify(json._userId)
                     )
+                    
+                    onClose()
                 }
             })
+
         }else {
             alert("아이디와 패스워드를 알맞게 입력해주세요")
         }

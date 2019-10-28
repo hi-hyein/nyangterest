@@ -10,6 +10,7 @@ const PORT = 8080;
 const hash = require('hash.js');
 const nodemailer = require('nodemailer');
 const login = require('./login');
+const memberInfo = require('./memberInfo');
 
 const serviceKey = `P3gvH0LsdoPkxFnZU2Ee98hGDDEwVTJndJFa8NDUhznSLlZG6OOxBopFWLBmiCPOfWXsF8Wz8LFHJguz41qJvA%3D%3D`;
 const api = 'http://openapi.animal.go.kr/openapi/service/rest/abandonmentPublicSrvc';
@@ -211,6 +212,8 @@ app.use("/", router);
 
 // 로그인 미들웨어
 app.use("/", login);
+// 회원정보 수정 미들웨어
+app.use("/", memberInfo);
 
 app.listen(PORT, function () {
 	console.log("enabled web server listening !");
