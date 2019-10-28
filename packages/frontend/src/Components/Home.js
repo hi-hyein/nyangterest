@@ -126,19 +126,10 @@ const Preloader = styled.div`
 	opacity: 0
 
 	&.on {
-		padding-top: 85px;
+		padding-top: 200px;
 		animation: ${fadeInDown} 1s both;
 		opacity: 1
 	}
-`;
-
-const NoData = styled.div`
-	color: #f00;
-	opacity: 1;
-
-	 &.on {
-	    opacity: 1;
-  	}
 `;
 
 @inject("listStore", "searchStore", "btnStore")
@@ -146,11 +137,10 @@ const NoData = styled.div`
 class Home extends Component {
 
 	componentDidMount() {
-		const { handleScroll, preloader, loadList } = this.props.listStore;
+		const { handleScroll, loadList } = this.props.listStore;
 		// 스크롤링 제어
 		this._throttledScroll = throttle(handleScroll, 1000)
 		window.addEventListener("scroll", this._throttledScroll);
-		preloader();
 		loadList();
 	}
 
@@ -167,24 +157,22 @@ class Home extends Component {
 
 		// 품종 카테고리 셀렉트박스  && 검색어 입력
 
+		// mobx로 넘길 수 있을거 같은디?
 
 		const filteredItems = items.filter(item => {
 
 			if (item === undefined) {
-
-				return item;
+				return null;
 			}
 
 			const replaceText = () => {
 				const kindCd = item.kindCd;
 				const replaceKind = kindCd.replace("한국 고양이", "코리안숏헤어")
 				const category = replaceKind.includes(selectedCategory)
-
 				return category;
 			}
 
 			return (
-
 				replaceText() &&
 				Object.keys(item).some(
 					key =>
@@ -201,7 +189,6 @@ class Home extends Component {
 					onClick={handleScrollTop}
 					title="맨위로 이동"
 				/>
-
 				<SearchDiv>
 					<Form onSubmit={(e) => { e.preventDefault(); }}
 						autoComplete="off"
@@ -220,28 +207,29 @@ class Home extends Component {
 					<TooltipBox active={active} onClick={toggleHidden} />
 				</SearchDiv>
 
-				{<Preloader className={loading && "on"}><div><Loading /></div></Preloader>}
+				{loading ? (< Preloader className={loading && "on"}> <div><Loading /></div></Preloader >) : (<List products={filteredItems} />)}
 
-				{items.length > 0 && <List products={filteredItems} />}
 
-				{!loading && !(items.length && filteredItems.length) && (
-					<NoData><p>해당 데이터가 없습니다.</p></NoData>
+				{!loading && !(isLoading && hasMore) && !(items.length && filteredItems.length) && (
+					<Message><p>해당 데이터가 없습니다.</p></Message>
 				)}
 
-				{/* {!loading && (totalCount === 0 && items.length === 0) && (
-					(<NoData><p>해당 데이터가 없습니다.</p></NoData>)
-				)} */}
+				{/* {!items.length || (!filteredItems.length && (
+					<div><p>검색결과가 없습니다.</p></div>
+				))} */}
 
-				{totalPage && (items.length === totalCount) && (items.length > 0 && filteredItems.length > 0) &&
-					(<Message><p>마지막 페이지입니다!</p></Message>)
-				}
 
-				{isLoading && hasMore && (!(totalPage && (totalCount === items.length))) && (
+				{!loading && (isLoading && hasMore) && (!(totalPage && (totalCount === items.length))) && (
 					<div>
 						Loading...
             			<Loading />
 					</div>
 				)}
+
+				{totalPage && (items.length === totalCount) && (items.length > 0 && filteredItems.length > 0) &&
+					(<Message><p>마지막 페이지입니다!</p></Message>)
+				}
+
 
 			</Fragment >
 		);
