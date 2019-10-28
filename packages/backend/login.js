@@ -73,13 +73,13 @@ passport.use(new LocalStrategy({ // local 전략을 세움
 	});
 }));
 
+
 router.post("/login", passport.authenticate('local', {
 	failureRedirect: "/"
 }), (req, res) => {
-	console.log(req.user)
-	console.log(req.session)
+	console.log("유저",req.user)
+	console.log("세션",req.session)
 	const userId = req.session.passport.user
-
 	res.json({
 		sucess: true,
 		_userId: userId
@@ -92,19 +92,5 @@ router.get('/logout',(req,res)=>{
 	req.session.save(()=>{
 		res.redirect('/')
 	})
-})
-
-router.post("/memberInfo", (req, res) => {
-	const memberData = req.body.email
-	console.log("회원정보이메일",memberData)
-	// connection.query(`SELECT * FROM member WHERE email='${memberData}'`, (err, rows, fields) => {
-	// 	// res.json({
-	// 	// 	_username : rows[0].username,
-	// 	// 	_signinDate : rows[0].signinDate
-	// 	// })
-	// 	console.log("이름",rows[0].username)
-	// 	console.log("가입날짜",rows[0].signinDate)
-	// })
-});
-
+}) 
 module.exports = router;

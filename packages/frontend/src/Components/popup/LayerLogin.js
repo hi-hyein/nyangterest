@@ -69,6 +69,7 @@ class LayerLogin extends Component {
 
     sendUserInfo = () => {
         const state = this.state
+        const onClose = this.props.onClose
         const stateTojson = JSON.stringify(state)
         const {changeUserId,changeUserState} = this.props.loginStore
 
@@ -93,8 +94,11 @@ class LayerLogin extends Component {
                         "userInfo",
                         JSON.stringify(json._userId)
                     )
+                    
+                    onClose()
                 }
             })
+
         }else {
             alert("아이디와 패스워드를 알맞게 입력해주세요")
         }
@@ -136,6 +140,11 @@ class LayerLogin extends Component {
                         { userPasswordValidate && userPasswordMatchText}
                         { !userPasswordValidate&&userPassword!=="" && userPasswordNotMatchText }
                     </FormHelperText>
+                </div>
+                <div>
+                    <button type="button" style={{fontSize:"16px",color: "#808080",fontWeight:"bold"}} onClick={this.props.openFindPassword}>
+                        비밀번호 찾기
+                    </button>
                 </div>
                 <div style={{marginTop:"30px",paddingTop:"30px", borderTop:"1px solid #eee"}}>
                 <Button fullWidth={true} size="large" variant="contained" color="primary" onClick={this.sendUserInfo}>
