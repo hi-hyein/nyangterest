@@ -9,7 +9,8 @@ import DehazeIcon from '@material-ui/icons/Dehaze';
 import MenuItem from '@material-ui/core/MenuItem';
 import MenuList from '@material-ui/core/MenuList';
 import Paper from '@material-ui/core/Paper';
-import LayerModifyInfo from "../admin/LayerModifyInfo";
+import LayerModifyInfo from "../popup/LayerModifyInfo";
+import LayerFindPassword from "../popup/LayerFindPassword";
 
 @inject('loginStore')
 @observer
@@ -18,6 +19,7 @@ class Header extends React.Component {
 		openLogin: false,
 		openJoin: false,
 		openModify: false,
+		openFindPassword: false,
 		btnMenuArea: false,
 	}
 
@@ -39,12 +41,20 @@ class Header extends React.Component {
 		})
 	}
 
+	popupOpenFindPassword = () => {
+		this.setState({
+			openFindPassword: true,
+			openLogin: false
+		})
+	}
+
 
 	popupCLose = () => {
 		this.setState({
 			openLogin: false,
 			openJoin: false,
 			openModify: false,
+			openFindPassword: false,
 		})
 	}
 
@@ -71,7 +81,7 @@ class Header extends React.Component {
 
 	render() {
 		const {userState} = this.props.loginStore;
-		const { openLogin, openJoin, openModify, btnMenuArea } = this.state;
+		const { openLogin, openJoin, openModify, btnMenuArea, openFindPassword } = this.state;
 		const HeaderStyle = {
 			position: 'fixed',
 			top: '0',
@@ -142,7 +152,7 @@ class Header extends React.Component {
 				{/* 레이어 */}
 				{openLogin &&
 					<Layer onClose={this.popupCLose} layerTitle="Login">
-						<LayerLogin onClose={this.popupCLose}/>
+						<LayerLogin onClose={this.popupCLose} openFindPassword={this.popupOpenFindPassword}/>
 					</Layer>
 				}
 				{openJoin &&
@@ -153,6 +163,11 @@ class Header extends React.Component {
 				{openModify &&
 					<Layer onClose={this.popupCLose} layerTitle="회원정보수정">
 						<LayerModifyInfo />
+					</Layer>
+				}
+				{openFindPassword &&
+					<Layer onClose={this.popupCLose} layerTitle="비밀번호 찾기" >
+						<LayerFindPassword/>
 					</Layer>
 				}
 			</>

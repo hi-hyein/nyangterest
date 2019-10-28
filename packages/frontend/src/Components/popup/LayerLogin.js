@@ -141,6 +141,11 @@ class LayerLogin extends Component {
                         { !userPasswordValidate&&userPassword!=="" && userPasswordNotMatchText }
                     </FormHelperText>
                 </div>
+                <div>
+                    <button type="button" style={{fontSize:"16px",color: "#808080",fontWeight:"bold"}} onClick={this.props.openFindPassword}>
+                        비밀번호 찾기
+                    </button>
+                </div>
                 <div style={{marginTop:"30px",paddingTop:"30px", borderTop:"1px solid #eee"}}>
                 <Button fullWidth={true} size="large" variant="contained" color="primary" onClick={this.sendUserInfo}>
                     로그인
