@@ -48,32 +48,32 @@ router.post("/findPassword",(req, res)=>{
 			// 임시비번 암호화
 			const tempPassHash = hash.sha256().update(tempPassword).digest('hex')
 			// 임시비번 db저장
-			connection.query(`UPDATE member SET password="${tempPassHash}" WHERE email="${userEmail}"`,()=>{
-				let transporter = nodemailer.createTransport({
-					service: 'gmail',
-					auth: {
-						user: 'nyangterest@gmail.com',  // gmail 계정 아이디를 입력
-						pass: 'sidxjfptmxm!'          // gmail 계정의 비밀번호를 입력
-					}
-				});
+			// connection.query(`UPDATE member SET password="${tempPassHash}" WHERE email="${userEmail}"`,()=>{
+			// 	let transporter = nodemailer.createTransport({
+			// 		service: 'gmail',
+			// 		auth: {
+			// 			user: 'nyangterest@gmail.com',  // gmail 계정 아이디를 입력
+			// 			pass: 'sidxjfptmxm!'          // gmail 계정의 비밀번호를 입력
+			// 		}
+			// 	});
 			
-				let mailOptions = {
-					from: 'nyangterest@gmail.com',    // 발송 메일 주소 (위에서 작성한 gmail 계정 아이디)
-					to: userEmail,                     // 수신 메일 주소
-					subject: '냥터레스트 임시비밀번호',   // 제목
-					text: `안녕하세요 냥터레스트입니다. 임시비밀번호를 보내드립니다. 꼭 회원정보수정란에서 비밀번호를 변경해주세요. 임시비밀번호 : ${tempPassword}`  // 내용
-				};
+			// 	let mailOptions = {
+			// 		from: 'nyangterest@gmail.com',    // 발송 메일 주소 (위에서 작성한 gmail 계정 아이디)
+			// 		to: userEmail,                     // 수신 메일 주소
+			// 		subject: '냥터레스트 임시비밀번호',   // 제목
+			// 		text: `안녕하세요 냥터레스트입니다. 임시비밀번호를 보내드립니다. 꼭 회원정보수정란에서 비밀번호를 변경해주세요. 임시비밀번호 : ${tempPassword}`  // 내용
+			// 	};
 	
-				// 가입인증메일 보내기
-				transporter.sendMail(mailOptions, function (error, info) {
-					if (error) {
-						console.log(error);
-					}
-					else {
-						console.log('Email sent: ' + info.response);
-					}
-				});
-			})
+			// 	// 가입인증메일 보내기
+			// 	transporter.sendMail(mailOptions, function (error, info) {
+			// 		if (error) {
+			// 			console.log(error);
+			// 		}
+			// 		else {
+			// 			console.log('Email sent: ' + info.response);
+			// 		}
+			// 	});
+			// })
 		}
 	})
 })
