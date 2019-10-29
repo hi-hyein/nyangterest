@@ -11,6 +11,7 @@ const hash = require('hash.js');
 const nodemailer = require('nodemailer');
 const login = require('./login');
 const memberInfo = require('./memberInfo');
+const findAccount = require('./findAccount');
 
 const serviceKey = `P3gvH0LsdoPkxFnZU2Ee98hGDDEwVTJndJFa8NDUhznSLlZG6OOxBopFWLBmiCPOfWXsF8Wz8LFHJguz41qJvA%3D%3D`;
 const api = 'http://openapi.animal.go.kr/openapi/service/rest/abandonmentPublicSrvc';
@@ -214,6 +215,8 @@ app.use("/", router);
 app.use("/", login);
 // 회원정보 수정 미들웨어
 app.use("/", memberInfo);
+// 계정찾기 미들웨어
+app.use("/", findAccount);
 
 app.listen(PORT, function () {
 	console.log("enabled web server listening !");
