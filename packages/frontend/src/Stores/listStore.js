@@ -6,7 +6,8 @@ export default class ListStore {
 	@observable loading = true;
 	@observable timer = null;
 	@observable totalCount = 0;
-	@observable numOfRows = 147;
+	@observable numOfRows = 72;
+	// @observable numOfRows = 147;
 	@observable pageNo = 1;
 	@observable scrolling = false;
 	@observable hasMore = true;
