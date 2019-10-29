@@ -104,6 +104,10 @@ class LayerLogin extends Component {
         }
     }
 
+    findPasswordHandler = () => {
+        this.props.openFindPassword()
+    }
+
     render(){
         const {userId, userIdValidate, userIdMatchText, userIdNotMatchText, userPassword, userPasswordValidate, userPasswordMatchText, userPasswordNotMatchText} = this.state
         return (    
@@ -142,7 +146,7 @@ class LayerLogin extends Component {
                     </FormHelperText>
                 </div>
                 <div>
-                    <button type="button" style={{fontSize:"16px",color: "#808080",fontWeight:"bold"}} onClick={this.props.openFindPassword}>
+                    <button type="button" style={{fontSize:"16px",color: "#808080",fontWeight:"bold"}} onClick={this.findPasswordHandler}>
                         비밀번호 찾기
                     </button>
                 </div>
