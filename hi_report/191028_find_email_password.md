@@ -16,3 +16,14 @@
 ## 문제
 - 서버에서 프론트로 json의 데이터를 보내는데 프론트에서 json데이터를 console.log로 찍었더니 undefind라고 나왔다. 데이터를 못받아오는 줄 알았는데 서버상태는 정상이고 통신은 잘 되고있었다!
 json을 다른 변수에 담아서 찍어보니 잘 나와서 해결되었다....
+
+- `서브쿼리`
+- 쿼리를 `promise`로 처리하는 법도 있다 (https://codeburst.io/node-js-mysql-and-promises-4c3be599909b)
+- 쿼리를 `async/await`으로 처리하는 법도 있다 (https://codeburst.io/node-js-mysql-and-async-await-6fb25b01b628)
+
+
+## 작업 외
+- 작업을 할 때 파일을 항상 나누는데 DB를 사용할때마다 DB연결작업 코드를 작성해야하는 불편함이 있어서 찾아보았는데 async/await작업으로 mysql모듈을 만들어 간단하게 작업해주는 방법이 있었다 추후 작업해봐야지 
+(https://mayajuni.github.io/2016/07/12/typescript-nodejs-mysql/)
+
+- promise, async/awaitㅇㅔ 관련된 강의영상을 많이 보았는데 예외처리가 많이 중요한것 같은 생각이 들었다 그리고 예외처리는 어떤 기능하나를 만들때 그때그때 처리하는게 좋을 것 같다.(빨리 까먹는 나같은 사람은 특히)
