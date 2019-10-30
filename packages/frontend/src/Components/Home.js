@@ -158,27 +158,20 @@ class Home extends Component {
 		// 품종 카테고리 셀렉트박스  && 검색어 입력
 
 		const filteredItems = items.filter(item => {
-
-			if (item === undefined) {
+			if (typeof item === "object") {
+				return (
+					item.kindCd.replace("한국 고양이", "코리안숏헤어").includes(selectedCategory) &&
+					Object.keys(item).some(
+						key =>
+							typeof item[key] === "string" &&
+							item[key].toLowerCase().replace("한국 고양이", "코리안숏헤어").includes(searchField)
+						, console.log(item.kindCd)
+					)
+				);
+			} else {
 				return null;
 			}
 
-
-			const replaceText = () => {
-				const kindCd = item.kindCd;
-				const replaceKind = kindCd.replace("한국 고양이", "코리안숏헤어")
-				const category = replaceKind.includes(selectedCategory)
-				return category;
-			}
-
-			return (
-				replaceText() &&
-				Object.keys(item).some(
-					key =>
-						typeof item[key] === "string" &&
-						item[key].toLowerCase().replace("한국 고양이", "코리안숏헤어").includes(searchField)
-				)
-			);
 		});
 
 		return (
