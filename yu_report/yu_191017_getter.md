@@ -8,7 +8,7 @@ https://developer.mozilla.org/ko/docs/Web/JavaScript/Reference/Functions/get
 * 그런데 수정해야 할 코드가 listStore파일(store)에 있고 Mobx에서는 javascript의 getter에만 사용할 수 있는
 데코레이터를 지원하는데 @computed라고 한다. 
 
-* @computed를 사용하면동작에는 큰차이가 없지만 성능적으로는 최적화를 할 수 있다고 한다.  변경되기 전의 값과 비교하여 같은 값이면 리랜더링을 하지 않는다니! 
+* @computed를 사용하면 동작에는 큰차이가 없지만 성능적으로는 최적화를 할 수 있다고 한다.  변경되기 전의 값과 비교하여 같은 값이면 리랜더링을 하지 않는다니! 
 
    
 ### 함수로 만들 코드를 찾아보자.
@@ -69,19 +69,54 @@ https://developer.mozilla.org/ko/docs/Web/JavaScript/Reference/Functions/get
 
 ### totalPage
 
-* 기존에는 totalPage코드가 listStore파일(store)loadMore()와 Home.js에 중복되어서 들어가 있었다.
-  <pre>let paging = Math.ceil(numOfRows * pageNo) >= totalCount;</pre>
+* 기존에는 totalPage코드가 listStore.js(store)의 loadMore()와 Home.js에 중복되어서 들어가 있었다.
 
+// listStore.js
+```javascript
+	@action
+		loadMore = () => {
+			const { pageNo, numOfRows, totalCount } = this;
+			const { pageNo, items, numOfRows, totalCount } = this;
+			let totalPage = Math.ceil(numOfRows * pageNo) >= totalCount;
+			// 중략 
+			if (totalPage) {
+				return console.log(message.return)
+			// 중략
+			}
+		}
+
+```	
+
+// Home.js
 ```javascript
 
-```
+	render() {
+
+		let totalPage = Math.ceil(numOfRows * pageNo) >= totalCount;
+
+	}
+
+```	
+
+* loadMore()안의 totalPage를 함수로 만들고 Home.js에는 props로 넘기면  중복없이 사용할 수 있을거 같았다. 또 값이 변경되지 않는 값이라 computed를 사용하여 코드를 정리를 해보았다.
+
+// listStore.js
+``` javascript
+		@computed
+		get totalPage() {
+			const { pageNo, numOfRows, totalCount } = this;
+			let paging = Math.ceil(numOfRows * pageNo) >= totalCount;
+
+			return paging;
+		}
+```		
+// Home.js
+``` javascript
+		const { items, isLoading, loading, hasMore, totalPage, totalCount } = this.props.listStore;
 		
+```		
 
    
-
-
-
 ### 느낀 점
- 1. 혼자 고민하다가 개발자 커뮤니티나 지인 개발자분에게 질문을 하려고 보니 내용정리가 필요했고  그 과정중에 이유를 발견할 수 있었다.
-   해결이 되지 않을때는 풀리지 않는 문제에 대해서 생각을 정리 해보자. 
- 2. 그리고 어느정도의 휴식도 머리를 맑게 해줘서 필요하구나 생각했다.
+
+* @computed의 존재는 알고는 있었으나 정확히 언제 써야 할지 몰라서 사용해 본적이 없었는데 이렇게 적절하게 사용할 수 있어서 뿌듯하다(?) 😊

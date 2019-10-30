@@ -157,13 +157,12 @@ class Home extends Component {
 
 		// 품종 카테고리 셀렉트박스  && 검색어 입력
 
-		// mobx로 넘길 수 있을거 같은디?
-
 		const filteredItems = items.filter(item => {
 
 			if (item === undefined) {
 				return null;
 			}
+
 
 			const replaceText = () => {
 				const kindCd = item.kindCd;
