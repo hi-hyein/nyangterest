@@ -157,6 +157,8 @@ class Home extends Component {
 
 		// 품종 카테고리 셀렉트박스  && 검색어 입력
 
+		// 수행시간 로그
+		let t0 = performance.now();
 		const filteredItems = items.filter(item => {
 			if (typeof item === "object") {
 				return (
@@ -165,14 +167,17 @@ class Home extends Component {
 						key =>
 							typeof item[key] === "string" &&
 							item[key].toLowerCase().replace("한국 고양이", "코리안숏헤어").includes(searchField)
-						, console.log(item.kindCd)
+						// , console.log(item.kindCd)
 					)
 				);
 			} else {
 				return null;
 			}
 
-		});
+		})
+		// 수행시간 로그
+		let t1 = performance.now();
+		console.log((t1 - t0) + 'ms')
 
 		return (
 			<Fragment>
