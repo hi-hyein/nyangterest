@@ -54,7 +54,7 @@ class LayerFindPassword extends Component {
 
         console.log(this.state.email)
 
-       fetch("/findPassword",{
+       fetch("/account/password/find",{
              headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
