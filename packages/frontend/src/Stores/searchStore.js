@@ -15,21 +15,25 @@ export default class SearchStore {
 	// DayPicker 날짜 선택기
 	@action
 	handleFromChange = from => {
+		console.log(typeof from)
 		this.from = from;
+
 	};
+
 
 	@action
 	handleToChange = to => {
 
 		const { loadList, resetList } = this.root.listStore;
-		this.to = to;
 		console.log(typeof to, to)
+		this.to = to;
+
 		// to의 날짜를 선택했을때 최근날짜의 리스트는 리셋해야 한다.
 
 		resetList();
-		console.log("reset")
+		// console.log("reset")
 		loadList();
-		console.log("load")
+		// console.log("load")
 	};
 
 	// 품종 카테고리 셀렉트박스
@@ -45,3 +49,8 @@ export default class SearchStore {
 	}, 800);
 
 }
+
+
+
+
+
