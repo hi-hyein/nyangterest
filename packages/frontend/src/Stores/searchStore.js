@@ -1,4 +1,4 @@
-import { observable, action, reaction } from "mobx";
+import { observable, action } from "mobx";
 import debounce from "lodash.debounce";
 
 export default class SearchStore {
@@ -49,24 +49,6 @@ export default class SearchStore {
 	}, 800);
 
 }
-
-const search = new SearchStore();
-// const store = window.store = new SearchStore();
-
-// autorun(() => {
-// 	// console.log(search.from)
-// 	// console.log(search.to)
-// 	// console.log(search.handleFromChange)
-// 	// console.log(search.to)
-// 	// console.log(search.categoryChange)
-// 	// console.log(search.searchChange)
-// })
-
-reaction(
-	() => search.handleToChange,
-	() => { console.log("change!") }
-)
-
 
 
 
