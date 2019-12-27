@@ -75,7 +75,7 @@ passport.use(new LocalStrategy({ // local 전략을 세움
 
 
 router.post("/login", passport.authenticate('local', {
-	failureRedirect: "/"
+	failureRedirect: "http://localhost:3000/"
 }), (req, res) => {
 	console.log("유저",req.user)
 	console.log("세션",req.session)

@@ -29,28 +29,31 @@ router.post('/password/find',(req, res)=>{
 
 
 	// DB에서 비교
-	connection.query(`SELECT * FROM member WHERE email="${userEmail}"`, (err,rows,fields) => {
+	connection.query(`SELECT * FROM member WHERE email='${userEmail}'`, (err,rows,fields) => {
 		if(err){
 			console.log("에러",err)
 			res.json({
 				emailMatch: false
 			})
-		}else if(rows[0].email!==userEmail){
+		}else {
+			if(!rows[0]) {
 				console.log("비밀번호찾기 : 이메일 없음")
 				res.json({
 					emailMatch: false
 				})
 			}else {
 				console.log("비밀번호찾기 : 이메일 있음")
-				let radomToken = hash.sha256().update(userEmail).digest('hex');
+					
+				let radomToken = hash.sha256().update(userEmail+Math.random()*1).digest('hex');
 				
-				connection.query(`UPDATE member SET token=${radomToken} WHERE email=${userEmail}`,()=>{
+				connection.query(`UPDATE member SET token='${radomToken}' WHERE email='${userEmail}'`,(err)=>{
 					if(err){
 						console.log('에러',err)
 					}else {
 						console.log('토큰UPDATE')
 					}
 				})
+
 				
 				let transporter = nodemailer.createTransport({
 					service: 'gmail',
@@ -68,19 +71,19 @@ router.post('/password/find',(req, res)=>{
 				};
 
 				transporter.sendMail(mailOptions, (error, info)=> {
-					console.log("info:",info)
 			
 					if (error) {
 						console.log(error);
 					}
 					else {
 						console.log('Email sent: ' + info.response);
-
 						res.json({
 							emailMatch:  true
 						})
 					}
 				});
+
+			}
 		}
 	})
 })
@@ -94,11 +97,17 @@ router.post('/password/modify',(req,res)=>{
 	const token = req.body.modifyToken;
 	const password = hash.sha256().update(req.body.password).digest('hex');
 
-	connection.query(`UPDATE member SET password=${password} WHERE token=${token}`,(err,rows)=>{
+	connection.query(`UPDATE member SET password='${password}' WHERE token='${token}'`,(err,rows)=>{
 		if(err){
 			console.log("비밀번호찾기 비번 업데이트 에러",err)
+			res.json({
+				passwordUpdate : false
+			})
 		}else {
 			console.log("비밀번호찾기 비번 업데이트 성공")
+			res.json({
+				passwordUpdate : true
+			})
 		}
 	})
 })
