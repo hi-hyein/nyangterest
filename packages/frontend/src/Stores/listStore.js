@@ -6,8 +6,7 @@ export default class ListStore {
 	@observable loading = true;
 	@observable timer = null;
 	@observable totalCount = 0;
-	// @observable numOfRows = 72;
-	@observable numOfRows = 147;
+	@observable numOfRows = 72;
 	@observable pageNo = 1;
 	@observable scrolling = false;
 	@observable hasMore = true;
@@ -28,10 +27,19 @@ export default class ListStore {
 			const json = await response.json();
 
 			runInAction(() => {
+				if (Array.isArray(json.items.item)) {
+					this.setItems([...items, ...(json.items.item || [])]);
+				}
+				else {
+					// 객체를 배열로 만들어서 기존배열에 추가하여 새배열을 만드는 코드
+					this.items = items.concat(json.items.item).slice();
+					console.log(typeof items);
+					this.loading = false;
+					this.hasMore = false;
 
-				this.setItems([...items, ...json.items.item || []])
+				}
 				this.setCount(json.totalCount);
-			}, console.log(items.constructor.name, items, items.length, `총갯수 : ${json.totalCount}`));
+			});
 
 		} catch (err) {
 			runInAction(() => {
@@ -41,19 +49,21 @@ export default class ListStore {
 		}
 	};
 
+
 	@action
 	setItems = (items) => {
 		this.items = items;
 		this.loading = false;
 		this.isLoading = false;
 		this.scrolling = false;
+		this.hasMore = true;
 		console.log(`items의 갯수 : ${items.length}`)
-		// console.log(items.constructor.name)
 	}
 
 	@action
 	setCount = (totalCount) => {
 		this.totalCount = totalCount;
+		console.log(`totalCount : ${totalCount}`)
 	}
 
 	@action
