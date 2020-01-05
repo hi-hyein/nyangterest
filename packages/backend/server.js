@@ -10,6 +10,7 @@ const login = require('./login');
 const memberInfo = require('./memberInfo');
 const findAccount = require('./findAccount');
 const join = require('./join');
+const logger = require('./winston')
 
 const serviceKey = `P3gvH0LsdoPkxFnZU2Ee98hGDDEwVTJndJFa8NDUhznSLlZG6OOxBopFWLBmiCPOfWXsF8Wz8LFHJguz41qJvA%3D%3D`;
 const api = 'http://openapi.animal.go.kr/openapi/service/rest/abandonmentPublicSrvc';
@@ -31,6 +32,7 @@ router.get("/page/:bgnde/:endde/:numOfRows/:id/", (req, res) => {
 			res.send(JSON.stringify({ message: "System Error" }));
 		});
 });
+
 
 // 기본주소
 
@@ -122,7 +124,8 @@ app.use("/", memberInfo);
 app.use("/account", findAccount);
 
 app.listen(PORT, function () {
-	console.log("enabled web server listening !");
+	logger.info("enabled web server listening !");
+	// console.log("enabled web server listening !");
 });
 
 module.exports = app;
