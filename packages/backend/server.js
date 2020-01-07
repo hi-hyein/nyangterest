@@ -17,10 +17,11 @@ const api = 'http://openapi.animal.go.kr/openapi/service/rest/abandonmentPublicS
 
 // 기본주소
 
-router.get("/page/:bgnde/:endde/:numOfRows/:id/", (req, res) => {
+router.get("/page/:bgnde/:endde/:kind/:numOfRows/:id/", (req, res) => {
 
+	const { kind } = req.params || ''
 	const { bgnde, endde, numOfRows, id } = req.params;
-	const url = `${api}/abandonmentPublic?ServiceKey=${serviceKey}&_type=json&bgnde=${bgnde}&endde=${endde}&upkind=422400&numOfRows=${numOfRows}&pageNo=${id}`;
+	const url = `${api}/abandonmentPublic?ServiceKey=${serviceKey}&_type=json&bgnde=${bgnde}&endde=${endde}&upkind=422400&kind=&numOfRows=${numOfRows}&pageNo=${id}`;
 
 	fetch(url)
 		.then(response => response.json())
