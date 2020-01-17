@@ -12,7 +12,6 @@ export default class ListStore {
 	@observable hasMore = true;
 	@observable isLoading = false;
 	@observable error = false;
-	@observable kind = "000116";
 
 	constructor(root) {
 		this.root = root;
@@ -22,8 +21,8 @@ export default class ListStore {
 	@action
 	loadList = async () => {
 		try {
-			const { items, kind, pageNo, numOfRows, happenFrom, happenTo } = this;
-			const url = `/page/${happenFrom}/${happenTo}/${kind}/${numOfRows}/${pageNo}`;
+			const { items, pageNo, numOfRows, happenFrom, happenTo } = this;
+			const url = `/page/${happenFrom}/${happenTo}/${numOfRows}/${pageNo}`;
 			const response = await fetch(url);
 			const json = await response.json();
 
@@ -173,37 +172,38 @@ export default class ListStore {
 
 	// post방식일때
 
-	// @action
-	// loadList = async () => {
+	@action
+	loadList2 = async () => {
 
-	// 	try {
-	// 		const { items, pageNo, numOfRows } = this;
-	// 		const { from, to } = this.root.searchStore;
-	// 		const bgnde = moment(from).format("YYYYMMDD")
-	// 		const endde = moment(to).format("YYYYMMDD")
-	// 		const url = `/page/`;
-	// 		// const url = `/page/${numOfRows}/${pageNo}`;
-	// 		const response = await fetch(url, {
-	// 			headers: {
-	// 				'Accept': 'application/json',
-	// 				'Content-Type': 'application/json'
-	// 			},
-	// 			method: 'POST',
-	// 			body: JSON.stringify({ bgnde, endde, numOfRows, pageNo })
+		try {
+			const { items, pageNo, totalCount } = this;
+			const { from, to } = this.root.searchStore;
+			const bgnde = moment(from).format("YYYYMMDD")
+			const endde = moment(to).format("YYYYMMDD")
+			this.numOfRows = this.totalCount;
+			const url = `/page/`;
+			// const url = `/page/${numOfRows}/${pageNo}`;
+			const response = await fetch(url, {
+				headers: {
+					'Accept': 'application/json',
+					'Content-Type': 'application/json'
+				},
+				method: 'POST',
+				body: JSON.stringify({ bgnde, endde, totalCount, pageNo })
 
-	// 		})
-	// 		const json = await response.json();
-	// 		runInAction(() => {
-	// 			this.setItems([...items, ...json.items.item || []])
-	// 			this.setCount(json.totalCount)
-	// 		}, console.log(json.totalCount));
+			})
+			const json = await response.json();
+			runInAction(() => {
+				this.setItems([...items, ...json.items.item || []])
+				this.setCount(json.totalCount)
+			}, console.log(json.totalCount));
 
-	// 	} catch (err) {
-	// 		runInAction(() => {
-	// 			console.log(err);
-	// 			this.isLoading = false;
-	// 		})
-	// 	}
-	// };
+		} catch (err) {
+			runInAction(() => {
+				console.log(err);
+				this.isLoading = false;
+			})
+		}
+	};
 }
 

@@ -137,11 +137,12 @@ const Preloader = styled.div`
 class Home extends Component {
 
 	componentDidMount() {
-		const { handleScroll, loadList } = this.props.listStore;
+		const { handleScroll, loadList, loadList2 } = this.props.listStore;
 		// 스크롤링 제어
 		this._throttledScroll = throttle(handleScroll, 1000)
 		window.addEventListener("scroll", this._throttledScroll);
 		loadList();
+		loadList2();
 	}
 
 	componentWillUnmount() {
