@@ -41,10 +41,10 @@ router.post("/page/", (req, res) => {
 	const body = req.body;
 	const bgnde = body.bgnde || null;
 	const endde = body.endde || null;
-	const numOfRows = this.totalCount;
+	const numOfRows = body.totalCount;
 	const pageNo = body.pageNo;
 
-	const url = `${api}/abandonmentPublic?ServiceKey=${serviceKey}&_type=json&bgnde=${bgnde}&endde=${endde}&upkind=422400&numOfRows=${numOfRows}& pageNo=${pageNo}`;
+	const url = `${api}/abandonmentPublic?ServiceKey=${serviceKey}&_type=json&bgnde=${bgnde}&endde=${endde}&upkind=422400&numOfRows=${numOfRows}&pageNo=${pageNo}`;
 
 	fetch(url)
 		// .then(res.send(body))
@@ -53,9 +53,12 @@ router.post("/page/", (req, res) => {
 		.then(json => {
 			res.send(json.response.body)
 			console.log(bgnde, endde, json.response.body.totalCount)
-			totalCount = json.response.body.totalCount;
-			return totalCount;
-			// let numOfRows = this.totalCount;
+			const totalCount = json.response.body.totalCount
+			// if (numOfRows >= this.totalCount) {
+			// 	return numOfRows;
+			// }
+			// totalCount = json.response.body.totalCount;
+			// return totalCount;
 		})
 		.catch(() => {
 			res.send(JSON.stringify({ message: "System Error" }));
@@ -66,7 +69,7 @@ router.post("/page/", (req, res) => {
 // 품종
 
 router.get("/search/kind", (req, res) => {
-	const url = `${api} / kind ? ServiceKey = ${serviceKey} & _type=json & up_kind_cd=422400`;
+	const url = `${api}/kind?ServiceKey=${serviceKey}&_type=json&up_kind_cd=422400`;
 
 	fetch(url)
 		.then(response => response.json())

@@ -32,7 +32,7 @@ export default class SearchStore {
 
 		resetList();
 		// console.log("reset")
-		this.numOfRows = this.totalCount;
+		// this.numOfRows = totalCount;
 		loadList2();
 		// console.log("load")
 	};
