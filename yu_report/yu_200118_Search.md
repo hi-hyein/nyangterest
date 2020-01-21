@@ -157,13 +157,14 @@ router.get("/page/:bgnde/:endde/:totalCount/:id/", (req, res) => {
 기본적으로 Promise.all은 promise 들의 배열을 받습니다. 그리고 그걸 다 합쳐서 하나의 promise로 만듭니다.
 그 하나의 promise는 배열 안에 있는 모든 구성원 promise 들이 resolved(결정)될 때 비로소 resolve 합니다.
 
-* 하지만 역시나 실패 🤕
+* 하지만 역시나 실패 프론트쪽에 아예 빈화면만 보인다. 🤕 백엔드쪽 데이터를 확인했으나 역시나 똑같은 상황..
 
 
-#### 디버깅 후 totalCount의 값이  url에 온전히 들어올 때를 발견
+#### 디버깅 후 totalCount의 값이  URL에 온전히 들어올 때를 발견
 
-* 스크롤링이 되어서 페이지가 2페이지로 넘어가야 그제서야 totalCount가 제대로 들어오더라
+* 스크롤링이 되어서 페이지가 2페이지로 넘어가야 그제서야 URL에 totalCount가 제대로 들어오더라 
 
+* 하지만 item이 빈값으로 넘어와서 데이터를 더이상 보여주지 않고 return이 된다.
 
 
 ### 참고사이트
