@@ -168,7 +168,8 @@ router.get("/page/:bgnde/:endde/:totalCount/:id/", (req, res) => {
   loadList = async (urls) => {
     try {
       const { items, pageNo, happenFrom, happenTo, totalCount } = this;
-      const urls = [/page/${happenFrom}/${happenTo}/${totalCount}/${pageNo}, /search/${happenFrom}/${happenTo}/${totalCount}/${pageNo}]
+      const urls = [`/page/${happenFrom}/${happenTo}/${totalCount}/${pageNo}`, `/search/${happenFrom}/${happenTo}/${totalCount}/${pageNo}`]
+
       let json = await Promise.all(urls.map(url => fetch(url)))
       console.log(json)
 
