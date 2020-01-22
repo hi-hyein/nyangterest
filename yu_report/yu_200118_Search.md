@@ -4,7 +4,7 @@
 
 * 내가 멘토님께 제대로 설명을 못드려서 커뮤니케이션의 문제로 멘토님이 전에 주신 팁으로는 해결이 되지 않았다. 
 
-* 멘토님은 API를 호출할때 날짜를 지정한 것 만큼의 모든 데이터를 가지고 온다고 생각하셨었다고 했다. 
+* 멘토님은 API를 호출할때 날짜를 지정한 것 만큼의 모든 데이터를 가지고 온다고 생각했었다고 하셨다. 
   
   
 ### 멘토님의 팁  
@@ -23,7 +23,7 @@
   	
 * API호출을 2개 이상은  어떻게 보내야 할까? 
 
-* 그럼 API호출을 동시에 해야하는걸까?
+* 그럼 API호출을 동시에 해야 하는걸까?
 
 * 요청변수 numOfRows에 응답변수인 totalCount의 값을 어떻게 넣어야 할까?
 
@@ -157,14 +157,88 @@ router.get("/page/:bgnde/:endde/:totalCount/:id/", (req, res) => {
 기본적으로 Promise.all은 promise 들의 배열을 받습니다. 그리고 그걸 다 합쳐서 하나의 promise로 만듭니다.
 그 하나의 promise는 배열 안에 있는 모든 구성원 promise 들이 resolved(결정)될 때 비로소 resolve 합니다.
 
-* 하지만 역시나 실패 프론트쪽에 아예 빈화면만 보인다. 🤕 백엔드쪽 데이터를 확인했으나 역시나 똑같은 상황..
+* 하지만 역시나 실패 프론트쪽에서는 아예 빈화면만 보인다. 🤕 백엔드쪽 데이터를 확인했으나 역시나 똑같은 상황..
+
+
+//listStore.js
+
+```javascript
+// get방식일때
+  @action
+  loadList = async (urls) => {
+    try {
+      const { items, pageNo, happenFrom, happenTo, totalCount } = this;
+      const urls = [/page/${happenFrom}/${happenTo}/${totalCount}/${pageNo}, /search/${happenFrom}/${happenTo}/${totalCount}/${pageNo}]
+      let json = await Promise.all(urls.map(url => fetch(url)))
+      console.log(json)
+
+      runInAction(() => {
+        if (Array.isArray(json.items.item)) {
+          this.setItems([...items, ...(json.items.item || [])]);
+        }
+        else {
+          // 객체를 배열로 만들어서 기존배열에 추가하여 새배열을 만드는 코드
+          this.items = items.concat(json.items.item).slice();
+          console.log(typeof items);
+          this.loading = false;
+          this.hasMore = false;
+
+        }
+        this.setCount(json.totalCount);
+
+        return json.json()
+      })
+
+    } catch (err) {
+      runInAction(() => {
+        console.log(err);
+        this.isLoading = false;
+      })
+    }
+  };
+
+```
+
+// server.js
+
+```javascript
+
+router.get("/page/:bgnde/:endde/:numOfRows/:id/", (req, res) => {
+
+	const { bgnde, endde, numOfRows, id } = req.params;
+	const url = `${api}/abandonmentPublic?ServiceKey=${serviceKey}&_type=json&bgnde=${bgnde}&endde=${endde}&upkind=422400&numOfRows=${numOfRows}&pageNo=${id}`;
+
+	fetch(url)
+		.then(response => response.json())
+		.then(json => {
+			res.send(json.response.body);
+			console.log(bgnde, endde, json.response.body.totalCount);
+		})
+		.catch(() => {
+			res.send(JSON.stringify({ message: "System Error" }));
+		});
+});
+
+router.get("/page/:bgnde/:endde/:totalCount/:id/", (req, res) => {
+
+	const { bgnde, endde, totalCount, id } = req.params;
+	const url = `${api}/abandonmentPublic?ServiceKey=${serviceKey}&_type=json&bgnde=${bgnde}&endde=${endde}&upkind=422400&numOfRows=${totalCount}&pageNo=${id}`;
+
+	fetch(url)
+		// 중략
+});
+
+```
 
 
 #### 디버깅 후 totalCount의 값이  URL에 온전히 들어올 때를 발견
 
 * 스크롤링이 되어서 페이지가 2페이지로 넘어가야 그제서야 URL에 totalCount가 제대로 들어오더라 
 
-* 하지만 item이 빈값으로 넘어와서 데이터를 더이상 보여주지 않고 return이 된다.
+* 하지만 item이 빈값으로 넘어와서 데이터를 더이상 보여주지 않고 return이 된다. 
+
+
+#### 하아.. 답답하다.. 
 
 
 ### 참고사이트
@@ -172,4 +246,5 @@ router.get("/page/:bgnde/:endde/:totalCount/:id/", (req, res) => {
 (https://developer.mozilla.org/ko/docs/Web/JavaScript/Reference/Global_Objects/Promise/all)
 
 (https://medium.com/@kiwanjung/%EB%B2%88%EC%97%AD-async-await-%EB%A5%BC-%EC%82%AC%EC%9A%A9%ED%95%98%EA%B8%B0-%EC%A0%84%EC%97%90-promise%EB%A5%BC-%EC%9D%B4%ED%95%B4%ED%95%98%EA%B8%B0-955dbac2c4a4)
+
 
