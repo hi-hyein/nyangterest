@@ -24,7 +24,7 @@ export default class SearchStore {
 	@action
 	handleToChange = to => {
 
-		const { loadList, resetList } = this.root.listStore;
+		const { loadList2, resetList } = this.root.listStore;
 		console.log(typeof to, to)
 		this.to = to;
 
@@ -32,7 +32,8 @@ export default class SearchStore {
 
 		resetList();
 		// console.log("reset")
-		loadList();
+		// this.numOfRows = totalCount;
+		loadList2();
 		// console.log("load")
 	};
 

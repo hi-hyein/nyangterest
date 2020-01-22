@@ -17,11 +17,10 @@ const api = 'http://openapi.animal.go.kr/openapi/service/rest/abandonmentPublicS
 
 // 기본주소
 
-router.get("/page/:bgnde/:endde/:kind/:numOfRows/:id/", (req, res) => {
+router.get("/page/:bgnde/:endde/:numOfRows/:id/", (req, res) => {
 
-	const { kind } = req.params || ''
 	const { bgnde, endde, numOfRows, id } = req.params;
-	const url = `${api}/abandonmentPublic?ServiceKey=${serviceKey}&_type=json&bgnde=${bgnde}&endde=${endde}&upkind=422400&kind=&numOfRows=${numOfRows}&pageNo=${id}`;
+	const url = `${api}/abandonmentPublic?ServiceKey=${serviceKey}&_type=json&bgnde=${bgnde}&endde=${endde}&upkind=422400&numOfRows=${numOfRows}&pageNo=${id}`;
 
 	fetch(url)
 		.then(response => response.json())
@@ -38,28 +37,34 @@ router.get("/page/:bgnde/:endde/:kind/:numOfRows/:id/", (req, res) => {
 // 기본주소
 
 // post방식
-// router.post("/page/", (req, res) => {
-// 	const body = req.body;
-// 	const bgnde = body.bgnde || null;
-// 	const endde = body.endde || null;
-// 	const numOfRows = body.numOfRows;
-// 	const pageNo = body.pageNo;
+router.post("/page/", (req, res) => {
+	const body = req.body;
+	const bgnde = body.bgnde || null;
+	const endde = body.endde || null;
+	const numOfRows = body.totalCount;
+	const pageNo = body.pageNo;
 
-// 	const url = `${api}/abandonmentPublic?ServiceKey=${serviceKey}&_type=json&bgnde=${bgnde}&endde=${endde}&upkind=422400&numOfRows=${numOfRows}&pageNo=${pageNo}`;
+	const url = `${api}/abandonmentPublic?ServiceKey=${serviceKey}&_type=json&bgnde=${bgnde}&endde=${endde}&upkind=422400&numOfRows=${numOfRows}&pageNo=${pageNo}`;
 
-// 	fetch(url)
-// 		// .then(res.send(body))
-// 		.then(console.log(body, url))
-// 		.then(response => response.json())
-// 		.then(json => {
-// 			res.send(json.response.body)
-// 			console.log(bgnde, endde, json.response.body.totalCount)
-// 		})
-// 		.catch(() => {
-// 			res.send(JSON.stringify({ message: "System Error" }));
-// 		});
+	fetch(url)
+		// .then(res.send(body))
+		.then(console.log(body, url))
+		.then(response => response.json())
+		.then(json => {
+			res.send(json.response.body)
+			console.log(bgnde, endde, json.response.body.totalCount)
+			const totalCount = json.response.body.totalCount
+			// if (numOfRows >= this.totalCount) {
+			// 	return numOfRows;
+			// }
+			// totalCount = json.response.body.totalCount;
+			// return totalCount;
+		})
+		.catch(() => {
+			res.send(JSON.stringify({ message: "System Error" }));
+		});
 
-// });
+});
 
 // 품종
 
