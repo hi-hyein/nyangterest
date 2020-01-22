@@ -159,6 +159,7 @@ router.get("/page/:bgnde/:endde/:totalCount/:id/", (req, res) => {
 
 * 하지만 역시나 실패 프론트쪽에서는 아예 빈화면만 보인다. 🤕 백엔드쪽 데이터를 확인했으나 역시나 똑같은 상황..
 
+
 //listStore.js
 
 ```javascript
@@ -168,6 +169,7 @@ router.get("/page/:bgnde/:endde/:totalCount/:id/", (req, res) => {
     try {
       const { items, pageNo, happenFrom, happenTo, totalCount } = this;
       const urls = [`/page/${happenFrom}/${happenTo}/${totalCount}/${pageNo}`, `/search/${happenFrom}/${happenTo}/${totalCount}/${pageNo}`]
+
       let json = await Promise.all(urls.map(url => fetch(url)))
       console.log(json)
 
