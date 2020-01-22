@@ -157,7 +157,11 @@ router.get("/page/:bgnde/:endde/:totalCount/:id/", (req, res) => {
 기본적으로 Promise.all은 promise 들의 배열을 받습니다. 그리고 그걸 다 합쳐서 하나의 promise로 만듭니다.
 그 하나의 promise는 배열 안에 있는 모든 구성원 promise 들이 resolved(결정)될 때 비로소 resolve 합니다.
 
-* 하지만 역시나 실패 프론트쪽에서는 아예 빈화면만 보인다. 🤕 백엔드쪽 데이터를 확인했으나 역시나 똑같은 상황..
+* 하지만 역시나 실패 프론트쪽에서는 아예 빈화면만 보인다. 🤕 백엔드쪽 데이터를 확인했으나 요청변수 numofRows의 값이 변동이 없더라 프론트쪽 오류때문에 값을 전달받지 못한거 같다.
+
+![Promise.allError](https://yoonucho.github.io/post_img/Promise.all_error1.jpg)
+
+![Promise.allError](https://yoonucho.github.io/post_img/Promise.all_error2.jpg)
 
 
 //listStore.js
