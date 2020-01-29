@@ -17,20 +17,35 @@ const api = 'http://openapi.animal.go.kr/openapi/service/rest/abandonmentPublicS
 
 // 기본주소
 
-router.get("/page/:bgnde/:endde/:numOfRows/:id/", (req, res) => {
+router.get("/page/:bgnde/:endde/:numOfRows/:id/", async (req, res) => {
 
 	const { bgnde, endde, numOfRows, id } = req.params;
 	const url = `${api}/abandonmentPublic?ServiceKey=${serviceKey}&_type=json&bgnde=${bgnde}&endde=${endde}&upkind=422400&numOfRows=${numOfRows}&pageNo=${id}`;
 
-	fetch(url)
+	const response = await fetch(url);
+	const json = await response.json();
+	const totalCount = json.response.body.totalCount;
+
+	const secoundUrl = `${api}/abandonmentPublic?ServiceKey=${serviceKey}&_type=json&bgnde=${bgnde}&endde=${endde}&upkind=422400&numOfRows=${totalCount}&pageNo=1`;
+
+	const response2 = await fetch(secoundUrl);
+	const json2 = await response2.json();
+	const allList = json2.response.body;
+
+	res.send(allList);
+
+	/*fetch(url)
 		.then(response => response.json())
 		.then(json => {
 			res.send(json.response.body);
 			console.log(bgnde, endde, json.response.body.totalCount);
+
+			totalCount = json.response.body.totalCount;
 		})
 		.catch(() => {
 			res.send(JSON.stringify({ message: "System Error" }));
 		});
+		*/
 });
 
 
