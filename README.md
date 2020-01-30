@@ -1,6 +1,6 @@
 # 😼nyangterest
 
-🐱😻유기묘를 위한 검색/등록 기능이 추가된 앱만들기 프로젝트😻🐱
+🐱😻유기묘 리스트를 제공, 검색이 가능한 앱만들기 프로젝트😻🐱
 
 ## 개발 환경
 * **Database** : mysql(>=8.0) - **host**: nyangterest.cqn96a5xogpk.ap-northeast-2.rds.amazonaws.com  **version**:1.0
@@ -45,6 +45,40 @@ npm run dev
   + 참고사이트: https://lhy.kr/git-workflow
 * Branch Name은 `feature/이름스펠링-기능`으로 만듭니다. ex)feature/hy-search
 * Master로 머지전 `Pull request(PR)`를 통하여 확인 후 진행합니다.
+
+
+## 작업영역
+
+### 정혜인
+
+* 헤더
+* 로그인 (passport.js)
+* 로그아웃 (passport.js)
+* 회원가입
+* 회원탈퇴
+* 비밀번호 찾기
+
+### 조윤우
+
+* 메인컨텐츠 (유기묘 리스트) 
+* 상세팝업
+* 상단검색 필터
+* 이용약관, 개인정보 처리방침 
+* 이용툴팁 
+
+
+## 프로젝트 진행시 작성 문서와 projects(칸반스타일)
+
+### 정혜인
+
+* 문서: https://github.com/henyy1004/nyangterest/tree/master/hi_report
+* projects :https://github.com/henyy1004/nyangterest/projects/2
+
+### 조윤우
+
+* 문서: https://github.com/henyy1004/nyangterest/tree/master/yu_report
+* projects :https://github.com/henyy1004/nyangterest/projects/1
+
 
 ## License
 MIT
