@@ -156,5 +156,9 @@ packages/backend/db.json
 *.csv
 
 
-#session
+# session
 sessions/*
+
+# Eject
+packages/frontend/config
+packages/frontend/scripts
