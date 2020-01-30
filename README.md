@@ -71,13 +71,13 @@ npm run dev
 
 ### 정혜인
 
-* 문서: https://github.com/henyy1004/nyangterest/tree/master/hi_report
-* projects :https://github.com/henyy1004/nyangterest/projects/2
+* 문서 : https://github.com/henyy1004/nyangterest/tree/master/hi_report
+* projects : https://github.com/henyy1004/nyangterest/projects/2
 
 ### 조윤우
 
-* 문서: https://github.com/henyy1004/nyangterest/tree/master/yu_report
-* projects :https://github.com/henyy1004/nyangterest/projects/1
+* 문서 : https://github.com/henyy1004/nyangterest/tree/master/yu_report
+* projects : https://github.com/henyy1004/nyangterest/projects/1
 
 
 ## License
