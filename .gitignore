@@ -158,7 +158,3 @@ packages/backend/db.json
 
 # session
 sessions/*
-
-# Eject
-packages/frontend/config
-packages/frontend/scripts
