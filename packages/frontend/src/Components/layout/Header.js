@@ -11,6 +11,7 @@ import MenuList from '@material-ui/core/MenuList';
 import Paper from '@material-ui/core/Paper';
 import LayerModifyInfo from "../popup/LayerModifyInfo";
 import LayerFindPassword from "../popup/LayerFindPassword";
+import LayerUnregister from "../popup/LayerUnregister";
 
 @inject('loginStore')
 @observer
@@ -21,6 +22,7 @@ class Header extends React.Component {
 		openModify: false,
 		openFindPassword: false,
 		btnMenuArea: false,
+		openUnresister: false,
 	}
 
 	popupOpenLogin = () => {
@@ -48,6 +50,12 @@ class Header extends React.Component {
 		})
 	}
 
+	popoupOpenUnresister = () => {
+		this.setState({
+			openUnresister: true,
+		})
+	}
+
 
 	popupCLose = () => {
 		this.setState({
@@ -55,6 +63,7 @@ class Header extends React.Component {
 			openJoin: false,
 			openModify: false,
 			openFindPassword: false,
+			openUnresister: false,
 		})
 	}
 
@@ -78,10 +87,12 @@ class Header extends React.Component {
 		localStorage.removeItem('userInfo')
 	}
 
+	
+
 
 	render() {
 		const {userState} = this.props.loginStore;
-		const { openLogin, openJoin, openModify, btnMenuArea, openFindPassword } = this.state;
+		const { openLogin, openJoin, openModify, btnMenuArea, openFindPassword, openUnresister } = this.state;
 		const HeaderStyle = {
 			position: 'fixed',
 			top: '0',
@@ -139,7 +150,7 @@ class Header extends React.Component {
 										<MenuList>
 										<MenuItem onClick={this.logout}>로그아웃</MenuItem>
 										<MenuItem onClick={this.popupOpenModify}>회원정보수정</MenuItem>
-										<MenuItem>회원탈퇴</MenuItem>
+										<MenuItem onClick={this.popoupOpenUnresister}>회원탈퇴</MenuItem>
 										</MenuList>
 									</Paper>
 								</div>
@@ -152,7 +163,7 @@ class Header extends React.Component {
 				{/* 레이어 */}
 				{openLogin &&
 					<Layer onClose={this.popupCLose} layerTitle="Login">
-						<LayerLogin onClose={this.popupCLose} openFindPassword={this.popupOpenFindPassword}/>
+						<LayerLogin onClose={this.popupCLose} openFindPassword={this.popupOpenFindPassword} openJoinLayer={this.popupOpenJoin}/>
 					</Layer>
 				}
 				{openJoin &&
@@ -166,8 +177,14 @@ class Header extends React.Component {
 					</Layer>
 				}
 				{openFindPassword &&
-					<Layer onClose={this.popupCLose} layerTitle="비밀번호 찾기" >
+					<Layer onClose={this.popupCLose} layerTitle="이메일 / 비밀번호 찾기" >
 						<LayerFindPassword/>
+					</Layer>
+				}
+
+				{openUnresister &&
+					<Layer onClose={this.popupCLose} layerTitle="회원탈퇴" >
+						<LayerUnregister/>
 					</Layer>
 				}
 			</>

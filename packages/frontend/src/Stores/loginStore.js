@@ -1,7 +1,7 @@
 import { observable, action } from "mobx";
 
 export default class loginStore {
-	@observable userId = "";
+	@observable userId = localStorage.getItem('userInfo')? JSON.parse(localStorage.getItem('userInfo')): "";
 	@observable userState = localStorage.getItem('userInfo')?"login":"logout"
 
 	constructor(root) {
