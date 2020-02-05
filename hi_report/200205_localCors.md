@@ -1,7 +1,7 @@
 # 로컬 -> 로컬에서의 cors 에러
 
 이전 공공포털 API 작업을 진행하면서 `cors`에러로 인해 어려움을 격은적이 있었다.
-[190501_cors.md](190501_cors.md)
+[190501_cors.md](https://github.com/henyy1004/nyangterest/blob/master/hi_report/190501_cors.md)
 
 간단하게 cors에러에 대해 설명하자면 
 어떤 출처(origin)에서 불러온 문서나 스크립트가 다른 출처에서 가져온 리소스와 상호작용하는 것을 제한하는 브라우저의 보안 방식이다.
