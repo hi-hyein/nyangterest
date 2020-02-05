@@ -5,8 +5,8 @@ export default class ListStore {
 	@observable items = [];
 	@observable loading = true;
 	@observable timer = null;
-	@observable totalCount = 0;
 	@observable numOfRows = 72;
+	// @observable totalCount = 0;
 	@observable pageNo = 1;
 	@observable scrolling = false;
 	@observable hasMore = true;
@@ -18,13 +18,30 @@ export default class ListStore {
 	}
 
 	// get방식일때
+
+	// getUrl = async (url) => {
+	// 	try {
+	// 		const response = await fetch(url);
+	// 		const json = await response.json();
+	// 		const totalCount = await json.totalCount;
+	// 	} catch (err) {
+	// 		console.log(err)
+	// 	}
+	// }
+
 	@action
 	loadList = async () => {
 		try {
 			const { items, pageNo, numOfRows, happenFrom, happenTo } = this;
 			const url = `/page/${happenFrom}/${happenTo}/${numOfRows}/${pageNo}`;
+			// this.getUrl(url);
 			const response = await fetch(url);
 			const json = await response.json();
+
+			// const totalCount = json.totalCount;
+			// const url2 = `/page/${happenFrom}/${happenTo}/${totalCount}/${pageNo}`;
+			// await fetch(url2);
+
 
 			runInAction(() => {
 				if (Array.isArray(json.items.item)) {
@@ -34,11 +51,16 @@ export default class ListStore {
 					// 객체를 배열로 만들어서 기존배열에 추가하여 새배열을 만드는 코드
 					this.items = items.concat(json.items.item).slice();
 					console.log(typeof items);
-					this.loading = false;
-					this.hasMore = false;
 
 				}
-				this.setCount(json.totalCount);
+				this.loading = false;
+				this.hasMore = false;
+				const count = this.setCount(json.totalCount);
+				return count;
+
+
+
+
 			});
 
 		} catch (err) {
@@ -73,7 +95,7 @@ export default class ListStore {
 			const json = await response.json();
 			runInAction(() => {
 				this.setItems([...items, ...json.items.item || []])
-				this.setCount(json.totalCount)
+				this.total(json.totalCount)
 			}, console.log(json.totalCount));
 
 		} catch (err) {
@@ -97,8 +119,9 @@ export default class ListStore {
 
 	@action
 	setCount = (totalCount) => {
-		this.totalCount = totalCount;
+		// this.totalCount = totalCount;
 		console.log(`totalCount : ${totalCount}`)
+
 	}
 
 	@action
@@ -156,7 +179,6 @@ export default class ListStore {
 		const { isLoading, hasMore, error } = this;
 		if (error || isLoading || !hasMore) return;
 
-		this.loadMore();
 		// 스크롤링 후 올라간 만큼의 높이
 		const scrollTop =
 			(document.documentElement && document.documentElement.scrollTop) ||
@@ -196,6 +218,14 @@ export default class ListStore {
 		const happenTo = moment(to).format("YYYYMMDD");
 		return happenTo;
 	}
+
+	// @computed
+	// get total() {
+	// 	const { totalCount } = this;
+	// 	const total = totalCount.toString();
+	// 	console.log(typeof total)
+	// 	return total;
+	// }
 
 	@computed
 	get totalPage() {
