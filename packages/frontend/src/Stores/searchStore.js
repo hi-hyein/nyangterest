@@ -3,7 +3,7 @@ import debounce from "lodash.debounce";
 
 export default class SearchStore {
 
-	@observable from = new Date();
+	@observable from = new Date(Date.now() + -7 * 24 * 3600 * 1000);
 	@observable to = new Date();
 	@observable searchField = "";
 	@observable selectedCategory = "";
@@ -24,7 +24,7 @@ export default class SearchStore {
 	@action
 	handleToChange = to => {
 
-		const { loadList2, resetList } = this.root.listStore;
+		const { loadList, resetList } = this.root.listStore;
 		console.log(typeof to, to)
 		this.to = to;
 
@@ -33,7 +33,7 @@ export default class SearchStore {
 		resetList();
 		// console.log("reset")
 		// this.numOfRows = totalCount;
-		loadList2();
+		loadList();
 		// console.log("load")
 	};
 
@@ -41,6 +41,7 @@ export default class SearchStore {
 	@action
 	categoryChange = e => {
 		this.selectedCategory = e.value
+
 	};
 
 	// 검색어 입력
