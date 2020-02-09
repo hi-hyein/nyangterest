@@ -24,7 +24,7 @@ export default class SearchStore {
 	@action
 	handleToChange = to => {
 
-		const { loadList, resetList } = this.root.listStore;
+		const { searchList, resetList } = this.root.listStore;
 		console.log(typeof to, to)
 		this.to = to;
 
@@ -33,8 +33,8 @@ export default class SearchStore {
 		resetList();
 		// console.log("reset")
 		// this.numOfRows = totalCount;
-		loadList();
-		// console.log("load")
+		searchList();
+		console.log("search!")
 	};
 
 	// 품종 카테고리 셀렉트박스
