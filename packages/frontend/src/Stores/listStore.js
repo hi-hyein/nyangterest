@@ -75,43 +75,6 @@ export default class ListStore {
 		}
 	};
 
-
-	// post방식일때
-
-	// @action
-	// loadList2 = async () => {
-	// 	try {
-	// 		const { items, pageNo, totalCount } = this;
-	// 		const { from, to } = this.root.searchStore;
-	// 		const bgnde = moment(from).format("YYYYMMDD")
-	// 		const endde = moment(to).format("YYYYMMDD")
-	// 		// this.numOfRows = this.totalCount;
-	// 		const url = `/page/`;
-	// 		// const url = `/page/${numOfRows}/${pageNo}`;
-	// 		const response = await fetch(url, {
-	// 			headers: {
-	// 				'Accept': 'application/json',
-	// 				'Content-Type': 'application/json'
-	// 			},
-	// 			method: 'POST',
-	// 			body: JSON.stringify({ bgnde, endde, totalCount, pageNo })
-
-	// 		})
-	// 		const json = await response.json();
-	// 		runInAction(() => {
-	// 			this.setItems([...items, ...json.items.item || []])
-	// 			this.total(json.totalCount)
-	// 		}, console.log(json.totalCount));
-
-	// 	} catch (err) {
-	// 		runInAction(() => {
-	// 			console.log(err);
-	// 			this.isLoading = false;
-	// 		})
-	// 	}
-	// };
-
-
 	@action
 	setItems = (items) => {
 		this.items = items;
