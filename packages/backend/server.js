@@ -12,7 +12,9 @@ const findAccount = require('./findAccount');
 const join = require('./join');
 const logger = require('./winston')
 
-const serviceKey = `P3gvH0LsdoPkxFnZU2Ee98hGDDEwVTJndJFa8NDUhznSLlZG6OOxBopFWLBmiCPOfWXsF8Wz8LFHJguz41qJvA%3D%3D`;
+require('dotenv').config()
+const serviceKey = process.env.SERVICE_KEY;
+
 const api = 'http://openapi.animal.go.kr/openapi/service/rest/abandonmentPublicSrvc';
 
 // 기본주소
