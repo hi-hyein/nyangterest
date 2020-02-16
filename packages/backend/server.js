@@ -11,6 +11,7 @@ const memberInfo = require('./memberInfo');
 const findAccount = require('./findAccount');
 const join = require('./join');
 const logger = require('./winston')
+const unregister = require('./unregister')
 
 const serviceKey = `P3gvH0LsdoPkxFnZU2Ee98hGDDEwVTJndJFa8NDUhznSLlZG6OOxBopFWLBmiCPOfWXsF8Wz8LFHJguz41qJvA%3D%3D`;
 const api = 'http://openapi.animal.go.kr/openapi/service/rest/abandonmentPublicSrvc';
@@ -143,6 +144,8 @@ app.use("/", login);
 app.use("/", memberInfo);
 // 계정찾기 미들웨어
 app.use("/account", findAccount);
+// 회원탈퇴
+app.use("/unregister", unregister);
 
 app.listen(PORT, function () {
 	logger.info("enabled web server listening !");

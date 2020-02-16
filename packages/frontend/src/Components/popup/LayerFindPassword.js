@@ -103,14 +103,6 @@ class LayerFindPassword extends Component {
                         계속
                     </Button>
                 </div>
-                <div style={{marginTop:"30px", paddingTop:"30px" , borderTop: "1px solid #eee"}}>
-                    <div style={{marginBottom:"10px", fontSize:"14px",color: "#808080"}}>
-                        가입한 이메일주소를 잊으셨습니까?
-                    </div>
-                    <Button fullWidth={true} size="large" variant="contained" color="default">
-                        가입한 이메일주소 찾기
-                    </Button>
-                </div>
             </div>
         )
     }
