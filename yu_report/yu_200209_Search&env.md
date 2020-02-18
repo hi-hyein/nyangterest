@@ -110,10 +110,11 @@ router.get("/search/:bgnde/:endde/:numOfRows/:id/", async (req, res) => {
 ``` javascript
 		componentDidMount() {
 		const { handleScroll, loadList, searchList, selectedCategory } = this.props.listStore;
+		const { selectedCategory } = this.props.searchStore;
 		
 		// 중략
 
-		if (selectedCategory === "") {
+		if (selectedCategory !== "") {
 			console.log("search")
 			searchList();
 
