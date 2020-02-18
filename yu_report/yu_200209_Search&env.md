@@ -131,7 +131,7 @@ router.get("/search/:bgnde/:endde/:numOfRows/:id/", async (req, res) => {
 
 * 제공되는 데이터를 검색하기 쉽게 치환할 필요가 있어보인다.
 
-* 치환해야 할 문자열이 많아서 검색해보니 아래와 같은 방법이 검색이 되었다.
+* 치환해야 할 문자열이 많아서 검색해보고 아래와 같이 적용을 해보았다.
 
 
 ```javascript
@@ -175,7 +175,7 @@ const strObj = {
 
 ### 개선하고 싶은 부분 그리고 고민들..
 
-1. 검색후 무한스크롤 기능을 넣어야 할지 말지 고민
+1. 검색후 무한스크롤 기능을 넣어야 할지 말지 고민 또 넣는다면 어떻게 넣어야 할지..
 
 2. 로고 클릭했을때 새로고침기능이 필요할거 같다.
    
@@ -194,21 +194,62 @@ const strObj = {
 
 	아니면 날짜 검색을 클릭안하고 품종이나 검색어를 입력하려고 하면 경고창을 띄운다?
 
-
-##  API 서비스키 환경변수 저장
-
-* dotenv 라이브러리 설치
-  
+9. 아니면 url에 kind를 환경변수에 넣고 품종을 선택할때마다 백엔드에서 정보를 다시 받아와야 하나 
+    
 
 ### 참고사이트
 
 (https://stackoverflow.com/questions/15604140/replace-multiple-strings-with-multiple-other-strings)
+
+(https://elena90.tistory.com/entry/JavaScript-%EC%9E%90%EB%B0%94%EC%8A%A4%ED%81%AC%EB%A6%BD%ED%8A%B8%EC%97%90%EC%84%9C-replace-%EB%A5%BC-replaceAll-%EC%B2%98%EB%9F%BC-%EC%82%AC%EC%9A%A9%ED%95%98%EC%97%AC-%EB%AA%A8%EB%93%A0-%EB%AC%B8%EC%9E%90-%EB%B0%94%EA%BE%B8%EA%B8%B0-feat%EC%A0%95%EA%B7%9C%EC%8B%9D)
+
+
+
+##  API 서비스키 환경변수 저장
+
+* 공공API 서비스키가 직접 코드에 들어가있는게 계속 신경이 쓰였다. 그래서 이번에 변경을 해보았다.
+
+1. dotenv 라이브러리 설치
+  
+<pre>yarn add dotenv</pre>
+
+2. 루트경로에 .env파일을 만들고 API서비스키를 넣는다.
+   
+<pre>SERVICE_KEY = 실제서비스키입력</pre>
+
+3. 기존 server.js파일에는 아래와 같이 코드를 추가해준다.
+
+```javascript
+
+	require('dotenv').config()
+	const serviceKey = process.env.SERVICE_KEY;
+
+```
+4. .gitignore에 .env파일을 등록한다.
+
+
+### Heroku로 배포할때는 ?
+
+* 로컬에서 수정한 내용을 Heroku에서도 적용하고 싶었다.그래서 로컬처럼 진행을 해서 배포 시도를 하였다. 
+
+* 조금 찜찜했던게 .gitignore에서 등록하면 Heroku는  env파일을  어떻게 인식할까 싶었는데 역시나 .env파일을 못읽는거 같았다.
+
+* 나와 비슷한 이슈를 겪은 사람이 있지 않을까 싶어서 검색을 해봤더니 heroku-dotenv 패키지를 설치하여 .env파일의 내용을 인식하게끔 해주는 방법이 있더라.
+
+1. heroku-dotenv를 설치한다.
+
+<pre>yarn add heroku-dotenv</pre>
+
+1. Heroku로 .env파일 내용을 보낸다.
+
+<pre>heroku-dotenv push</pre>
+
+
+
+### 참고사이트
 
 (https://velog.io/@public_danuel/process-env-on-node-js)
 
 (https://velog.io/@ground4ekd/nodejs-dotenv)
 
 (https://velog.io/@suseodd/Heroku%EC%97%90-.env%ED%8C%8C%EC%9D%BC-%EC%A0%81%EC%9A%A9-20k621f03d)
-
-(https://elena90.tistory.com/entry/JavaScript-%EC%9E%90%EB%B0%94%EC%8A%A4%ED%81%AC%EB%A6%BD%ED%8A%B8%EC%97%90%EC%84%9C-replace-%EB%A5%BC-replaceAll-%EC%B2%98%EB%9F%BC-%EC%82%AC%EC%9A%A9%ED%95%98%EC%97%AC-%EB%AA%A8%EB%93%A0-%EB%AC%B8%EC%9E%90-%EB%B0%94%EA%BE%B8%EA%B8%B0-feat%EC%A0%95%EA%B7%9C%EC%8B%9D)
-
