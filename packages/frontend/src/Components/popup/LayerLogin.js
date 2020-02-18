@@ -108,6 +108,10 @@ class LayerLogin extends Component {
         this.props.openFindPassword()
     }
 
+    btnJoinHandler = () => {
+        this.props.openJoinLayer()
+    }
+
     render(){
         const {userId, userIdValidate, userIdMatchText, userIdNotMatchText, userPassword, userPasswordValidate, userPasswordMatchText, userPasswordNotMatchText} = this.state
         return (    
@@ -147,14 +151,14 @@ class LayerLogin extends Component {
                 </div>
                 <div>
                     <button type="button" style={{fontSize:"16px",color: "#808080",fontWeight:"bold"}} onClick={this.findPasswordHandler}>
-                        비밀번호 찾기
+                        가입한 이메일 / 비밀번호 찾기
                     </button>
                 </div>
                 <div style={{marginTop:"30px",paddingTop:"30px", borderTop:"1px solid #eee"}}>
                 <Button fullWidth={true} size="large" variant="contained" color="primary" onClick={this.sendUserInfo}>
                     로그인
                 </Button>
-                <Button fullWidth={true} size="large" variant="contained" style={{marginTop:"15px"}}>
+                <Button fullWidth={true} size="large" variant="contained" style={{marginTop:"15px"}} onClick={this.btnJoinHandler}>
                     회원가입
                 </Button>
                 </div>
