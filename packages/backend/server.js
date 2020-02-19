@@ -13,11 +13,13 @@ const join = require('./join');
 const logger = require('./winston')
 const unregister = require('./unregister')
 
-const serviceKey = `P3gvH0LsdoPkxFnZU2Ee98hGDDEwVTJndJFa8NDUhznSLlZG6OOxBopFWLBmiCPOfWXsF8Wz8LFHJguz41qJvA%3D%3D`;
+require('dotenv').config()
+
+const serviceKey = process.env.SERVICE_KEY;
+
 const api = 'http://openapi.animal.go.kr/openapi/service/rest/abandonmentPublicSrvc';
 
 // 기본주소
-
 router.get("/page/:bgnde/:endde/:numOfRows/:id/", async (req, res) => {
 
 	const { bgnde, endde, numOfRows, id } = req.params;
@@ -25,65 +27,33 @@ router.get("/page/:bgnde/:endde/:numOfRows/:id/", async (req, res) => {
 
 	const response = await fetch(url);
 	const json = await response.json();
-	const totalCount = json.response.body.totalCount;
 
-	const secoundUrl = `${api}/abandonmentPublic?ServiceKey=${serviceKey}&_type=json&bgnde=${bgnde}&endde=${endde}&upkind=422400&numOfRows=${totalCount}&pageNo=1`;
-
-	const response2 = await fetch(secoundUrl);
-	const json2 = await response2.json();
-	const allList = json2.response.body;
+	const allList = json.response.body;
 
 	res.send(allList);
 
-	/*fetch(url)
-		.then(response => response.json())
-		.then(json => {
-			res.send(json.response.body);
-			console.log(bgnde, endde, json.response.body.totalCount);
-
-			totalCount = json.response.body.totalCount;
-		})
-		.catch(() => {
-			res.send(JSON.stringify({ message: "System Error" }));
-		});
-		*/
 });
 
+// 날짜 선택시
+router.get("/search/:bgnde/:endde/:numOfRows/:id/", async (req, res) => {
 
-// 기본주소
+	const { bgnde, endde, numOfRows, id } = req.params;
+	const url = `${api}/abandonmentPublic?ServiceKey=${serviceKey}&_type=json&bgnde=${bgnde}&endde=${endde}&upkind=422400&numOfRows=${numOfRows}&pageNo=${id}`;
 
-// post방식
-router.post("/page/", (req, res) => {
-	const body = req.body;
-	const bgnde = body.bgnde || null;
-	const endde = body.endde || null;
-	const numOfRows = body.totalCount;
-	const pageNo = body.pageNo;
+	const response = await fetch(url);
+	const json = await response.json();
+	const totalCount = json.response.body.totalCount
+	const searchUrl = `${api}/abandonmentPublic?ServiceKey=${serviceKey}&_type=json&bgnde=${bgnde}&endde=${endde}&upkind=422400&numOfRows=${totalCount}&pageNo=${id}`;
 
-	const url = `${api}/abandonmentPublic?ServiceKey=${serviceKey}&_type=json&bgnde=${bgnde}&endde=${endde}&upkind=422400&numOfRows=${numOfRows}&pageNo=${pageNo}`;
+	const searchRes = await fetch(searchUrl);
+	const searchJson = await searchRes.json();
+	const searchList = searchJson.response.body;
 
-	fetch(url)
-		// .then(res.send(body))
-		.then(console.log(body, url))
-		.then(response => response.json())
-		.then(json => {
-			res.send(json.response.body)
-			console.log(bgnde, endde, json.response.body.totalCount)
-			const totalCount = json.response.body.totalCount
-			// if (numOfRows >= this.totalCount) {
-			// 	return numOfRows;
-			// }
-			// totalCount = json.response.body.totalCount;
-			// return totalCount;
-		})
-		.catch(() => {
-			res.send(JSON.stringify({ message: "System Error" }));
-		});
+	res.send(searchList);
 
 });
 
 // 품종
-
 router.get("/search/kind", (req, res) => {
 	const url = `${api}/kind?ServiceKey=${serviceKey}&_type=json&up_kind_cd=422400`;
 
