@@ -11,6 +11,7 @@ const memberInfo = require('./memberInfo');
 const findAccount = require('./findAccount');
 const join = require('./join');
 const logger = require('./winston')
+const unregister = require('./unregister')
 
 require('dotenv').config()
 
@@ -113,6 +114,8 @@ app.use("/", login);
 app.use("/", memberInfo);
 // 계정찾기 미들웨어
 app.use("/account", findAccount);
+// 회원탈퇴
+app.use("/unregister", unregister);
 
 app.listen(PORT, function () {
 	logger.info("enabled web server listening !");
