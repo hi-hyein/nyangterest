@@ -173,17 +173,97 @@ const strObj = {
 		})
 ```
 
+### 문제발생 그리고 해결과정
+
+1. 기본리스트 상태 즉 loadList 함수가 실행되고 있을때 날짜 선택없이  품종을 선택하거나 검색어를 입력하게 되면 해당 날짜에 대한 데이터가 전부 나오지 않는다. 그래서 loadList 함수가 실행중일때 품종이나 검색어를 실행하게 되면 searhList 함수를 실행해야 할 코드가 필요하다. 
+
+// searchStore.js
+```javascript
+	@action
+	categoryChange = (e) => {
+		const { searchList, resetList } = this.root.listStore;
+		this.selectedCategory = e.value
+		if (// 어떤 조건문을 넣어서 구분을 해야 할까) {
+			console.log("체인지!!")
+			resetList();
+			searchList();
+		}
+	};
+
+```
+
+2. 어떻게 구분을 해야 할까 고민하다가 totalPage로 구분할 수 있지 않을까라는 생각이 들었다.
+
+// searchStore.js
+```javascript
+	@action
+	categoryChange = (e) => {
+		const { searchList, resetList, totalPage } = this.root.listStore;
+		this.selectedCategory = e.value
+		if (!totalPage) { 
+			console.log("체인지!!")
+			resetList();
+			searchList();
+		}
+	};
+
+```	
+
+3. 수정한 코드로는 loadList가 실행중일때 스크롤링을 전부 넘겨서 마지막 페이지일때 totalPage가 true가 될때 필터링이 되고
+마지막페이지가 아니면 totalPage가 false상태라 resetList함수와 searhList함수가 올바르게 실행되는걸 확인하였다.
+
+
+4. 하지만 searchList가 실행중일때는 resetList함수와 searhList함수가 필요없는데 불필요하게 또 실행되는 이슈가 있었다.
+
+
+5. 그래서 조건문을 어떻게 변경할까 고민을 하다가 아이템의 갯수와 totalCoun를 이용하면 제대로 동작할거 같았다. 
+
+
+// searchStore.js
+```javascript
+	@action
+	categoryChange = (e) => {
+		const { searchList, resetList, totalCount, items } = this.root.listStore;
+		this.selectedCategory = e.value
+		console.log("필터링!!")
+		if (items.length !== totalCount) {
+			console.log("체인지!!")
+			resetList();
+			searchList();
+		}
+	};
+
+```	
+
+6. 이제 내가 원하는 로직대로 제대로 동작하는걸 확인하고 검색어 입력시에도 적용되게끔 코드를 변경하였다.
+
+// searchStore.js
+```javascript
+	@action
+	searchChange = debounce((searchField) => {
+		const { searchList, resetList, totalCount, items } = this.root.listStore;
+		this.searchField = searchField;
+		if (items.length !== totalCount) {
+			console.log("체인지!!")
+			resetList();
+			searchList();
+		}
+	}, 800);
+
+
+```	
+
 
 ### 개선하고 싶은 부분 그리고 고민들..
 
-1. 검색후 무한스크롤 기능을 넣어야 할지 말지 고민 또 넣는다면 어떻게 넣어야 할지..
+1. 검색후 searchList함수 실행시 무한스크롤 기능을 넣어야 할지 말지 고민 또 넣는다면 어떻게 넣어야 할까?
 
-2. 로고 클릭했을때 새로고침기능이 필요할거 같다.
+2. 로고 클릭했을때 새로고침 기능이 필요할거 같다.
    
-3. 오늘날짜와 종료일날짜가 동일할경우, 즉 종료일을 변경하지 않았을때를 인식하여 
-시작일을 선택했을때 리셋을 하게 하는 로직을 만들어야 하지 않을까?
+3. 날짜를 선택전에 기본 종료일 날짜와 선택하려는 종료일 날짜가 동일할경우, 즉 종료일을 변경하지 않았을 때를 인식하여 
+   시작일을 선택했을때 리셋을 하게 하는 로직을 만들어야 하지 않을까?
 
-4. 검색시 속도개선(리스트가 3초안에는 전부 나와야 하지 않나? 캐시 라이브러리 아니면 lazy loading)
+4. 검색시 속도개선(리스트가 3초안에는 전부 나와야 하지 않나? 캐시 라이브러리 아니면 lazy loading)이 필요하다.
 
 5. 검색어 입력시 하단에 자동 검색어 나오게 하기 (AutoComplete)
 
@@ -191,13 +271,7 @@ const strObj = {
 
 7. UI UX 개선 (리스트 팝업창 등)
 
-8. 기본리스트를 스크롤링하다가 품종을 선택하게 된다면? 전체데이터에서 필터링처리를 해야 
-
-	아니면 날짜 검색을 클릭안하고 품종이나 검색어를 입력하려고 하면 경고창을 띄운다?
-
-9. 아니면 url에 kind를 환경변수에 넣고 품종을 선택할때마다 백엔드에서 정보를 다시 받아와야 하나 
     
-
 ### 참고사이트
 
 (https://stackoverflow.com/questions/15604140/replace-multiple-strings-with-multiple-other-strings)
@@ -205,8 +279,8 @@ const strObj = {
 (https://elena90.tistory.com/entry/JavaScript-%EC%9E%90%EB%B0%94%EC%8A%A4%ED%81%AC%EB%A6%BD%ED%8A%B8%EC%97%90%EC%84%9C-replace-%EB%A5%BC-replaceAll-%EC%B2%98%EB%9F%BC-%EC%82%AC%EC%9A%A9%ED%95%98%EC%97%AC-%EB%AA%A8%EB%93%A0-%EB%AC%B8%EC%9E%90-%EB%B0%94%EA%BE%B8%EA%B8%B0-feat%EC%A0%95%EA%B7%9C%EC%8B%9D)
 
 
-
 ##  API 서비스키 환경변수 저장
+
 
 * 공공API 서비스키가 직접 코드에 들어가있는게 계속 신경이 쓰였다. 그래서 이번에 변경을 해보았다.
 
@@ -241,10 +315,10 @@ const strObj = {
 
 <pre>yarn add heroku-dotenv</pre>
 
-1. Heroku로 .env파일 내용을 보낸다.
+
+2. Heroku로 .env파일 내용을 보낸다.
 
 <pre>heroku-dotenv push</pre>
-
 
 
 ### 참고사이트
