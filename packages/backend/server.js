@@ -14,6 +14,7 @@ const logger = require('./winston')
 const unregister = require('./unregister')
 
 require('dotenv').config()
+
 const serviceKey = process.env.SERVICE_KEY;
 
 const api = 'http://openapi.animal.go.kr/openapi/service/rest/abandonmentPublicSrvc';
@@ -26,7 +27,6 @@ router.get("/page/:bgnde/:endde/:numOfRows/:id/", async (req, res) => {
 
 	const response = await fetch(url);
 	const json = await response.json();
-	console.log(numOfRows)
 
 	const allList = json.response.body;
 
@@ -43,7 +43,6 @@ router.get("/search/:bgnde/:endde/:numOfRows/:id/", async (req, res) => {
 	const response = await fetch(url);
 	const json = await response.json();
 	const totalCount = json.response.body.totalCount
-	console.log(numOfRows)
 	const searchUrl = `${api}/abandonmentPublic?ServiceKey=${serviceKey}&_type=json&bgnde=${bgnde}&endde=${endde}&upkind=422400&numOfRows=${totalCount}&pageNo=${id}`;
 
 	const searchRes = await fetch(searchUrl);
