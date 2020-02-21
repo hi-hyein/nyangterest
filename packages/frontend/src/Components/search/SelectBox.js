@@ -195,8 +195,7 @@ class SelectBox extends Component {
 
 	getData = (data) => {
 		const dataCategory = data
-			.map(x => x.KNm)
-			.map(category => ({ value: category, label: category }))
+			.map(category => ({ value: category.kindCd, label: category.KNm }))
 
 		return dataCategory
 

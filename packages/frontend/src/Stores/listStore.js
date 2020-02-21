@@ -21,7 +21,8 @@ export default class ListStore {
 	loadList = async () => {
 		try {
 			const { items, pageNo, numOfRows, happenFrom, happenTo } = this;
-			const url = `/page/${happenFrom}/${happenTo}/${numOfRows}/${pageNo}`;
+			const { selectedCategory } = this.root.searchStore;
+			const url = `/page/${happenFrom}/${happenTo}/${selectedCategory}/${numOfRows}/${pageNo}`;
 			const response = await fetch(url);
 			const json = await response.json();
 			runInAction(() => {
@@ -94,7 +95,7 @@ export default class ListStore {
 
 	@action
 	loadMore = () => {
-		const { totalPage, totalCount } = this;
+		const { items, totalCount } = this;
 		// let totalPage = Math.max((numOfRows * pageNo), totalCount)
 
 		let message = observable({
@@ -102,10 +103,8 @@ export default class ListStore {
 			continue: "데이터가 남아있습니다."
 		})
 
-		console.log(totalPage, totalCount)
-
 		// totalPage의 갯수가 totalCount의 수보다 크거나 같으면 리턴 (올림)
-		if (totalPage) {
+		if (items.length === totalCount) {
 			return console.log(message.return)
 		}
 		else {
