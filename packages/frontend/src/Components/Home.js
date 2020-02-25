@@ -233,9 +233,15 @@ class Home extends Component {
 					<Message><p>해당 데이터가 없습니다.</p></Message>
 				)}
 
-				{/* {!items.length || (!filteredItems.length && (
+				{/* {(typeof items === "string") && !(totalCount.length) && (
+					<Message><p>1 해당 데이터가 없습니다.</p></Message>
+				)} */}
+
+
+
+				{/* {!(items.length && totalCount.length) &&
 					<div><p>검색결과가 없습니다.</p></div>
-				))} */}
+				} */}
 
 
 				{!loading && (isLoading && hasMore) && (!(totalPage && (totalCount === items.length))) && (

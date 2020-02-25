@@ -22,50 +22,28 @@ export default class ListStore {
 		try {
 			const { items, pageNo, numOfRows, happenFrom, happenTo } = this;
 			const { selectedCategory } = this.root.searchStore;
+
 			const url = `/page/${happenFrom}/${happenTo}/${selectedCategory}/${numOfRows}/${pageNo}`;
 			const response = await fetch(url);
 			const json = await response.json();
+
 			runInAction(() => {
+
 				if (Array.isArray(json.items.item)) {
 					this.setItems([...items, ...(json.items.item || [])]);
+
 				}
+
+				else if (json.items === "") Object.keys(json.items.item)
+
 				else {
 					// 객체를 배열로 만들어서 기존배열에 추가하여 새배열을 만드는 코드
 					this.items = items.concat(json.items.item).slice();
 					console.log(typeof items);
-
 				}
+
 				this.setCount(json.totalCount);
-			});
 
-		} catch (err) {
-			runInAction(() => {
-				console.log(err);
-				this.isLoading = false;
-			})
-		}
-	};
-
-	@action
-	searchList = async () => {
-		try {
-			const { items, pageNo, numOfRows, happenFrom, happenTo } = this;
-			const url = `/search/${happenFrom}/${happenTo}/${numOfRows}/${pageNo}`;
-			const response = await fetch(url);
-			const json = await response.json();
-			runInAction(() => {
-				if (Array.isArray(json.items.item)) {
-					this.setItems([...items, ...(json.items.item || [])]);
-				}
-				else {
-					// 객체를 배열로 만들어서 기존배열에 추가하여 새배열을 만드는 코드
-					this.items = items.concat(json.items.item).slice();
-					console.log(typeof items);
-
-				}
-				this.loading = false;
-				this.hasMore = false;
-				this.setCount(json.totalCount);
 			});
 
 		} catch (err) {

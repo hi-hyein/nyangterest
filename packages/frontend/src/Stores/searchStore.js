@@ -6,7 +6,7 @@ export default class SearchStore {
 	@observable from = new Date(Date.now() + -7 * 24 * 3600 * 1000);
 	@observable to = new Date();
 	@observable searchField = "";
-	@observable selectedCategory = "000000";
+	@observable selectedCategory = "000116";
 
 	constructor(root) {
 		this.root = root;
@@ -33,8 +33,10 @@ export default class SearchStore {
 	// 품종 카테고리 셀렉트박스
 	@action
 	categoryChange = (e) => {
+		const { loadList, resetList } = this.root.listStore;
 		this.selectedCategory = e.value
-		console.log(this.selectedCategory)
+		resetList();
+		loadList();
 
 	};
 
