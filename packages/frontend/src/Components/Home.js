@@ -229,19 +229,19 @@ class Home extends Component {
 				{loading ? (< Preloader className={loading && "on"}> <div><Loading /></div></Preloader >) : (<List products={items} />)}
 
 
-				{!loading && !(isLoading && hasMore) && !(items.length) && (
+				{!loading && !isLoading && !items.length &&
 					<Message><p>해당 데이터가 없습니다.</p></Message>
-				)}
+				}
 
-				{/* {(typeof items === "string") && !(totalCount.length) && (
-					<Message><p>1 해당 데이터가 없습니다.</p></Message>
+				{!loading && (totalCount === 0) &&
+					<Message><p>검색결과가 없습니다.</p></Message>
+				}
+
+
+				{/* {!loading && !(isLoading && hasMore) && !(items.length) && (
+					<Message><p>해당 데이터가 없습니다.</p></Message>
 				)} */}
 
-
-
-				{/* {!(items.length && totalCount.length) &&
-					<div><p>검색결과가 없습니다.</p></div>
-				} */}
 
 
 				{!loading && (isLoading && hasMore) && (!(totalPage && (totalCount === items.length))) && (

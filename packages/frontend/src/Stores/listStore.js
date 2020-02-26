@@ -34,8 +34,13 @@ export default class ListStore {
 
 				}
 
-				else if (json.items === "") Object.keys(json.items.item)
+				// 아이템이 하나도 없을때 object변환
+				else if (typeof json.items.item === "undefined") {
+					Object.keys([] + items.concat(json.items.item))
 
+				}
+
+				// 아이템이 하나일때
 				else {
 					// 객체를 배열로 만들어서 기존배열에 추가하여 새배열을 만드는 코드
 					this.items = items.concat(json.items.item).slice();
@@ -74,14 +79,12 @@ export default class ListStore {
 	@action
 	loadMore = () => {
 		const { items, totalCount } = this;
-		// let totalPage = Math.max((numOfRows * pageNo), totalCount)
 
 		let message = observable({
 			return: "마지막 페이지입니다.",
 			continue: "데이터가 남아있습니다."
 		})
 
-		// totalPage의 갯수가 totalCount의 수보다 크거나 같으면 리턴 (올림)
 		if (items.length === totalCount) {
 			return console.log(message.return)
 		}
