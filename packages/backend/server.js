@@ -27,7 +27,7 @@ async function err() {
 }
 
 // 기본주소
-router.get("/page/:bgnde/:endde/:kind/:numOfRows/:id/", doAsync(async (req, res) => {
+router.post("/page/:bgnde/:endde/:kind/:numOfRows/:id/", doAsync(async (req, res) => {
 
 	const getData = async (url) => {
 		try {
@@ -42,6 +42,8 @@ router.get("/page/:bgnde/:endde/:kind/:numOfRows/:id/", doAsync(async (req, res)
 	};
 
 	const { bgnde, endde, numOfRows, id, kind } = req.params;
+	const { searchField } = req.body;
+
 
 	// 기본 url
 
@@ -56,11 +58,15 @@ router.get("/page/:bgnde/:endde/:kind/:numOfRows/:id/", doAsync(async (req, res)
 
 	const selectRes = (kind === "000116") ? totalRes : completeRes;
 
+	const te = { success: "test" }
+	console.log(req.body.searchField, te)
+
 	res.send(selectRes)
+
+	// const selectItems = selectRes.items
 
 
 	// const strObj = {
-
 	// 	"F": "암컷",
 	// 	"M": "수컷",
 	// 	"Q": "성별 미상",
@@ -70,24 +76,32 @@ router.get("/page/:bgnde/:endde/:kind/:numOfRows/:id/", doAsync(async (req, res)
 	// 	"한국 고양이": "코리안숏헤어"
 	// }
 
-	// let re = new RegExp(Object.keys(strObj).join("|"), "gi");
-	// const filteredItems = Array.from(completeItems).filter(item => item.kindCd.includes(kind))
-
-	// {
+	// const filteredItems = Array.from(selectItems.filter(item => {
+	// 	// let re = new RegExp(Object.keys(strObj).join("|"), "gi");
 	// 	// let regExp = /[()]/gi;
 	// 	// let searchKeyword = searchField.toUpperCase().trim()
-	// 	return (item
 
-	// 		// 	&& Object.keys(item).some(
-	// 		// 		key =>
-	// 		// 			typeof item[key] === "string" &&
-	// 		// 			item[key].replace(re, (matched => {
-	// 		// 				return strObj[matched]
-	// 		// 			})).replace(regExp, "").toUpperCase().includes(searchKeyword)
-	// 		// 	)
-	// 	)
+	// 	if (typeof item === "object") {
+	// 		return (
+	// 			item
+	// 			// Object.keys(item).some(
+	// 			// 	key =>
+	// 			// 		typeof item[key] === "string" &&
+	// 			// 		item[key].replace(re, (matched => {
+	// 			// 			return strObj[matched]
+	// 			// 		})).replace(regExp, "").toUpperCase().includes(searchKeyword)
 
-	// })
+	// 			// 	, console.log(searchField)
+	// 			// )
+	// 		);
+	// 	} else {
+	// 		return null;
+	// 	}
+
+	// }))
+
+	// console.log(filteredItems)
+
 
 }))
 
@@ -106,6 +120,17 @@ router.get("/search/kind", (req, res) => {
 			res.send(JSON.stringify({ message: "System Error" }));
 		});
 })
+
+// router.post("/input/", doAsync(async (req, res) => {
+
+// 	const { searchField } = req.body;
+
+// 	const te = { success: "test" }
+// 	console.log(req.body.searchField, te)
+// 	res.send(req.body)
+
+// }))
+
 
 // db접속
 const data = fs.readFileSync(__dirname + "/db.json");

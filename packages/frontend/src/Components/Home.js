@@ -157,7 +157,7 @@ class Home extends Component {
 	render() {
 		const { items, isLoading, loading, hasMore, totalPage, totalCount } = this.props.listStore;
 		const { active, isVisible, toggleHidden, on, handleScrollTop } = this.props.btnStore;
-		const { from, to, handleFromChange, handleToChange, searchField, selectedCategory, categoryChange, searchChange } = this.props.searchStore;
+		const { from, to, handleFromChange, handleToChange, selectedCategory, categoryChange, searchChange } = this.props.searchStore;
 
 		// 품종 카테고리 셀렉트박스  && 검색어 입력
 
