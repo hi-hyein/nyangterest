@@ -33,7 +33,6 @@ export default class ListStore {
 			})
 
 			const json = await response.json();
-			console.log(items)
 			runInAction(() => {
 
 				if (Array.isArray(json.items.item)) {

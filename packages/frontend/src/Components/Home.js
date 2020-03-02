@@ -164,39 +164,6 @@ class Home extends Component {
 		// 수행시간 로그
 		let t0 = performance.now();
 
-		// const strObj = {
-		// 	"F": "암컷",
-		// 	"M": "수컷",
-		// 	"Q": "성별 미상",
-		// 	"Y": "중성화O",
-		// 	"N": "중성화X",
-		// 	"U": "중성화 미상",
-		// 	"한국 고양이": "코리안숏헤어"
-		// }
-
-		// const filteredItems = items.filter(item => {
-		// 	let re = new RegExp(Object.keys(strObj).join("|"), "gi");
-		// 	let regExp = /[()]/gi;
-		// 	let searchKeyword = searchField.toUpperCase().trim()
-
-		// 	if (typeof item === "object") {
-		// 		return (
-		// 			item.kindCd.replace("한국 고양이", "코리안숏헤어").includes(selectedCategory) &&
-		// 			Object.keys(item).some(
-		// 				key =>
-		// 					typeof item[key] === "string" &&
-		// 					item[key].replace(re, (matched => {
-		// 						return strObj[matched]
-		// 					})).replace(regExp, "").toUpperCase().includes(searchKeyword)
-
-		// 				, console.log(searchField)
-		// 			)
-		// 		);
-		// 	} else {
-		// 		return null;
-		// 	}
-
-		// })
 		// 수행시간 로그
 		let t1 = performance.now();
 		console.log((t1 - t0) + 'ms')

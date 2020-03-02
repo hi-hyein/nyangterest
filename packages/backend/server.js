@@ -49,15 +49,29 @@ router.post("/page/:bgnde/:endde/:kind/:numOfRows/:id/", doAsync(async (req, res
 
 	const url = `${api}/abandonmentPublic?ServiceKey=${serviceKey}&_type=json&bgnde=${bgnde}&endde=${endde}&upkind=422400&numOfRows=${numOfRows}&pageNo=${id}`;
 
-	const totalRes = await getData(url)
+	const defaultRes = await getData(url)
 
-	const completeUrl = `${api}/abandonmentPublic?ServiceKey=${serviceKey}&_type=json&bgnde=${bgnde}&endde=${endde}&upkind=422400&kind=${kind}&numOfRows=${numOfRows}&pageNo=${id}`;
+	const kindAddUrl = `${api}/abandonmentPublic?ServiceKey=${serviceKey}&_type=json&bgnde=${bgnde}&endde=${endde}&upkind=422400&kind=${kind}&numOfRows=${numOfRows}&pageNo=${id}`;
 
-	const completeRes = await getData(completeUrl);
+	const kindAddRes = await getData(kindAddUrl);
 
-	const selectRes = (kind === "000116") ? totalRes : completeRes;
+	const selectRes = (kind === "000116") ? defaultRes : kindAddRes;
 
-	const selectItems = selectRes.items.item;
+	// 아무것도 선택안했을때는  kind === "000116"일때는 기본 defaultRes
+
+	if (kind === "000116" && searchField === "keyword") res.send(defaultRes)
+
+	// 품종을 선택했을때는 kind === "000116" &&  searchField === "keyword" kindAddRes
+
+	if (kind !== "000116" && searchField === "keyword") res.send(kindAddRes)
+
+	const totalCount = selectRes.totalCount;
+
+	const totalCountUrl = `${api}/abandonmentPublic?ServiceKey=${serviceKey}&_type=json&bgnde=${bgnde}&endde=${endde}&upkind=422400&numOfRows=${totalCount}&pageNo=${id}`;
+
+	const totalCountRes = await getData(totalCountUrl);
+
+	const totalItems = totalCountRes.items.item;
 
 	const strObj = {
 		"F": "암컷",
@@ -69,7 +83,7 @@ router.post("/page/:bgnde/:endde/:kind/:numOfRows/:id/", doAsync(async (req, res
 		"한국 고양이": "코리안숏헤어"
 	}
 
-	const filteredItems = selectItems.filter(item => {
+	const filteredItems = totalItems.filter(item => {
 		let re = new RegExp(Object.keys(strObj).join("|"), "gi");
 		let regExp = /[()]/gi;
 		let searchKeyword = searchField.toUpperCase().trim()
@@ -86,10 +100,14 @@ router.post("/page/:bgnde/:endde/:kind/:numOfRows/:id/", doAsync(async (req, res
 				)
 			);
 		} else {
-			return null;
+			return []
 		}
 
 	})
+
+	const finalurl = `${api}/abandonmentPublic?ServiceKey=${serviceKey}&_type=json&bgnde=${bgnde}&endde=${endde}&upkind=422400&numOfRows=${numOfRows}&pageNo=${id}`;
+
+	const finalRes = await getData(finalurl)
 
 	const item = filteredItems;
 
@@ -97,9 +115,13 @@ router.post("/page/:bgnde/:endde/:kind/:numOfRows/:id/", doAsync(async (req, res
 
 	const filterRes = { items }
 
-	const finalRes = (searchField === "keyword") ? selectRes : filterRes
+	// const finalRes = (searchField === "keyword") ? totalCountRes : filterRes
 
-	res.send(finalRes)
+	// 검색어를 입력했을때는 searchField !== "keyword" 무조건 filterRes
+
+	if (searchField !== "keyword") res.send(filterRes)
+
+
 
 }))
 
