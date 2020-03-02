@@ -54,54 +54,52 @@ router.post("/page/:bgnde/:endde/:kind/:numOfRows/:id/", doAsync(async (req, res
 	const completeUrl = `${api}/abandonmentPublic?ServiceKey=${serviceKey}&_type=json&bgnde=${bgnde}&endde=${endde}&upkind=422400&kind=${kind}&numOfRows=${numOfRows}&pageNo=${id}`;
 
 	const completeRes = await getData(completeUrl);
-	// const completeItems = completeRes.items;
 
 	const selectRes = (kind === "000116") ? totalRes : completeRes;
 
-	const te = { success: "test" }
-	console.log(req.body.searchField, te)
+	const selectItems = selectRes.items.item;
 
-	res.send(selectRes)
+	const strObj = {
+		"F": "암컷",
+		"M": "수컷",
+		"Q": "성별 미상",
+		"Y": "중성화O",
+		"N": "중성화X",
+		"U": "중성화 미상",
+		"한국 고양이": "코리안숏헤어"
+	}
 
-	// const selectItems = selectRes.items
+	const filteredItems = selectItems.filter(item => {
+		let re = new RegExp(Object.keys(strObj).join("|"), "gi");
+		let regExp = /[()]/gi;
+		let searchKeyword = searchField.toUpperCase().trim()
 
+		if (typeof item === "object") {
+			return (
+				Object.keys(item).some(
+					key =>
+						typeof item[key] === "string" &&
+						item[key].replace(re, (matched => {
+							return strObj[matched]
+						})).replace(regExp, "").toUpperCase().includes(searchKeyword)
 
-	// const strObj = {
-	// 	"F": "암컷",
-	// 	"M": "수컷",
-	// 	"Q": "성별 미상",
-	// 	"Y": "중성화O",
-	// 	"N": "중성화X",
-	// 	"U": "중성화 미상",
-	// 	"한국 고양이": "코리안숏헤어"
-	// }
+				)
+			);
+		} else {
+			return null;
+		}
 
-	// const filteredItems = Array.from(selectItems.filter(item => {
-	// 	// let re = new RegExp(Object.keys(strObj).join("|"), "gi");
-	// 	// let regExp = /[()]/gi;
-	// 	// let searchKeyword = searchField.toUpperCase().trim()
+	})
 
-	// 	if (typeof item === "object") {
-	// 		return (
-	// 			item
-	// 			// Object.keys(item).some(
-	// 			// 	key =>
-	// 			// 		typeof item[key] === "string" &&
-	// 			// 		item[key].replace(re, (matched => {
-	// 			// 			return strObj[matched]
-	// 			// 		})).replace(regExp, "").toUpperCase().includes(searchKeyword)
+	const item = filteredItems;
 
-	// 			// 	, console.log(searchField)
-	// 			// )
-	// 		);
-	// 	} else {
-	// 		return null;
-	// 	}
+	const items = { item }
 
-	// }))
+	const filterRes = { items }
 
-	// console.log(filteredItems)
+	const finalRes = (searchField === "keyword") ? selectRes : filterRes
 
+	res.send(finalRes)
 
 }))
 

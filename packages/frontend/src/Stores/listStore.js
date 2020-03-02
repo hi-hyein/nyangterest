@@ -20,9 +20,6 @@ export default class ListStore {
 	@action
 	loadList = async () => {
 		try {
-
-
-
 			const { items, pageNo, numOfRows, happenFrom, happenTo } = this;
 			const { selectedCategory, searchField } = this.root.searchStore;
 			const url = `/page/${happenFrom}/${happenTo}/${selectedCategory}/${numOfRows}/${pageNo}`;
@@ -36,7 +33,7 @@ export default class ListStore {
 			})
 
 			const json = await response.json();
-
+			console.log(items)
 			runInAction(() => {
 
 				if (Array.isArray(json.items.item)) {
@@ -70,47 +67,6 @@ export default class ListStore {
 		}
 	};
 
-	// @action
-	// loadList = async () => {
-	// 	try {
-	// 		const { items, pageNo, numOfRows, happenFrom, happenTo } = this;
-	// 		const { selectedCategory } = this.root.searchStore;
-	// 		const url = `/page/${happenFrom}/${happenTo}/${selectedCategory}/${numOfRows}/${pageNo}`;
-	// 		const response = await fetch(url);
-	// 		const json = await response.json();
-
-	// 		runInAction(() => {
-
-	// 			if (Array.isArray(json.items.item)) {
-	// 				this.setItems([...items, ...(json.items.item || [])]);
-
-	// 			}
-
-	// 			// 아이템이 하나도 없을때 object변환
-
-	// 			// else if (json.items === "") Object.keys(json.items.item === {}); or
-
-	// 			else if (typeof json.items.item === "undefined") Object.keys([] + (json.items.item))
-
-
-	// 			// 아이템이 하나일때
-	// 			else {
-	// 				// 객체를 배열로 만들어서 기존배열에 추가하여 새배열을 만드는 코드
-	// 				this.items = items.concat(json.items.item).slice();
-	// 				console.log(typeof items);
-	// 			}
-
-	// 			this.setCount(json.totalCount);
-
-	// 		});
-
-	// 	} catch (err) {
-	// 		runInAction(() => {
-	// 			console.log(err);
-	// 			this.isLoading = false;
-	// 		})
-	// 	}
-	// };
 
 	@action
 	setItems = (items) => {

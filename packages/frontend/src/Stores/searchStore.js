@@ -43,43 +43,12 @@ export default class SearchStore {
 	// 검색어 입력
 	@action
 	searchChange = debounce((searchField) => {
-		const { loadList } = this.root.listStore;
+		const { loadList, resetList } = this.root.listStore;
 		this.searchField = searchField;
 		console.log(searchField)
+		resetList();
 		loadList();
 	}, 800);
-
-
-	@action
-	searchKeyword = async () => {
-		try {
-			const { searchField } = this;
-			const url = `/input/`;
-			const response = await fetch(url, {
-				headers: {
-					'Accept': 'application/json',
-					'Content-Type': 'application/json'
-				},
-				method: 'POST',
-				body: JSON.stringify({ searchField })
-			})
-			const json = await response.json();
-
-			runInAction(() => {
-				console.log(json)
-				return json;
-
-			});
-
-
-		} catch (err) {
-			runInAction(() => {
-				console.log(err);
-			})
-		}
-	};
-
-
 
 }
 
