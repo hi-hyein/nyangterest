@@ -175,39 +175,6 @@ react bgnde와 endde 값을 백엔드에 요청한다?
 
 2. 속도도 GET방식이 POST방식보다 빠르니 POST방식은 주석처리하여 참고코드로만 남겨두었다.
    
-
-#### POST로 할시에 React에서 body에 각 변수에 해당하는 값을 넣었는데 이걸 server에 어떻게 넘겨야 할지 모르겠다.
-* 공공데이터 API 주소가 있어서 헷갈린걸까?  res.send에 req.body와 res.body를 같이 넣으려니 에러가 난다.
-
-* react에서 넘긴 body값이 백엔드에 넘어온것은 확인이 되었다.
-* 이걸 url안의 파라미터값으로 어떻게 넘겨야 할지를 모르겠다.
-* req.body를 fetch로 넘겨질 이유가 있을까?
-  
-``` javascript
-
-router.post("/page/", (req, res) => {
-	const body = req.body;
-	const bgnde = body.bgnde;
-	const endde = body.endde;
-	const numOfRows = body.numOfRows;
-	const pageNo = body.pageNo;
-	const group = `bgnde=${bgnde}&endde=${endde}&numOfRows=${numOfRows}&pageNo=${pageNo}`
-	const url = `${api}/abandonmentPublic?ServiceKey=${serviceKey}&_type=json&upkind=422400&${group}`;
-
-	res.send(body)	
-	fetch(url)
-		.then(
-			res.send(body),
-			console.log(body,url)
-		)
-		.catch(() => {
-			res.send(JSON.stringify({ message: "System Error" }));
-		});
-
-});
-
-
-
 ```
 
 
