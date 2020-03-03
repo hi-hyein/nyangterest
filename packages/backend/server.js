@@ -42,6 +42,7 @@ router.post("/page/:bgnde/:endde/:kind/:numOfRows/:id/", doAsync(async (req, res
 	};
 
 	const { bgnde, endde, numOfRows, id, kind } = req.params;
+
 	const { searchField } = req.body;
 
 
@@ -57,21 +58,37 @@ router.post("/page/:bgnde/:endde/:kind/:numOfRows/:id/", doAsync(async (req, res
 
 	const selectRes = (kind === "000116") ? defaultRes : kindAddRes;
 
-	// 아무것도 선택안했을때는  kind === "000116"일때는 기본 defaultRes
+	// 아무것도 선택안했을때는 kind === "000116"일때는 기본 defaultRes
 
 	if (kind === "000116" && searchField === "keyword") res.send(defaultRes)
 
-	// 품종을 선택했을때는 kind === "000116" &&  searchField === "keyword" kindAddRes
-
+	// 품종을 선택했을때는 kind !== "000116" &&  searchField === "keyword" kindAddRes
+	// 
 	if (kind !== "000116" && searchField === "keyword") res.send(kindAddRes)
+
 
 	const totalCount = selectRes.totalCount;
 
-	const totalCountUrl = `${api}/abandonmentPublic?ServiceKey=${serviceKey}&_type=json&bgnde=${bgnde}&endde=${endde}&upkind=422400&numOfRows=${totalCount}&pageNo=${id}`;
+	const countUrl = `${api}/abandonmentPublic?ServiceKey=${serviceKey}&_type=json&bgnde=${bgnde}&endde=${endde}&upkind=422400&numOfRows=${totalCount}&pageNo=${id}`;
 
-	const totalCountRes = await getData(totalCountUrl);
+	const countRes = await getData(countUrl);
 
-	const totalItems = totalCountRes.items.item;
+	const kindCountUrl = `${api}/abandonmentPublic?ServiceKey=${serviceKey}&_type=json&bgnde=${bgnde}&endde=${endde}&upkind=422400&kind=${kind}&numOfRows=${totalCount}&pageNo=${id}`;
+
+	const kindCountRes = await getData(kindCountUrl);
+
+	//  kind === "000116" &&  searchField !== "keyword"
+
+	if (kind === "000116" && searchField !== "keyword") countRes
+
+
+	//  kind !== "000116" &&  searchField !== "keyword"
+
+	if (kind !== "000116" && searchField !== "keyword") kindCountRes
+
+	const selectCountRes = (searchField !== "keyword") ? countRes : kindCountRes
+
+	const totalItems = selectCountRes.items.item;
 
 	const strObj = {
 		"F": "암컷",
@@ -96,24 +113,25 @@ router.post("/page/:bgnde/:endde/:kind/:numOfRows/:id/", doAsync(async (req, res
 						item[key].replace(re, (matched => {
 							return strObj[matched]
 						})).replace(regExp, "").toUpperCase().includes(searchKeyword)
-
 				)
 			);
 		} else {
-			return []
+			return null;
 		}
 
 	})
 
-	const finalurl = `${api}/abandonmentPublic?ServiceKey=${serviceKey}&_type=json&bgnde=${bgnde}&endde=${endde}&upkind=422400&numOfRows=${numOfRows}&pageNo=${id}`;
-
-	const finalRes = await getData(finalurl)
 
 	const item = filteredItems;
 
 	const items = { item }
 
-	const filterRes = { items }
+	const filterRes = { items, numOfRows, totalCount, id }
+
+	const finalUrl = `${api}/abandonmentPublic?ServiceKey=${serviceKey}&_type=json&bgnde=${bgnde}&endde=${endde}&upkind=422400&numOfRows=${numOfRows}&pageNo=${id}`;
+	console.log(finalUrl)
+
+	const finalRes = await getData(finalUrl)
 
 	// const finalRes = (searchField === "keyword") ? totalCountRes : filterRes
 
