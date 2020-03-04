@@ -19,39 +19,129 @@ const serviceKey = process.env.SERVICE_KEY;
 
 const api = 'http://openapi.animal.go.kr/openapi/service/rest/abandonmentPublicSrvc';
 
+
+const doAsync = fn => async (req, res, next) => await fn(req, res, next).catch(next);
+
+async function err() {
+	throw new Error('에러 발생');
+}
+
 // 기본주소
-router.get("/page/:bgnde/:endde/:numOfRows/:id/", async (req, res) => {
+router.post("/page/:bgnde/:endde/:kind/:numOfRows/:id/", doAsync(async (req, res) => {
 
-	const { bgnde, endde, numOfRows, id } = req.params;
+	const getData = async (url) => {
+		try {
+			const response = await fetch(url);
+			const json = await response.json();
+			const body = await json.response.body;
+			return body;
+
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
+	const { bgnde, endde, numOfRows, id, kind } = req.params;
+
+	const { searchField } = req.body;
+
+
+	// 기본 url
+
 	const url = `${api}/abandonmentPublic?ServiceKey=${serviceKey}&_type=json&bgnde=${bgnde}&endde=${endde}&upkind=422400&numOfRows=${numOfRows}&pageNo=${id}`;
 
-	const response = await fetch(url);
-	const json = await response.json();
+	const defaultRes = await getData(url)
 
-	const allList = json.response.body;
+	const kindAddUrl = `${api}/abandonmentPublic?ServiceKey=${serviceKey}&_type=json&bgnde=${bgnde}&endde=${endde}&upkind=422400&kind=${kind}&numOfRows=${numOfRows}&pageNo=${id}`;
 
-	res.send(allList);
+	const kindAddRes = await getData(kindAddUrl);
 
-});
+	const selectRes = (kind === "000116") ? defaultRes : kindAddRes;
 
-// 날짜 선택시
-router.get("/search/:bgnde/:endde/:numOfRows/:id/", async (req, res) => {
+	// 아무것도 선택안했을때는 kind === "000116"일때는 기본 defaultRes
 
-	const { bgnde, endde, numOfRows, id } = req.params;
-	const url = `${api}/abandonmentPublic?ServiceKey=${serviceKey}&_type=json&bgnde=${bgnde}&endde=${endde}&upkind=422400&numOfRows=${numOfRows}&pageNo=${id}`;
+	if (kind === "000116" && searchField === "keyword") res.send(defaultRes)
 
-	const response = await fetch(url);
-	const json = await response.json();
-	const totalCount = json.response.body.totalCount
-	const searchUrl = `${api}/abandonmentPublic?ServiceKey=${serviceKey}&_type=json&bgnde=${bgnde}&endde=${endde}&upkind=422400&numOfRows=${totalCount}&pageNo=${id}`;
+	// 품종을 선택했을때는 kind !== "000116" &&  searchField === "keyword" kindAddRes
+	// 
+	if (kind !== "000116" && searchField === "keyword") res.send(kindAddRes)
 
-	const searchRes = await fetch(searchUrl);
-	const searchJson = await searchRes.json();
-	const searchList = searchJson.response.body;
 
-	res.send(searchList);
+	const totalCount = selectRes.totalCount;
 
-});
+	const countUrl = `${api}/abandonmentPublic?ServiceKey=${serviceKey}&_type=json&bgnde=${bgnde}&endde=${endde}&upkind=422400&numOfRows=${totalCount}&pageNo=${id}`;
+
+	const countRes = await getData(countUrl);
+
+	const kindCountUrl = `${api}/abandonmentPublic?ServiceKey=${serviceKey}&_type=json&bgnde=${bgnde}&endde=${endde}&upkind=422400&kind=${kind}&numOfRows=${totalCount}&pageNo=${id}`;
+
+	const kindCountRes = await getData(kindCountUrl);
+
+	//  kind === "000116" &&  searchField !== "keyword"
+
+	if (kind === "000116" && searchField !== "keyword") countRes
+
+
+	//  kind !== "000116" &&  searchField !== "keyword"
+
+	if (kind !== "000116" && searchField !== "keyword") kindCountRes
+
+	const selectCountRes = (searchField !== "keyword") ? countRes : kindCountRes
+
+	const totalItems = selectCountRes.items.item;
+
+	const strObj = {
+		"F": "암컷",
+		"M": "수컷",
+		"Q": "성별 미상",
+		"Y": "중성화O",
+		"N": "중성화X",
+		"U": "중성화 미상",
+		"한국 고양이": "코리안숏헤어"
+	}
+
+	const filteredItems = totalItems.filter(item => {
+		let re = new RegExp(Object.keys(strObj).join("|"), "gi");
+		let regExp = /[()]/gi;
+		let searchKeyword = searchField.toUpperCase().trim()
+
+		if (typeof item === "object") {
+			return (
+				Object.keys(item).some(
+					key =>
+						typeof item[key] === "string" &&
+						item[key].replace(re, (matched => {
+							return strObj[matched]
+						})).replace(regExp, "").toUpperCase().includes(searchKeyword)
+				)
+			);
+		} else {
+			return null;
+		}
+
+	})
+
+
+	const item = filteredItems;
+
+	const items = { item }
+
+	const filterRes = { items, numOfRows, totalCount, id }
+
+	const finalUrl = `${api}/abandonmentPublic?ServiceKey=${serviceKey}&_type=json&bgnde=${bgnde}&endde=${endde}&upkind=422400&numOfRows=${numOfRows}&pageNo=${id}`;
+	console.log(finalUrl)
+
+	const finalRes = await getData(finalUrl)
+
+	// const finalRes = (searchField === "keyword") ? totalCountRes : filterRes
+
+	// 검색어를 입력했을때는 searchField !== "keyword" 무조건 filterRes
+
+	if (searchField !== "keyword") res.send(filterRes)
+
+
+
+}))
 
 // 품종
 router.get("/search/kind", (req, res) => {
@@ -61,13 +151,24 @@ router.get("/search/kind", (req, res) => {
 		.then(response => response.json())
 		.then(json => {
 			res.send(json.response.body.items);
-			// console.log(json.response.body.items)
+			// console.log(json.response.body.items.item[0].kindCd)
 
 		})
 		.catch(() => {
 			res.send(JSON.stringify({ message: "System Error" }));
 		});
-});
+})
+
+// router.post("/input/", doAsync(async (req, res) => {
+
+// 	const { searchField } = req.body;
+
+// 	const te = { success: "test" }
+// 	console.log(req.body.searchField, te)
+// 	res.send(req.body)
+
+// }))
+
 
 // db접속
 const data = fs.readFileSync(__dirname + "/db.json");

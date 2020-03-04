@@ -21,20 +21,41 @@ export default class ListStore {
 	loadList = async () => {
 		try {
 			const { items, pageNo, numOfRows, happenFrom, happenTo } = this;
-			const url = `/page/${happenFrom}/${happenTo}/${numOfRows}/${pageNo}`;
-			const response = await fetch(url);
+			const { selectedCategory, searchField } = this.root.searchStore;
+			const url = `/page/${happenFrom}/${happenTo}/${selectedCategory}/${numOfRows}/${pageNo}`;
+			const response = await fetch(url, {
+				headers: {
+					'Accept': 'application/json',
+					'Content-Type': 'application/json'
+				},
+				method: 'POST',
+				body: JSON.stringify({ searchField })
+			})
+
 			const json = await response.json();
 			runInAction(() => {
+
 				if (Array.isArray(json.items.item)) {
 					this.setItems([...items, ...(json.items.item || [])]);
+
 				}
+
+				// 아이템이 하나도 없을때 object변환
+
+				// else if (json.items === "") Object.keys(json.items.item === {}); or
+
+				else if (typeof json.items.item === "undefined") Object.keys([] + (json.items.item))
+
+
+				// 아이템이 하나일때
 				else {
 					// 객체를 배열로 만들어서 기존배열에 추가하여 새배열을 만드는 코드
 					this.items = items.concat(json.items.item).slice();
 					console.log(typeof items);
-
 				}
+
 				this.setCount(json.totalCount);
+
 			});
 
 		} catch (err) {
@@ -45,35 +66,6 @@ export default class ListStore {
 		}
 	};
 
-	@action
-	searchList = async () => {
-		try {
-			const { items, pageNo, numOfRows, happenFrom, happenTo } = this;
-			const url = `/search/${happenFrom}/${happenTo}/${numOfRows}/${pageNo}`;
-			const response = await fetch(url);
-			const json = await response.json();
-			runInAction(() => {
-				if (Array.isArray(json.items.item)) {
-					this.setItems([...items, ...(json.items.item || [])]);
-				}
-				else {
-					// 객체를 배열로 만들어서 기존배열에 추가하여 새배열을 만드는 코드
-					this.items = items.concat(json.items.item).slice();
-					console.log(typeof items);
-
-				}
-				this.loading = false;
-				this.hasMore = false;
-				this.setCount(json.totalCount);
-			});
-
-		} catch (err) {
-			runInAction(() => {
-				console.log(err);
-				this.isLoading = false;
-			})
-		}
-	};
 
 	@action
 	setItems = (items) => {
@@ -94,18 +86,14 @@ export default class ListStore {
 
 	@action
 	loadMore = () => {
-		const { totalPage, totalCount } = this;
-		// let totalPage = Math.max((numOfRows * pageNo), totalCount)
+		const { items, totalCount } = this;
 
 		let message = observable({
 			return: "마지막 페이지입니다.",
 			continue: "데이터가 남아있습니다."
 		})
 
-		console.log(totalPage, totalCount)
-
-		// totalPage의 갯수가 totalCount의 수보다 크거나 같으면 리턴 (올림)
-		if (totalPage) {
+		if (items.length === totalCount) {
 			return console.log(message.return)
 		}
 		else {
