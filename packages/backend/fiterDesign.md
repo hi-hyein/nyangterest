@@ -1,6 +1,6 @@
-## 상단필터의 기능 
+## 유기동물 정보 조회 서비스의 검색 기능 
 
-### 날짜 검색
+### 1. 날짜 검색
 
 * 날짜 선택기에서 시작일과 종료일을 선택한다. 기본셋은 오늘날짜부터 일주일전 날짜까지 지정되어 있고 무한 스크롤링으로 페이지를 넘기는 방식이다.
 
@@ -9,42 +9,70 @@
 * 유효범위를 2주로 정한 이유는 그 이상 범위가 넓어지면 데이터의 양이 늘어나 스크롤링을 하는 횟수가 많아지면 사용자입장에서는 피로감을 주지 않을까 생각하였다.
 
 
-### 품종 선택
+### 2. 품종 선택
 
 * 셀렉트박스에서 원하는 품종을 선택하면 해당 품종의 리스트를 볼 수 있다.
 
-#### API
-
-> Request
-
+<!-- #### API
 
 * endPoint : 'http://openapi.animal.go.kr/openapi/service/rest/abandonmentPublicSrvc';
+
+
+> Request
   
 * open api url: `${endPoint}/kind?ServiceKey=${serviceKey}&_type=json&up_kind_cd=422400`;  
 
-<pre> GET /search/kind </pre>
+<pre> GET /search/kind </pre> -->
 
 
+<!-- > Response -->
 
-> Response
+| 품종명           |    품종코드    |
+| :------------ | :--------: |
+| **고양이**       | **000116** |
+| 노르웨이 숲        |   000170   |
+| 데본 렉스         |   000171   |
+| 러시안 블루        |   000172   |
+| 레그돌-라가머핀      |   000173   |
+| 맹크스           |   000174   |
+| 먼치킨           |   000175   |
+| 메인쿤           |   000176   |
+| 발리네즈          |   000177   |
+| 버만            |   000178   |
+| 벵갈            |   000179   |
+| 봄베이           |   000180   |
+| 브리티시 쇼트헤어     |   000181   |
+| 사바나캣          |   000182   |
+| 샤트룩스          |   000183   |
+| 샴             |   000184   |
+| 셀커크 렉스        |   000185   |
+| 소말리           |   000186   |
+| 스노우 슈         |   000187   |
+| 스코티시폴드        |   000188   |
+| 스핑크스          |   000189   |
+| 시베리안 포레스트     |   000190   |
+| 싱가퓨라          |   000191   |
+| 아메리칸 쇼트헤어     |   000192   |
+| 아비시니안         |   000193   |
+| 재패니즈밥테일       |   000194   |
+| 터키시 앙고라       |   000195   |
+| 통키니즈          |   000196   |
+| 페르시안-페르시안 친칠라 |   000197   |
+| 하바나 브라운       |   000198   |
+| 하일랜드 폴드       |   000199   |
+| 한국 고양이        |   000200   |
 
-![kind list](https://user-images.githubusercontent.com/2981954/76893157-ca2a5d80-6883-11ea-94dc-e55bc891aa1b.jpg)
+<!-- ![kind list](https://user-images.githubusercontent.com/2981954/76893157-ca2a5d80-6883-11ea-94dc-e55bc891aa1b.jpg) -->
 
 
-### 검색어 입력 검색
+### 3. 검색어 입력 
 
-* 검색어를 입력하면 유효범위내의 날짜에 전체 데이터에서 검색이 되고 검색 결과값은 기존대로 무한 스크롤링으로 출력된다.
+* 검색어를 입력하면 유효범위내의 날짜의 전체 데이터에서 검색 결과값을 포함한 리스트가  무한 스크롤링으로 출력된다.
 
 
-#### API
-
-> Request
+### API
 
 * endPoint : 'http://openapi.animal.go.kr/openapi/service/rest/abandonmentPublicSrvc';
-
-  <pre>GET /page/:bgnde/:endde/:kind/:numOfRows/:id/</pre>
-
-
 
 
 | 요청변수        | 의미                 | 타입     |
@@ -54,58 +82,20 @@
 | numOfRows   | 한페이지에 보여지는 아이템의 갯수 | number |
 | id          | 페이지수               | number |
 | kind        | 품종명                | string |
-| searchField | 검색된 값              | string |
- 
+| searchField | 검색어의 입력 값          | string |
 
-* 유기동물 정보 조회 서비스 open api(이하 open api)에서 제공하는 요청변수에는 검색어에 대한 정보가 없음으로 프론트에서 변수 searchField에 입력된 값을 query string으로 요청해서 url에 받아온다.
-  
-  
-##### kind
+> Request
 
-* open api에서 제공하는 모든 품종의 고양이 코드는 "000116"이다.
-  
-* 품종 셀렉트 박스를 선택하지 않으면 기본셋은 kind === "000116"이다
-  
-* 변수 kindEnum에 kind === "000116"를 대입한다.
+  <pre>GET /page/:bgnde/:endde/:numOfRows/:id/:kind/searchField="검색어"</pre>
 
 
-| 품종명           |    품종코드    |   타입   |
-| :------------ | :--------: | :----: |
-| **고양이**       | **000116** | string |
-| 노르웨이 숲        |   000170   | string |
-| 데본 렉스         |   000171   | string |
-| 러시안 블루        |   000172   | string |
-| 레그돌-라가머핀      |   000173   | string |
-| 맹크스           |   000174   | string |
-| 먼치킨           |   000175   | string |
-| 메인쿤           |   000176   | string |
-| 발리네즈          |   000177   | string |
-| 버만            |   000178   | string |
-| 벵갈            |   000179   | string |
-| 봄베이           |   000180   | string |
-| 브리티시 쇼트헤어     |   000181   | string |
-| 사바나캣          |   000182   | string |
-| 샤트룩스          |   000183   | string |
-| 샴             |   000184   | string |
-| 셀커크 렉스        |   000185   | string |
-| 소말리           |   000186   | string |
-| 스노우 슈         |   000187   | string |
-| 스코티시폴드        |   000188   | string |
-| 스핑크스          |   000189   | string |
-| 시베리안 포레스트     |   000190   | string |
-| 싱가퓨라          |   000191   | string |
-| 아메리칸 쇼트헤어     |   000192   | string |
-| 아비시니안         |   000193   | string |
-| 재패니즈밥테일       |   000194   | string |
-| 터키시 앙고라       |   000195   | string |
-| 통키니즈          |   000196   | string |
-| 페르시안-페르시안 친칠라 |   000197   | string |
-| 하바나 브라운       |   000198   | string |
-| 하일랜드 폴드       |   000199   | string |
-| 한국 고양이        |   000200   | string |
+* 프론트에서 검색어의 입력 값을 요청해서 url에 요청변수로 받아온다.
+    
+EX) 2020년 3월 13일부터 2020년 3월 20일 , 품종 한국고양이, 검색어창에 치즈를 입력한다면,   
 
+ <pre>GET /page/20200313/20200320/100/1/000200/searchField="치즈"</pre>
 
-> Response
+> Reponse
 
 | 응답변수          | 의미              | 타입     |
 | :------------ | --------------- | ------ |
@@ -147,7 +137,7 @@ items: {item: [,…]}
 			careNm: "가나동물병원"
 			careTel: "010-2230-6303"
 			chargeNm: "경주시"
-			colorCd: "블랙화이트"
+			colorCd: "치즈"
 			desertionNo: 447505202000233
 			filename: "http://www.animal.go.kr/files/shelter/2020/03/202003171703681_s.jpg"
 			happenDt: 20200317
@@ -171,7 +161,7 @@ totalCount: 213
 </pre>
 
 
-##### URL
+<!-- ##### URL
 
 * open api  url: `${endPoint}/abandonmentPublic?ServiceKey=${serviceKey}&_type=json&bgnde=${bgnde}&endde=${endde}&numOfRows=${numOfRows}&pageNo=${id}`;  
 
@@ -198,7 +188,7 @@ totalCount: 213
 * countRes: url을 호출하여 응답받은 데이터(totalCount에 해당하는 아이템)를 담은 json객체이다.
 
 * 품종을 선택하지 않았을때는 countUrl , 품종을 선택했을때는 url + kindParams의 url을 호출한다.
-
+ -->
 
 
 ### 기본 데이터 구조
