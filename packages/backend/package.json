@@ -14,15 +14,21 @@
 		"passport-local": "^1.0.0",
 		"path": "^0.12.7",
 		"request": "^2.88.0",
+		"save": "^2.4.0",
 		"session-file-store": "^1.3.1",
+		"watch": "^1.0.2",
 		"winston": "^3.2.1",
 		"winston-daily-rotate-file": "^4.4.1"
 	},
 	"scripts": {
 		"start": "node server.js",
-		"test": "jest --watchAll"
+		"watch": "jest --watch --runInBand --detectOpenHandles"
 	},
 	"name": "backend",
+	"jest": {
+		"verbose": true,
+		"testEnvironment": "node"
+	},
 	"version": "1.0.0",
 	"main": "server.js",
 	"devDependencies": {
