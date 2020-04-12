@@ -22,7 +22,7 @@
 	},
 	"scripts": {
 		"start": "node server.js",
-		"watch": "jest --watch --runInBand --detectOpenHandles"
+		"watch": "NODE_ENV=test jest --setupFiles dotenv/config --watch --runInBand --detectOpenHandles --forceExit"
 	},
 	"name": "backend",
 	"jest": {
