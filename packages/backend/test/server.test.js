@@ -35,9 +35,16 @@ describe('GET request parameters', () => {
 		expect(data.item[0].colorCd).toEqual("고등어");
 	})
 
+
+	test('async / await input code', async () => {
+		const response = await request(app).get("/input/searchField");
+		expect(response.text).toEqual(JSON.stringify({ success: "test" }));
+	})
+
+
 	test('async / await status code', async () => {
 		// const response = await request(app).get();
-		const response = await request(app).get("/page/20200405/20200412/72/000116");
+		const response = await request(app).get("/page/20200405/20200412/72/000116/keyword");
 		expect(response.statusCode).toBe(200);
 	})
 

@@ -27,7 +27,10 @@ async function err() {
 }
 
 // 기본주소
-router.post("/page/:bgnde/:endde/:kind/:numOfRows/:id/", doAsync(async (req, res) => {
+
+// 시작일,종료일,결과보다큰 수,품종
+
+router.get("/page/:bgnde/:endde/:numOfRows/:kind/:searchField", doAsync(async (req, res) => {
 
 	const getData = async (url) => {
 		try {
@@ -41,54 +44,32 @@ router.post("/page/:bgnde/:endde/:kind/:numOfRows/:id/", doAsync(async (req, res
 		}
 	};
 
-	const { bgnde, endde, numOfRows, id, kind } = req.params;
-
-	const { searchField } = req.body;
+	const { bgnde, endde, numOfRows, kind, searchField } = req.params;
 
 
 	// 기본 url
 
-	const url = `${api}/abandonmentPublic?ServiceKey=${serviceKey}&_type=json&bgnde=${bgnde}&endde=${endde}&upkind=422400&numOfRows=${numOfRows}&pageNo=${id}`;
+	const baseUrl = `${api}/abandonmentPublic?ServiceKey=${serviceKey}&_type=json&bgnde=${bgnde}&endde=${endde}&numOfRows=1000&upkind=422400&kind=&`;
+
+	const kindParam = `${kind}`
+
+	const KINDENUM = kind === "000116";
+
+	const searchParam = `${searchField}`
+
+	const SEARCHENUM = searchField === "keyword";
+
+	let url = (KINDENUM || SEARCHENUM) ? `${baseUrl}${searchParam}` : `${baseUrl}${KINDENUM}${searchParam}`;
+
+	// let url = (KINDENUM) ? `${baseUrl}` : `${baseUrl}${kindParam}`;
+
+
+
+	url = (KINDENUM || SEARCHENUM) ? `${baseUrl}` : `${baseUrl}${kindParam}${searchParam}`;
 
 	const defaultRes = await getData(url)
 
-	const kindAddUrl = `${api}/abandonmentPublic?ServiceKey=${serviceKey}&_type=json&bgnde=${bgnde}&endde=${endde}&upkind=422400&kind=${kind}&numOfRows=${numOfRows}&pageNo=${id}`;
-
-	const kindAddRes = await getData(kindAddUrl);
-
-	const selectRes = (kind === "000116") ? defaultRes : kindAddRes;
-
-	// 아무것도 선택안했을때는 kind === "000116"일때는 기본 defaultRes
-
-	if (kind === "000116" && searchField === "keyword") res.send(defaultRes)
-
-	// 품종을 선택했을때는 kind !== "000116" &&  searchField === "keyword" kindAddRes
-	// 
-	if (kind !== "000116" && searchField === "keyword") res.send(kindAddRes)
-
-
-	const totalCount = selectRes.totalCount;
-
-	const countUrl = `${api}/abandonmentPublic?ServiceKey=${serviceKey}&_type=json&bgnde=${bgnde}&endde=${endde}&upkind=422400&numOfRows=${totalCount}&pageNo=${id}`;
-
-	const countRes = await getData(countUrl);
-
-	const kindCountUrl = `${api}/abandonmentPublic?ServiceKey=${serviceKey}&_type=json&bgnde=${bgnde}&endde=${endde}&upkind=422400&kind=${kind}&numOfRows=${totalCount}&pageNo=${id}`;
-
-	const kindCountRes = await getData(kindCountUrl);
-
-	//  kind === "000116" &&  searchField !== "keyword"
-
-	if (kind === "000116" && searchField !== "keyword") countRes
-
-
-	//  kind !== "000116" &&  searchField !== "keyword"
-
-	if (kind !== "000116" && searchField !== "keyword") kindCountRes
-
-	const selectCountRes = (searchField !== "keyword") ? countRes : kindCountRes
-
-	const totalItems = selectCountRes.items.item;
+	const totalItem = defaultRes.items.item;
 
 	const strObj = {
 		"F": "암컷",
@@ -100,7 +81,7 @@ router.post("/page/:bgnde/:endde/:kind/:numOfRows/:id/", doAsync(async (req, res
 		"한국 고양이": "코리안숏헤어"
 	}
 
-	const filteredItems = totalItems.filter(item => {
+	const filteredItems = totalItem.filter(item => {
 		let re = new RegExp(Object.keys(strObj).join("|"), "gi");
 		let regExp = /[()]/gi;
 		let searchKeyword = searchField.toUpperCase().trim()
@@ -126,22 +107,27 @@ router.post("/page/:bgnde/:endde/:kind/:numOfRows/:id/", doAsync(async (req, res
 
 	const items = { item }
 
-	const filterRes = { items, numOfRows, totalCount, id }
 
-	const finalUrl = `${api}/abandonmentPublic?ServiceKey=${serviceKey}&_type=json&bgnde=${bgnde}&endde=${endde}&upkind=422400&numOfRows=${numOfRows}&pageNo=${id}`;
-	console.log(finalUrl)
+	const filterRes = { items }
 
-	const finalRes = await getData(finalUrl)
 
-	// const finalRes = (searchField === "keyword") ? totalCountRes : filterRes
-
-	// 검색어를 입력했을때는 searchField !== "keyword" 무조건 filterRes
-
-	if (searchField !== "keyword") res.send(filterRes)
-
+	// res.json(defaultRes)
+	res.json(filterRes)
 
 
 }))
+
+
+router.get("/input/:searchField", doAsync(async (req, res) => {
+
+	const { searchField } = req.params;
+
+	const te = { success: "test" }
+	console.log(searchField, te)
+	res.send((te))
+
+}))
+
 
 // 품종
 router.get("/search/kind", (req, res) => {
@@ -158,16 +144,6 @@ router.get("/search/kind", (req, res) => {
 			res.send(JSON.stringify({ message: "System Error" }));
 		});
 })
-
-// router.post("/input/", doAsync(async (req, res) => {
-
-// 	const { searchField } = req.body;
-
-// 	const te = { success: "test" }
-// 	console.log(req.body.searchField, te)
-// 	res.send(req.body)
-
-// }))
 
 
 // db접속
@@ -205,7 +181,7 @@ console.log(__dirname);
 app.use(cors());
 app.use("/", router);
 // app.use("/search", router);
-// app.use("/admin/member", router);
+app.use("/admin/member", router);
 
 // 회원가입 미들웨어
 app.use("/", join);
@@ -218,9 +194,11 @@ app.use("/account", findAccount);
 // 회원탈퇴
 app.use("/unregister", unregister);
 
-app.listen(PORT, function () {
-	logger.info("enabled web server listening !");
-	// console.log("enabled web server listening !");
-});
+if (process.env.NODE_ENV !== 'test') {
+	app.listen(PORT, function () {
+		logger.info("enabled web server listening !");
+		// console.log("enabled web server listening !");
+	});
+}
 
 module.exports = app;
