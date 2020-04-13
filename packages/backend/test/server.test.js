@@ -1,16 +1,10 @@
 
 const request = require('supertest')
 const app = require('../server')
-const fetch = require("node-fetch");
-require('dotenv').config()
-
-const serviceKey = process.env.SERVICE_KEY;
-
-const api = 'http://openapi.animal.go.kr/openapi/service/rest/abandonmentPublicSrvc';
-
-const url = `${api}/abandonmentPublic?ServiceKey=${serviceKey}&_type=json&bgnde=20200405&endde=20200405&numOfRows=20&upkind=422400&kind=`;
 
 describe('GET request parameters', () => {
+
+	const url = "/page/20200405/20200412/72/000116/keyword"
 
 	// before('test', () => {
 
@@ -18,21 +12,9 @@ describe('GET request parameters', () => {
 
 
 	test('works with async / await', async () => {
-
-		const getData = async (url) => {
-			try {
-				const response = await fetch(url);
-				const json = await response.json();
-				const items = await json.response.body.items;
-				return items;
-
-			} catch (error) {
-				console.log(error);
-			}
-		}
-		const data = await getData(url);
+		const response = await request(app).get(url);
 		expect.assertions(1);
-		expect(data.item[0].colorCd).toEqual("고등어");
+		expect(response.body.items.item[0].colorCd).toEqual("회색,흰색");
 	})
 
 
@@ -44,7 +26,7 @@ describe('GET request parameters', () => {
 
 	test('async / await status code', async () => {
 		// const response = await request(app).get();
-		const response = await request(app).get("/page/20200405/20200412/72/000116/keyword");
+		const response = await request(app).get(url);
 		expect(response.statusCode).toBe(200);
 	})
 
