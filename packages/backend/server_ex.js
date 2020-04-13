@@ -21,6 +21,44 @@ async function err() {
 	throw new Error('에러 발생');
 }
 
+// 기본주소
+
+
+router.get("/page/:bgnde/:endde/:numOfRows/:kind", doAsync(async (req, res) => {
+
+	const getData = async (url) => {
+		try {
+			const response = await fetch(url);
+			const json = await response.json();
+			const body = await json.response.body;
+			return body;
+
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
+	const { bgnde, endde, numOfRows, id, kind } = req.params;
+
+
+	// 기본 url
+
+	const baseUrl = `${api}/abandonmentPublic?ServiceKey=${serviceKey}&_type=json&bgnde=${bgnde}&endde=${endde}&numOfRows=1000&upkind=422400&kind=`;
+
+	const kindParam = `${kind}`
+
+	const KINDENUM = kind === "000116";
+
+	let url = (KINDENUM) ? `${baseUrl}` : `${baseUrl}${kindParam}`;
+
+	const defaultRes = await getData(url)
+
+	res.json(defaultRes)
+
+
+}))
+
+
 // 품종
 router.get("/search/kind", (req, res) => {
 	const url = `${api}/kind?ServiceKey=${serviceKey}&_type=json&up_kind_cd=422400`;
