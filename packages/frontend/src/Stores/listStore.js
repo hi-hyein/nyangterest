@@ -5,13 +5,14 @@ export default class ListStore {
 	@observable items = [];
 	@observable loading = true;
 	@observable timer = null;
-	@observable numOfRows = 72;
-	@observable totalCount = 0;
 	@observable pageNo = 1;
+	@observable numOfRows = 100;
+	@observable totalCount = 0;
 	@observable scrolling = false;
 	@observable hasMore = true;
 	@observable isLoading = false;
 	@observable error = false;
+	@observable isFilteredRequest = true
 
 	constructor(root) {
 		this.root = root;
@@ -20,17 +21,12 @@ export default class ListStore {
 	@action
 	loadList = async () => {
 		try {
+			// 시작일,종료일,한페이지 결과수,품종,검색어
 			const { items, pageNo, numOfRows, happenFrom, happenTo } = this;
 			const { selectedCategory, searchField } = this.root.searchStore;
-			const url = `/page/${happenFrom}/${happenTo}/${selectedCategory}/${numOfRows}/${pageNo}`;
-			const response = await fetch(url, {
-				headers: {
-					'Accept': 'application/json',
-					'Content-Type': 'application/json'
-				},
-				method: 'POST',
-				body: JSON.stringify({ searchField })
-			})
+			let url = `/page/${happenFrom}/${happenTo}/${numOfRows}/${selectedCategory}/${searchField}`;
+			// if (selectedCategory !== "") url
+			const response = await fetch(url)
 
 			const json = await response.json();
 			runInAction(() => {

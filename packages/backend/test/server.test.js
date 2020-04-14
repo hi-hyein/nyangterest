@@ -10,27 +10,38 @@ describe('GET request parameters', () => {
 
 	// })
 
+	test('Change keyword with async / await', async () => {
+		const response = await request(app).get("/page/20200405/20200412/72/000116/054-270-2724");
+		console.log(response.body)
+		expect.assertions(1);
+		expect(response.body.items.item[0].officetel).toBe("054-270-2724");
+	})
 
-	test('works with async / await', async () => {
+	test('Change kind with async / await', async () => {
+		const response = await request(app).get("/page/20200405/20200412/72/000200/keyword");
+		expect.assertions(1);
+		expect(response.body.items.item[0].kindCd).toEqual("[고양이] 한국 고양이");
+	})
+
+	test('Default with async / await', async () => {
 		const response = await request(app).get(url);
 		expect.assertions(1);
 		expect(response.body.items.item[0].colorCd).toEqual("회색,흰색");
 	})
 
 
-	test('async / await input code', async () => {
-		const response = await request(app).get("/input/searchField");
-		expect(response.text).toEqual(JSON.stringify({ success: "test" }));
-	})
+	// test('async / await input code', async () => {
+	// 	const response = await request(app).get("/input/searchField");
+	// 	expect(response.text).toEqual(JSON.stringify({ success: "test" }));
+	// })
 
-
-	test('async / await status code', async () => {
+	test('Async / await status code', async () => {
 		// const response = await request(app).get();
 		const response = await request(app).get(url);
 		expect(response.statusCode).toBe(200);
 	})
 
-	test('test search/kind', (done) => {
+	test('Test search/kind', (done) => {
 		request(app)
 			.get('/search/kind')
 			.set('Content-Type', 'application/json')

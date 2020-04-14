@@ -12,8 +12,9 @@ const findAccount = require('./findAccount');
 const join = require('./join');
 const logger = require('./winston')
 const unregister = require('./unregister')
+const dotenv = require('dotenv')
 
-require('dotenv').config()
+dotenv.config({ path: path.join(__dirname, './.env') })
 
 const serviceKey = process.env.SERVICE_KEY;
 
@@ -28,7 +29,7 @@ async function err() {
 
 // 기본주소
 
-// 시작일,종료일,결과보다큰 수,품종
+// 시작일,종료일,결과보다 큰 수,품종
 
 router.get("/page/:bgnde/:endde/:numOfRows/:kind/:searchField", doAsync(async (req, res) => {
 
@@ -59,7 +60,7 @@ router.get("/page/:bgnde/:endde/:numOfRows/:kind/:searchField", doAsync(async (r
 
 	const SEARCHENUM = searchField === "keyword";
 
-	let url = (KINDENUM || SEARCHENUM) ? `${baseUrl}${searchParam}` : `${baseUrl}${KINDENUM}${searchParam}`;
+	// let url = (KINDENUM || SEARCHENUM) ? `${baseUrl}${searchParam}` : `${baseUrl}${KINDENUM}${searchParam}`;
 
 	// let url = (KINDENUM) ? `${baseUrl}` : `${baseUrl}${kindParam}`;
 
@@ -110,23 +111,30 @@ router.get("/page/:bgnde/:endde/:numOfRows/:kind/:searchField", doAsync(async (r
 
 	const filterRes = { items }
 
+	if (SEARCHENUM) {
+		res.json(defaultRes)
 
+	} else {
+
+		res.json(filterRes)
+	}
 	// res.json(defaultRes)
-	res.json(filterRes)
+
+
 
 
 }))
 
 
-router.get("/input/:searchField", doAsync(async (req, res) => {
+// router.get("/input/:searchField", doAsync(async (req, res) => {
 
-	const { searchField } = req.params;
+// 	const { searchField } = req.params;
 
-	const te = { success: "test" }
-	console.log(searchField, te)
-	res.send((te))
+// 	const te = { success: "test" }
+// 	console.log(searchField, te)
+// 	res.send(te)
 
-}))
+// }))
 
 
 // 품종
