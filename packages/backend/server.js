@@ -47,26 +47,15 @@ router.get("/page/:bgnde/:endde/:numOfRows/:kind/:searchField", doAsync(async (r
 
 	const { bgnde, endde, numOfRows, kind, searchField } = req.params;
 
+	const baseUrl = `${api}/abandonmentPublic?ServiceKey=${serviceKey}&_type=json&bgnde=${bgnde}&endde=${endde}&numOfRows=1000&upkind=422400&`;
 
-	// 기본 url
+	const kindParam = `kind=${kind}&`
 
-	const baseUrl = `${api}/abandonmentPublic?ServiceKey=${serviceKey}&_type=json&bgnde=${bgnde}&endde=${endde}&numOfRows=1000&upkind=422400&kind=&`;
-
-	const kindParam = `${kind}`
-
-	const KINDENUM = kind === "000116";
-
-	const searchParam = `${searchField}`
+	const KINDENUM = (kind === "000116");
 
 	const SEARCHENUM = searchField === "keyword";
 
-	// let url = (KINDENUM || SEARCHENUM) ? `${baseUrl}${searchParam}` : `${baseUrl}${KINDENUM}${searchParam}`;
-
-	// let url = (KINDENUM) ? `${baseUrl}` : `${baseUrl}${kindParam}`;
-
-
-
-	url = (KINDENUM || SEARCHENUM) ? `${baseUrl}` : `${baseUrl}${kindParam}${searchParam}`;
+	let url = (KINDENUM) ? `${baseUrl}` : `${baseUrl}${kindParam}`;
 
 	const defaultRes = await getData(url)
 
@@ -108,23 +97,16 @@ router.get("/page/:bgnde/:endde/:numOfRows/:kind/:searchField", doAsync(async (r
 
 	const items = { item }
 
-
 	const filterRes = { items }
 
 	if (SEARCHENUM) {
 		res.json(defaultRes)
-
 	} else {
-
 		res.json(filterRes)
 	}
-	// res.json(defaultRes)
-
-
 
 
 }))
-
 
 // router.get("/input/:searchField", doAsync(async (req, res) => {
 
