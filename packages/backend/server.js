@@ -12,8 +12,9 @@ const findAccount = require('./findAccount');
 const join = require('./join');
 const logger = require('./winston')
 const unregister = require('./unregister')
+const dotenv = require('dotenv')
 
-require('dotenv').config()
+dotenv.config({ path: path.join(__dirname, './.env') })
 
 const serviceKey = process.env.SERVICE_KEY;
 
@@ -28,7 +29,7 @@ async function err() {
 
 // 기본주소
 
-// 시작일,종료일,결과보다큰 수,품종
+// 시작일,종료일,결과보다 큰 수,품종
 
 router.get("/page/:bgnde/:endde/:numOfRows/:kind/:searchField", doAsync(async (req, res) => {
 
@@ -46,26 +47,15 @@ router.get("/page/:bgnde/:endde/:numOfRows/:kind/:searchField", doAsync(async (r
 
 	const { bgnde, endde, numOfRows, kind, searchField } = req.params;
 
+	const baseUrl = `${api}/abandonmentPublic?ServiceKey=${serviceKey}&_type=json&bgnde=${bgnde}&endde=${endde}&numOfRows=1000&upkind=422400&`;
 
-	// 기본 url
+	const kindParam = `kind=${kind}&`
 
-	const baseUrl = `${api}/abandonmentPublic?ServiceKey=${serviceKey}&_type=json&bgnde=${bgnde}&endde=${endde}&numOfRows=1000&upkind=422400&kind=&`;
-
-	const kindParam = `${kind}`
-
-	const KINDENUM = kind === "000116";
-
-	const searchParam = `${searchField}`
+	const KINDENUM = (kind === "000116");
 
 	const SEARCHENUM = searchField === "keyword";
 
-	let url = (KINDENUM || SEARCHENUM) ? `${baseUrl}${searchParam}` : `${baseUrl}${KINDENUM}${searchParam}`;
-
-	// let url = (KINDENUM) ? `${baseUrl}` : `${baseUrl}${kindParam}`;
-
-
-
-	url = (KINDENUM || SEARCHENUM) ? `${baseUrl}` : `${baseUrl}${kindParam}${searchParam}`;
+	let url = (KINDENUM) ? `${baseUrl}` : `${baseUrl}${kindParam}`;
 
 	const defaultRes = await getData(url)
 
@@ -107,26 +97,26 @@ router.get("/page/:bgnde/:endde/:numOfRows/:kind/:searchField", doAsync(async (r
 
 	const items = { item }
 
-
 	const filterRes = { items }
 
+	if (SEARCHENUM) {
+		res.json(defaultRes)
+	} else {
+		res.json(filterRes)
+	}
 
-	// res.json(defaultRes)
-	res.json(filterRes)
-
-
-}))
-
-
-router.get("/input/:searchField", doAsync(async (req, res) => {
-
-	const { searchField } = req.params;
-
-	const te = { success: "test" }
-	console.log(searchField, te)
-	res.send((te))
 
 }))
+
+// router.get("/input/:searchField", doAsync(async (req, res) => {
+
+// 	const { searchField } = req.params;
+
+// 	const te = { success: "test" }
+// 	console.log(searchField, te)
+// 	res.send(te)
+
+// }))
 
 
 // 품종
