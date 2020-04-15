@@ -23,13 +23,9 @@
 	},
 	"scripts": {
 		"start": "node server.js",
-		"watch": "NODE_ENV=test jest --setupFiles dotenv/config --watch --runInBand --detectOpenHandles --forceExit"
+		"test": "NODE_ENV=test jest --setupFiles dotenv/config --watch --runInBand --detectOpenHandles --forceExit"
 	},
 	"name": "backend",
-	"jest": {
-		"verbose": true,
-		"testEnvironment": "node"
-	},
 	"version": "1.0.0",
 	"main": "server.js",
 	"devDependencies": {

@@ -2,7 +2,7 @@
 const request = require('supertest')
 const app = require('../server')
 
-describe("Nyangtest unit test!", () => {
+describe("Nyangterest unit test!", () => {
 
 	describe('GET request parameters test', () => {
 
@@ -39,8 +39,9 @@ describe("Nyangtest unit test!", () => {
 
 		test('Default with async / await', async () => {
 			const response = await request(app).get(url);
+			const totalCount = response.body.totalCount;
 			expect.assertions(1);
-			expect(response.body.items.item[0].colorCd).toEqual("회색,흰색");
+			expect(response.body.items.item[totalCount - 1].colorCd).toEqual("갈흰검");
 		})
 
 
