@@ -10,11 +10,12 @@ describe("Nyangterest unit test!", () => {
 		const endDay = new Date().toISOString().slice(0, 10).replace(/-/g, "");
 		const per = 1000;
 		const str = "keyword"
+		const url = `/page/${startDay}/${endDay}/${per}/000116/${str}`;
 
 		const getData = async (url) => {
 			try {
 				const response = await request(app).get(url);
-				const items = await response.body.items
+				const items = await response.body.items;
 				return items;
 
 			} catch (error) {
@@ -22,24 +23,31 @@ describe("Nyangterest unit test!", () => {
 			}
 		};
 
-		const url = `/page/${startDay}/${endDay}/${per}/000116/${str}`;
 
 		// before('test', () => {
 
 		// })
 
 
-		//검색어를 입력했을때 string이 들어있는지 확인(기존코드에서 수정 예정)
+		// 검색어를 입력했을때 item[0]에 string이 들어 있는지 확인
+		test('Input keyword with async / await', async () => {
 
-		// test('Input keyword with async / await', async () => {
-		// 	const data = await getData(url);
-		// 	// expect.assertions(1);
-		// 	console.log(typeof data.item[0])
-		// 	expect(data.item[0].age).toBe();
-		// })
+			const changeStr = encodeURI("2020년생");
+			const newUrl = `/page/${startDay}/${endDay}/${per}/000116/${changeStr}`;
+
+			const data = await getData(newUrl);
+			expect.assertions(1);
+			expect(data.item[0].age.length > 0).toBeTruthy();
+		})
 
 
 		// 아이템의 갯수와 전체 결과 수가 일치하는지
+		test('Item length equal totalCount with async / await', async () => {
+			const data = await getData(url);
+			const resTotalCount = await request(app).get(url);
+			const totalCount = await resTotalCount.body.totalCount;
+			expect(data.item.length === totalCount).toBe(true);
+		})
 
 		// 품종코드(변하지 않는 값)
 		test('Change kind with async / await', async () => {
@@ -58,7 +66,7 @@ describe("Nyangterest unit test!", () => {
 			}
 		})
 
-		// 응답받은 값에 고양이가 포함되어있는지 확인
+		// 응답받은 데이터에 고양이가 포함되어있는지 확인
 		test('ToHaveProperty default with async / await', async () => {
 			const data = await getData(url);
 			for (let i = 0; i < 10; i++) {
