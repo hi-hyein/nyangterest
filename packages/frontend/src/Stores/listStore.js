@@ -22,10 +22,9 @@ export default class ListStore {
 	loadList = async () => {
 		try {
 			// 시작일,종료일,한페이지 결과수,품종,검색어
-			const { items, pageNo, numOfRows, happenFrom, happenTo } = this;
-			const { selectedCategory, searchField } = this.root.searchStore;
+			const { items, numOfRows, happenFrom, happenTo } = this;
+			let { selectedCategory, searchField } = this.root.searchStore;
 			let url = `/page/${happenFrom}/${happenTo}/${numOfRows}/${selectedCategory}/${searchField}`;
-			// if (selectedCategory !== "") url
 			const response = await fetch(url)
 
 			const json = await response.json();
@@ -82,14 +81,14 @@ export default class ListStore {
 
 	@action
 	loadMore = () => {
-		const { items, totalCount } = this;
+		const { items } = this;
 
 		let message = observable({
 			return: "마지막 페이지입니다.",
 			continue: "데이터가 남아있습니다."
 		})
 
-		if (items.length === totalCount) {
+		if (items.length > 0) {
 			return console.log(message.return)
 		}
 		else {

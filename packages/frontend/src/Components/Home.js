@@ -214,13 +214,17 @@ class Home extends Component {
 				{!loading && (isLoading && hasMore) && (!(totalPage && (totalCount === items.length))) && (
 					<div>
 						Loading...
-            			<Loading />
+						<Loading />
 					</div>
 				)}
 
-				{totalPage && (items.length === totalCount) && (items.length > 0) &&
+				{(items.length > 0) &&
 					(<Message><p>마지막 페이지입니다!</p></Message>)
 				}
+
+				{/* {totalPage && (items.length === totalCount) && (items.length > 0) &&
+					(<Message><p>마지막 페이지입니다!</p></Message>)
+				} */}
 
 
 			</Fragment >

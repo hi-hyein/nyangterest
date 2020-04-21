@@ -29,8 +29,6 @@ async function err() {
 
 // 기본주소
 
-// 시작일,종료일,결과보다 큰 수,품종
-
 router.get("/page/:bgnde/:endde/:numOfRows/:kind/:searchField", doAsync(async (req, res) => {
 
 	const getData = async (url) => {
@@ -47,7 +45,8 @@ router.get("/page/:bgnde/:endde/:numOfRows/:kind/:searchField", doAsync(async (r
 
 	const { bgnde, endde, numOfRows, kind, searchField } = req.params;
 
-	const baseUrl = `${api}/abandonmentPublic?ServiceKey=${serviceKey}&_type=json&bgnde=${bgnde}&endde=${endde}&numOfRows=1000&upkind=422400&`;
+	// 시작일,종료일,결과보다 큰 수,품종
+	const baseUrl = `${api}/abandonmentPublic?ServiceKey=${serviceKey}&_type=json&bgnde=${bgnde}&endde=${endde}&numOfRows=1000000&upkind=422400&`;
 
 	const kindParam = `kind=${kind}&`
 
@@ -59,7 +58,30 @@ router.get("/page/:bgnde/:endde/:numOfRows/:kind/:searchField", doAsync(async (r
 
 	const defaultRes = await getData(url)
 
-	const totalItem = defaultRes.items.item;
+	const totalCount = defaultRes.totalCount;
+
+	const per = 100;
+
+	console.log(defaultRes)
+
+	const totalPage = Math.ceil(totalCount / per)
+
+	defaultRes.totalPage = totalPage;
+
+	defaultRes.numOfRows = per;
+
+	console.log(totalPage)
+
+	// 응답 - 아이템, 한페이지결과수, 페이지번호, 전체결과수 
+
+	console.log(defaultRes)
+
+	let totalItem;
+
+	// 1보다 클때
+	if (totalCount > 1) totalItem = defaultRes.items.item || []
+	// 1보다 작거나 같을때 
+	else if (totalCount <= 1) totalItem = Object.keys([] + (defaultRes.items.item))
 
 	const strObj = {
 		"F": "암컷",
@@ -71,24 +93,21 @@ router.get("/page/:bgnde/:endde/:numOfRows/:kind/:searchField", doAsync(async (r
 		"한국 고양이": "코리안숏헤어"
 	}
 
+
 	const filteredItems = totalItem.filter(item => {
 		let re = new RegExp(Object.keys(strObj).join("|"), "gi");
 		let regExp = /[()]/gi;
 		let searchKeyword = searchField.toUpperCase().trim()
 
-		if (typeof item === "object") {
-			return (
-				Object.keys(item).some(
-					key =>
-						typeof item[key] === "string" &&
-						item[key].replace(re, (matched => {
-							return strObj[matched]
-						})).replace(regExp, "").toUpperCase().includes(searchKeyword)
-				)
-			);
-		} else {
-			return null;
-		}
+		return (
+			Object.keys(item).some(
+				key =>
+					typeof item[key] === "string" &&
+					item[key].replace(re, (matched => {
+						return strObj[matched]
+					})).replace(regExp, "").toUpperCase().includes(searchKeyword)
+			)
+		);
 
 	})
 
@@ -104,7 +123,6 @@ router.get("/page/:bgnde/:endde/:numOfRows/:kind/:searchField", doAsync(async (r
 	} else {
 		res.json(filterRes)
 	}
-
 
 }))
 
