@@ -56,32 +56,41 @@ router.get("/page/:bgnde/:endde/:numOfRows/:kind/:searchField", doAsync(async (r
 
 	let url = (KINDENUM) ? `${baseUrl}` : `${baseUrl}${kindParam}`;
 
-	const defaultRes = await getData(url)
+	let defaultRes = await getData(url)
 
 	const totalCount = defaultRes.totalCount;
 
 	const per = 100;
 
-	console.log(defaultRes)
+	Array.prototype.addArr = function (n) {
+		const arr = this;
+		const length = arr.length;
+		const count = Math.ceil(length / n);
+		const item = [];
 
-	const totalPage = Math.ceil(totalCount / per)
+		for (let i = 0; i < count; i++) {
+			item.push(arr.splice(0, n));
+		}
 
-	defaultRes.totalPage = totalPage;
+		return item;
+	}
 
-	defaultRes.numOfRows = per;
+	const defaultItems = defaultRes.items.item;
 
-	console.log(totalPage)
+	const arrItems = defaultItems.addArr(per);
 
-	// 응답 - 아이템, 한페이지결과수, 페이지번호, 전체결과수 
+	let items = Object.values(arrItems)
 
-	console.log(defaultRes)
+	defaultItems.totalCount = totalCount;
 
-	let totalItem;
+	const arrRes = { items, totalCount }
+
+	let totalItems;
 
 	// 1보다 클때
-	if (totalCount > 1) totalItem = defaultRes.items.item || []
+	if (totalCount > 1) totalItems = defaultItems || []
 	// 1보다 작거나 같을때 
-	else if (totalCount <= 1) totalItem = Object.keys([] + (defaultRes.items.item))
+	else if (totalCount <= 1) totalItems = Object.keys([] + (defaultItems))
 
 	const strObj = {
 		"F": "암컷",
@@ -94,7 +103,7 @@ router.get("/page/:bgnde/:endde/:numOfRows/:kind/:searchField", doAsync(async (r
 	}
 
 
-	const filteredItems = totalItem.filter(item => {
+	let filteredItems = totalItems.filter(item => {
 		let re = new RegExp(Object.keys(strObj).join("|"), "gi");
 		let regExp = /[()]/gi;
 		let searchKeyword = searchField.toUpperCase().trim()
@@ -111,16 +120,17 @@ router.get("/page/:bgnde/:endde/:numOfRows/:kind/:searchField", doAsync(async (r
 
 	})
 
+	items = filteredItems;
 
-	const item = filteredItems;
-
-	const items = { item }
+	// const items = Object.values(filteredItems)
 
 	const filterRes = { items }
 
 	if (SEARCHENUM) {
-		res.json(defaultRes)
-	} else {
+		res.json(arrRes)
+	}
+
+	else {
 		res.json(filterRes)
 	}
 
