@@ -46,6 +46,7 @@ router.get("/page/:bgnde/:endde/:numOfRows/:kind/:searchField", doAsync(async (r
 	const { bgnde, endde, numOfRows, kind, searchField } = req.params;
 
 	// 시작일,종료일,결과보다 큰 수,품종
+
 	const baseUrl = `${api}/abandonmentPublic?ServiceKey=${serviceKey}&_type=json&bgnde=${bgnde}&endde=${endde}&numOfRows=1000000&upkind=422400&`;
 
 	const kindParam = `kind=${kind}&`
@@ -57,8 +58,6 @@ router.get("/page/:bgnde/:endde/:numOfRows/:kind/:searchField", doAsync(async (r
 	let url = (KINDENUM) ? `${baseUrl}` : `${baseUrl}${kindParam}`;
 
 	let defaultRes = await getData(url)
-
-	const totalCount = defaultRes.totalCount;
 
 	const per = 100;
 
@@ -75,22 +74,7 @@ router.get("/page/:bgnde/:endde/:numOfRows/:kind/:searchField", doAsync(async (r
 		return item;
 	}
 
-	const defaultItems = defaultRes.items.item;
-
-	const arrItems = defaultItems.addArr(per);
-
-	let items = Object.values(arrItems)
-
-	defaultItems.totalCount = totalCount;
-
-	const arrRes = { items, totalCount }
-
-	let totalItems;
-
-	// 1보다 클때
-	if (totalCount > 1) totalItems = defaultItems || []
-	// 1보다 작거나 같을때 
-	else if (totalCount <= 1) totalItems = Object.keys([] + (defaultItems))
+	const defaultItem = defaultRes.items.item;
 
 	const strObj = {
 		"F": "암컷",
@@ -103,7 +87,7 @@ router.get("/page/:bgnde/:endde/:numOfRows/:kind/:searchField", doAsync(async (r
 	}
 
 
-	let filteredItems = totalItems.filter(item => {
+	let filteredItems = Object.values(defaultItem).filter(item => {
 		let re = new RegExp(Object.keys(strObj).join("|"), "gi");
 		let regExp = /[()]/gi;
 		let searchKeyword = searchField.toUpperCase().trim()
@@ -120,19 +104,28 @@ router.get("/page/:bgnde/:endde/:numOfRows/:kind/:searchField", doAsync(async (r
 
 	})
 
-	items = filteredItems;
 
-	// const items = Object.values(filteredItems)
+	let totalCount = (SEARCHENUM) ? defaultRes.totalCount : filteredItems.length
 
-	const filterRes = { items }
+	defaultRes.totalCount = totalCount;
 
-	if (SEARCHENUM) {
-		res.json(arrRes)
-	}
+	// 1보다 클때
+	if (totalCount > 1) totalItems = defaultItem || []
 
-	else {
-		res.json(filterRes)
-	}
+	// 1보다 작거나 같을때 
+	else if (totalCount <= 1 || (null || undefined)) Object.keys([] + (defaultItem))
+
+	// null, undefined일때
+	// else if (totalCount = null || undefined) return null
+
+	const arrItems = (SEARCHENUM) ? defaultItem.addArr(per) : filteredItems.addArr(per)
+
+	let items = Object.values(arrItems)
+
+	const arrRes = { items, totalCount }
+
+	res.json(arrRes)
+
 
 }))
 

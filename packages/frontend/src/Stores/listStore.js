@@ -130,7 +130,6 @@ export default class ListStore {
 
 	@action
 	resetList = () => {
-		this.items = this;
 		this.items = []
 		this.index = [0]
 		this.isLoading = true;
