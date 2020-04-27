@@ -10,7 +10,7 @@ const TooltipBoxWrapper = styled.div`
 	position: relative;
 	top: 42px;
 	margin-left: auto;
-	min-width: 166px;
+	min-width: 200px;
 	height: 100px;
 
 	@media screen and (max-width: 1024px) {
@@ -48,7 +48,8 @@ const IconButton = styled.button`
 
 			position: absolute;
 			width: 100%;
-			height: 60px;
+			min-width: 100%;
+			min-height: 60px;
 			// bottom: 18%;
 			right: 0;	
 			z-index: 99;
@@ -69,14 +70,23 @@ const IconButton = styled.button`
 					
 			}
 
-			&  p {color: #fff;line-height: 1.5rem;}
+			&  p {
+				color: #fff;line-height: 1.5rem;text-align:left
+				span {
+					font-size: 0.85rem;
+					font-weight: 600;
+					display: inline-block;
+					line-height: 2rem;
+				}
+				
+			}
 
 		}
 
 		& + div:before {
 
 			position: absolute;
-			left: 77px;
+			left: 94px;
 			top: -6px;
 			width: 9px;
 			height: 9px;
@@ -101,7 +111,7 @@ const TooltipBox = (props) => {
 			<TooltipBoxWrapper className="btn-wrap">
 				<IconButton className={props.active ? 'active' : ''} onClick={props.onClick} ><MdPets /></IconButton>
 				<CookieConsent disableStyles cookieName="TooltipBox" buttonText={"오늘 하루 보이지 않기 X"} location="none" onAccept={() => { alert("24시간 동안 툴팁박스가 보이지 않게 되었습니다! ") }} expires={1} >
-					<p>날짜/종류/상태 필터</p>
+					<p>시작일,종료일/품종/검색어 <br />[검색어 입력 예시]<br /> 색상: 치즈 <br />성별: 암컷 또는 수컷<br />나이: 2019년생 <br />주소: 인천광역시</p>
 				</CookieConsent>
 			</TooltipBoxWrapper>
 		</Fragment>
