@@ -43,7 +43,7 @@ router.get("/page/:bgnde/:endde/:numOfRows/:kind/:searchField", doAsync(async (r
 		}
 	};
 
-	const { bgnde, endde, numOfRows, kind, searchField } = req.params;
+	const { bgnde, endde, kind, searchField } = req.params;
 
 	// 시작일,종료일,결과보다 큰 수,품종
 
@@ -74,7 +74,7 @@ router.get("/page/:bgnde/:endde/:numOfRows/:kind/:searchField", doAsync(async (r
 		return item;
 	}
 
-	const defaultItem = defaultRes.items.item;
+	let defaultItem = defaultRes.items.item;
 
 	const strObj = {
 		"F": "암컷",
@@ -86,8 +86,9 @@ router.get("/page/:bgnde/:endde/:numOfRows/:kind/:searchField", doAsync(async (r
 		"한국 고양이": "코리안숏헤어"
 	}
 
+	if (typeof defaultItem === 'undefined') Object.values(defaultItem)
 
-	let filteredItems = Object.values(defaultItem).filter(item => {
+	let filteredItems = defaultItem.filter(item => {
 		let re = new RegExp(Object.keys(strObj).join("|"), "gi");
 		let regExp = /[()]/gi;
 		let searchKeyword = searchField.toUpperCase().trim()
@@ -109,16 +110,17 @@ router.get("/page/:bgnde/:endde/:numOfRows/:kind/:searchField", doAsync(async (r
 
 	defaultRes.totalCount = totalCount;
 
+	let totalItems;
+
 	// 1보다 클때
 	if (totalCount > 1) totalItems = defaultItem || []
 
-	// 1보다 작거나 같을때 
-	else if (totalCount <= 1 || (null || undefined)) Object.keys([] + (defaultItem))
+	// 1보다 작거나 같을때 (totalItems.constructor.name === Object)
+	else if (totalCount <= 1) totalItems = [defaultItem]
 
-	// null, undefined일때
-	// else if (totalCount = null || undefined) return null
+	// else if (totalCount === undefined) totalItems = []
 
-	const arrItems = (SEARCHENUM) ? defaultItem.addArr(per) : filteredItems.addArr(per)
+	const arrItems = (SEARCHENUM) ? (totalItems.addArr(per)) : filteredItems.addArr(per)
 
 	let items = Object.values(arrItems)
 

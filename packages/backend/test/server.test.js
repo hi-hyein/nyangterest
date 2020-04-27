@@ -8,7 +8,7 @@ describe("Nyangterest unit test!", () => {
 
 		const startDay = new Date(Date.now() + -14 * 24 * 3600 * 1000).toISOString().slice(0, 10).replace(/-/g, "");
 		const endDay = new Date().toISOString().slice(0, 10).replace(/-/g, "");
-		const per = 1000;
+		const per = 100;
 		const str = "keyword"
 		const url = `/page/${startDay}/${endDay}/${per}/000116/${str}`;
 
