@@ -86,9 +86,9 @@ router.get("/page/:bgnde/:endde/:numOfRows/:kind/:searchField", doAsync(async (r
 		"한국 고양이": "코리안숏헤어"
 	}
 
-	if (typeof defaultItem === 'undefined') Object.values(defaultItem)
+	// if (typeof defaultItem === 'object') Object.values(defaultItem)
 
-	let filteredItems = defaultItem.filter(item => {
+	let filteredItems = Object.values(defaultItem).filter(item => {
 		let re = new RegExp(Object.keys(strObj).join("|"), "gi");
 		let regExp = /[()]/gi;
 		let searchKeyword = searchField.toUpperCase().trim()
