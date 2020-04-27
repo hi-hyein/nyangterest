@@ -87,7 +87,10 @@ class Header extends React.Component {
 		localStorage.removeItem('userInfo')
 	}
 
-	
+	reload = () => {
+		window.location.reload()
+	}
+
 
 
 	render() {
@@ -129,7 +132,7 @@ class Header extends React.Component {
 		return (
 			<>
 				<div className="header" style={HeaderStyle}>
-					<h1 style={LogoStyle}><Link exact="true" to="/" style={{ textDecoration: 'none', color: '#000' }}>NYANGTEREST</Link></h1>
+					<h1 style={LogoStyle}><Link exact="true" to="/" style={{ textDecoration: 'none', color: '#000' }} onClick={this.reload}>NYANGTEREST</Link></h1>
 
 					{/* 로그아웃 상태 : 로그인 상태 */}
 					<div className="button-area" style={{ float: "right", margin: "20px 0" }}>

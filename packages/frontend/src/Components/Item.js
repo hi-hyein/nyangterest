@@ -47,11 +47,18 @@ const Info = styled.div`
 		& > img {
 			max-width: 100%;
 			max-height: 100%;
+
+			@media screen and (max-width: 700px) {
+				width: 100%;
+				object-fit: cover;
+			}
+
 		}
 	}
 `;
 
 const Item = ({ kindCd, happenDt, borderBottomColor = "#5262bc", popfile, desertionNo }) => {
+
 	const kind = kindCd.replace("한국 고양이", "코리안숏헤어")
 	return (
 		<Container borderBottomColor={borderBottomColor} >
@@ -66,6 +73,7 @@ const Item = ({ kindCd, happenDt, borderBottomColor = "#5262bc", popfile, desert
 		</Container>
 	)
 }
+
 
 const CatImage = props => {
 	return (
