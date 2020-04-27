@@ -1,10 +1,10 @@
-import React, { Component, Fragment } from "react";
+import React, { Component, Fragment, Suspense } from "react";
 import { observer, inject } from "mobx-react";
 import throttle from "lodash.throttle";
 import DayPicker from "./search/DayPicker";
 import "moment/locale/ko";
 import styled from "styled-components";
-import List from "./List";
+// import List from "./List";
 import Loading from "./Loading";
 import FormBox from "./search/FormBox";
 import SearchBox from "./search/SearchBox";
@@ -12,6 +12,8 @@ import SelectBox from "./search/SelectBox";
 import TooltipBox from "./search/TooltipBox";
 import BtnTop from "./BtnTop";
 import { fadeInDown, fadeOutUp } from "./Animations";
+
+const List = React.lazy(() => import('./List'));
 
 // 검색 폼
 const SearchDiv = styled.div`
@@ -193,7 +195,7 @@ class Home extends Component {
 					<TooltipBox active={active} onClick={toggleHidden} />
 				</SearchDiv>
 
-				{loading ? (< Preloader className={loading && "on"}> <div><Loading /></div></Preloader >) : (<List products={items} />)}
+				{loading ? (< Preloader className={loading && "on"}> <div><Loading /></div></Preloader >) : (<Suspense fallback={<div>Loading...</div>}><List products={items} /></Suspense>)}
 
 
 				{!loading && !isLoading && !items.length &&
