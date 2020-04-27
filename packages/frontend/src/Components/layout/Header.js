@@ -87,8 +87,9 @@ class Header extends React.Component {
 		localStorage.removeItem('userInfo')
 	}
 
-	
-
+	reload = () => {
+		window.location.reload()
+	}
 
 	render() {
 		const {userState} = this.props.loginStore;
@@ -129,7 +130,7 @@ class Header extends React.Component {
 		return (
 			<>
 				<div className="header" style={HeaderStyle}>
-					<h1 style={LogoStyle}><Link exact="true" to="/" style={{ textDecoration: 'none', color: '#000' }}>NYANGTEREST</Link></h1>
+					<h1 style={LogoStyle}><Link exact="true" to="/" style={{ textDecoration: 'none', color: '#000' }} onClick={this.reload}>NYANGTEREST</Link></h1>
 
 					{/* 로그아웃 상태 : 로그인 상태 */}
 					<div className="button-area" style={{ float: "right", margin: "20px 0" }}>
@@ -163,7 +164,7 @@ class Header extends React.Component {
 				{/* 레이어 */}
 				{openLogin &&
 					<Layer onClose={this.popupCLose} layerTitle="Login">
-						<LayerLogin onClose={this.popupCLose} openFindPassword={this.popupOpenFindPassword} openJoinLayer={this.popupOpenJoin}/>
+						<LayerLogin onClose={this.popupCLose} openFindPassword={this.popupOpenFindPassword} openJoinLayer={this.popupOpenJoin} />
 					</Layer>
 				}
 				{openJoin &&
@@ -178,13 +179,13 @@ class Header extends React.Component {
 				}
 				{openFindPassword &&
 					<Layer onClose={this.popupCLose} layerTitle="이메일 / 비밀번호 찾기" >
-						<LayerFindPassword/>
+						<LayerFindPassword />
 					</Layer>
 				}
 
 				{openUnresister &&
 					<Layer onClose={this.popupCLose} layerTitle="회원탈퇴" >
-						<LayerUnregister/>
+						<LayerUnregister />
 					</Layer>
 				}
 			</>

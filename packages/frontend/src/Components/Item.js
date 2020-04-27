@@ -47,6 +47,11 @@ const Info = styled.div`
 		& > img {
 			max-width: 100%;
 			max-height: 100%;
+
+			@media screen and (max-width: 700px) {
+				width: 100%;
+				object-fit: cover;
+			}
 		}
 	}
 `;
