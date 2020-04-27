@@ -29,8 +29,6 @@ async function err() {
 
 // 기본주소
 
-// 시작일,종료일,결과보다 큰 수,품종
-
 router.get("/page/:bgnde/:endde/:numOfRows/:kind/:searchField", doAsync(async (req, res) => {
 
 	const getData = async (url) => {
@@ -45,9 +43,11 @@ router.get("/page/:bgnde/:endde/:numOfRows/:kind/:searchField", doAsync(async (r
 		}
 	};
 
-	const { bgnde, endde, numOfRows, kind, searchField } = req.params;
+	const { bgnde, endde, kind, searchField } = req.params;
 
-	const baseUrl = `${api}/abandonmentPublic?ServiceKey=${serviceKey}&_type=json&bgnde=${bgnde}&endde=${endde}&numOfRows=1000&upkind=422400&`;
+	// 시작일,종료일,결과보다 큰 수,품종
+
+	const baseUrl = `${api}/abandonmentPublic?ServiceKey=${serviceKey}&_type=json&bgnde=${bgnde}&endde=${endde}&numOfRows=1000000&upkind=422400&`;
 
 	const kindParam = `kind=${kind}&`
 
@@ -57,9 +57,24 @@ router.get("/page/:bgnde/:endde/:numOfRows/:kind/:searchField", doAsync(async (r
 
 	let url = (KINDENUM) ? `${baseUrl}` : `${baseUrl}${kindParam}`;
 
-	const defaultRes = await getData(url)
+	let defaultRes = await getData(url)
 
-	const totalItem = defaultRes.items.item;
+	const per = 100;
+
+	Array.prototype.addArr = function (n) {
+		const arr = this;
+		const length = arr.length;
+		const count = Math.ceil(length / n);
+		const item = [];
+
+		for (let i = 0; i < count; i++) {
+			item.push(arr.splice(0, n));
+		}
+
+		return item;
+	}
+
+	let defaultItem = defaultRes.items.item;
 
 	const strObj = {
 		"F": "암컷",
@@ -71,39 +86,47 @@ router.get("/page/:bgnde/:endde/:numOfRows/:kind/:searchField", doAsync(async (r
 		"한국 고양이": "코리안숏헤어"
 	}
 
-	const filteredItems = totalItem.filter(item => {
+	if (typeof defaultItem === 'undefined') Object.values(defaultItem)
+
+	let filteredItems = defaultItem.filter(item => {
 		let re = new RegExp(Object.keys(strObj).join("|"), "gi");
 		let regExp = /[()]/gi;
 		let searchKeyword = searchField.toUpperCase().trim()
 
-		if (typeof item === "object") {
-			return (
-				Object.keys(item).some(
-					key =>
-						typeof item[key] === "string" &&
-						item[key].replace(re, (matched => {
-							return strObj[matched]
-						})).replace(regExp, "").toUpperCase().includes(searchKeyword)
-				)
-			);
-		} else {
-			return null;
-		}
+		return (
+			Object.keys(item).some(
+				key =>
+					typeof item[key] === "string" &&
+					item[key].replace(re, (matched => {
+						return strObj[matched]
+					})).replace(regExp, "").toUpperCase().includes(searchKeyword)
+			)
+		);
 
 	})
 
 
-	const item = filteredItems;
+	let totalCount = (SEARCHENUM) ? defaultRes.totalCount : filteredItems.length
 
-	const items = { item }
+	defaultRes.totalCount = totalCount;
 
-	const filterRes = { items }
+	let totalItems;
 
-	if (SEARCHENUM) {
-		res.json(defaultRes)
-	} else {
-		res.json(filterRes)
-	}
+	// 1보다 클때
+	if (totalCount > 1) totalItems = defaultItem || []
+
+	// 1보다 작거나 같을때 (totalItems.constructor.name === Object)
+	else if (totalCount <= 1) totalItems = [defaultItem]
+
+	// else if (totalCount === undefined) totalItems = []
+
+	const arrItems = (SEARCHENUM) ? (totalItems.addArr(per)) : filteredItems.addArr(per)
+
+	let items = Object.values(arrItems)
+
+	const arrRes = { items, totalCount }
+
+	res.json(arrRes)
 
 
 }))

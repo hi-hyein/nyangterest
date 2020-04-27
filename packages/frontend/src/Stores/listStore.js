@@ -5,14 +5,13 @@ export default class ListStore {
 	@observable items = [];
 	@observable loading = true;
 	@observable timer = null;
-	@observable pageNo = 1;
+	@observable index = [0];
 	@observable numOfRows = 100;
 	@observable totalCount = 0;
 	@observable scrolling = false;
 	@observable hasMore = true;
 	@observable isLoading = false;
 	@observable error = false;
-	@observable isFilteredRequest = true
 
 	constructor(root) {
 		this.root = root;
@@ -22,35 +21,26 @@ export default class ListStore {
 	loadList = async () => {
 		try {
 			// 시작일,종료일,한페이지 결과수,품종,검색어
-			const { items, pageNo, numOfRows, happenFrom, happenTo } = this;
-			const { selectedCategory, searchField } = this.root.searchStore;
+			const { items, numOfRows, happenFrom, index, happenTo } = this;
+
+			let { selectedCategory, searchField } = this.root.searchStore;
+
 			let url = `/page/${happenFrom}/${happenTo}/${numOfRows}/${selectedCategory}/${searchField}`;
-			// if (selectedCategory !== "") url
+
 			const response = await fetch(url)
 
 			const json = await response.json();
+
 			runInAction(() => {
 
-				if (Array.isArray(json.items.item)) {
-					this.setItems([...items, ...(json.items.item || [])]);
 
-				}
+				if (Array.isArray(json.items[index])) {
+					this.setItems([...items, ...(json.items[index] || [])]);
 
-				// 아이템이 하나도 없을때 object변환
-
-				// else if (json.items === "") Object.keys(json.items.item === {}); or
-
-				else if (typeof json.items.item === "undefined") Object.keys([] + (json.items.item))
-
-
-				// 아이템이 하나일때
-				else {
-					// 객체를 배열로 만들어서 기존배열에 추가하여 새배열을 만드는 코드
-					this.items = items.concat(json.items.item).slice();
-					console.log(typeof items);
 				}
 
 				this.setCount(json.totalCount);
+
 
 			});
 
@@ -70,33 +60,32 @@ export default class ListStore {
 		this.isLoading = false;
 		this.scrolling = false;
 		this.hasMore = true;
-		console.log(`items의 갯수 : ${items.length}`)
 	}
 
 	@action
 	setCount = (totalCount) => {
 		this.totalCount = totalCount;
-		console.log(`totalCount : ${totalCount}`)
 
 	}
 
 	@action
 	loadMore = () => {
-		const { items, totalCount } = this;
+
+		const { totalPage } = this;
 
 		let message = observable({
 			return: "마지막 페이지입니다.",
 			continue: "데이터가 남아있습니다."
 		})
 
-		if (items.length === totalCount) {
+		if (totalPage) {
 			return console.log(message.return)
 		}
 		else {
 			console.log(message.continue)
 			this.isLoading = true;
 			this.scrolling = true;
-			this.pageNo++;
+			this.index++;
 			this.loadList();
 		}
 	}
@@ -120,16 +109,15 @@ export default class ListStore {
 			document.body.scrollHeight;
 		const scrolledToBottom =
 			Math.ceil(scrollTop + clientHeight) >= scrollHeight;
-		if (scrolledToBottom) {
+		if (scrolledToBottom || window.innerWidth <= 700) {
 			this.loadMore();
 		}
 	};
 
 	@action
 	resetList = () => {
-		// this.loading = true;
 		this.items = []
-		this.pageNo = 1;
+		this.index = [0]
 		this.isLoading = true;
 	};
 
@@ -149,11 +137,11 @@ export default class ListStore {
 
 	@computed
 	get totalPage() {
-		const { pageNo, numOfRows, totalCount } = this;
-		let paging = Math.ceil(numOfRows * pageNo) >= totalCount;
-
+		const { index, numOfRows, totalCount } = this;
+		let paging = Math.ceil(numOfRows * (index + 1)) >= totalCount;
 		return paging;
 	}
+
 
 }
 

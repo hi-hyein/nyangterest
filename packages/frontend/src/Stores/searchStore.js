@@ -3,7 +3,7 @@ import debounce from "lodash.debounce";
 
 export default class SearchStore {
 
-	@observable from = new Date(Date.now() + -7 * 24 * 3600 * 1000);
+	@observable from = new Date(Date.now() + -14 * 24 * 3600 * 1000);
 	@observable to = new Date();
 	@observable searchField = "keyword";
 	@observable selectedCategory = "000116";
@@ -45,7 +45,7 @@ export default class SearchStore {
 	searchChange = debounce((searchField) => {
 		const { loadList, resetList } = this.root.listStore;
 		this.searchField = searchField;
-		console.log(searchField)
+		if (searchField === "") this.searchField = "keyword"
 		resetList();
 		loadList();
 	}, 800);

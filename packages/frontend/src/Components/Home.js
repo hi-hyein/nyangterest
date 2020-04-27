@@ -162,11 +162,11 @@ class Home extends Component {
 		// 품종 카테고리 셀렉트박스  && 검색어 입력
 
 		// 수행시간 로그
-		let t0 = performance.now();
+		// let t0 = performance.now();
 
 		// 수행시간 로그
-		let t1 = performance.now();
-		console.log((t1 - t0) + 'ms')
+		// let t1 = performance.now();
+		// console.log((t1 - t0) + 'ms')
 
 		return (
 			<Fragment>
@@ -214,9 +214,13 @@ class Home extends Component {
 				{!loading && (isLoading && hasMore) && (!(totalPage && (totalCount === items.length))) && (
 					<div>
 						Loading...
-            			<Loading />
+						<Loading />
 					</div>
 				)}
+
+				{/* {(items.length > 0) &&
+					(<Message><p>마지막 페이지입니다!</p></Message>,console.log(items.length))
+				} */}
 
 				{totalPage && (items.length === totalCount) && (items.length > 0) &&
 					(<Message><p>마지막 페이지입니다!</p></Message>)
