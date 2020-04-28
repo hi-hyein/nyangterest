@@ -86,9 +86,11 @@ router.get("/page/:bgnde/:endde/:numOfRows/:kind/:searchField", doAsync(async (r
 		"한국 고양이": "코리안숏헤어"
 	}
 
-	// if (typeof defaultItem === 'object') Object.values(defaultItem)
+	if (typeof defaultItem === 'undefined') defaultItem = []
 
-	let filteredItems = Object.values(defaultItem).filter(item => {
+	const defaultValue = Object.values(defaultItem)
+
+	let filteredItems = defaultValue.filter(item => {
 		let re = new RegExp(Object.keys(strObj).join("|"), "gi");
 		let regExp = /[()]/gi;
 		let searchKeyword = searchField.toUpperCase().trim()
@@ -118,9 +120,10 @@ router.get("/page/:bgnde/:endde/:numOfRows/:kind/:searchField", doAsync(async (r
 	// 1보다 작거나 같을때 (totalItems.constructor.name === Object)
 	else if (totalCount <= 1) totalItems = [defaultItem]
 
-	// else if (totalCount === undefined) totalItems = []
+	// console.log(totalItems.constructor.name)
 
-	const arrItems = (SEARCHENUM) ? (totalItems.addArr(per)) : filteredItems.addArr(per)
+	const arrItems = (SEARCHENUM) ? (totalItems.addArr(per)) : (filteredItems.addArr(per))
+
 
 	let items = Object.values(arrItems)
 
