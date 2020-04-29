@@ -75,7 +75,7 @@ const Item = ({ kindCd, happenDt, borderBottomColor = "#5262bc", popfile, desert
 const CatImage = props => {
 	return (
 		<span>
-			<img src={props.popfile} alt={props.alt} className="CatImage" />
+			<img src={props.popfile} alt={props.alt} loading="eager" className="CatImage" />
 		</span>
 	);
 };

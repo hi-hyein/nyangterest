@@ -120,18 +120,18 @@ const Message = styled.div`
 	color: #f00;
 `;
 
-const Preloader = styled.div`
-	padding-top: 0;
+const Preloader = styled.figure`
+	padding-top: 200px;
 	color: #5262bc;
-	animation: ${fadeOutUp} 1s both;
+	// animation: ${fadeOutUp} 1s both;
 	transition: all 2s ease;
-	opacity: 0
+	opacity: 1
 
-	&.on {
-		padding-top: 200px;
-		animation: ${fadeInDown} 1s both;
-		opacity: 1
-	}
+	// &.on {
+	// 	padding-top: 200px;
+	// 	animation: ${fadeInDown} 1s both;
+	// 	opacity: 1
+	// }
 `;
 
 @inject("listStore", "searchStore", "btnStore")
@@ -156,10 +156,12 @@ class Home extends Component {
 		window.removeEventListener("scroll", this._throttledScroll);
 	}
 
+
 	render() {
 		const { items, isLoading, loading, hasMore, totalPage, totalCount } = this.props.listStore;
 		const { active, isVisible, toggleHidden, on, handleScrollTop } = this.props.btnStore;
 		const { from, to, handleFromChange, handleToChange, selectedCategory, categoryChange, searchChange } = this.props.searchStore;
+		const renderLoader = () => < Preloader> <div><Loading /></div></Preloader >
 
 		// 품종 카테고리 셀렉트박스  && 검색어 입력
 
@@ -195,8 +197,7 @@ class Home extends Component {
 					<TooltipBox active={active} onClick={toggleHidden} />
 				</SearchDiv>
 
-				{loading ? (< Preloader className={loading && "on"}> <div><Loading /></div></Preloader >) : (<Suspense fallback={<div>Loading...</div>}><List products={items} /></Suspense>)}
-
+				{!loading && (<Suspense fallback={renderLoader()}><List products={items} /></Suspense>)}
 
 				{!loading && !isLoading && !items.length &&
 					<Message><p>해당 데이터가 없습니다.</p></Message>
