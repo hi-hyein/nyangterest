@@ -86,7 +86,8 @@ router.get("/page/:bgnde/:endde/:numOfRows/:kind/:searchField", doAsync(async (r
 		"한국 고양이": "코리안숏헤어"
 	}
 
-	if (typeof defaultItem === 'undefined') defaultItem = []
+
+	if (typeof defaultItem === 'undefined') defaultItem = defaultRes.items;
 
 	const defaultValue = Object.values(defaultItem)
 
@@ -120,16 +121,18 @@ router.get("/page/:bgnde/:endde/:numOfRows/:kind/:searchField", doAsync(async (r
 	// 1보다 작거나 같을때 (totalItems.constructor.name === Object)
 	else if (totalCount <= 1) totalItems = [defaultItem]
 
-	// console.log(totalItems.constructor.name)
-
-	const arrItems = (SEARCHENUM) ? (totalItems.addArr(per)) : (filteredItems.addArr(per))
+	let arrItems = (SEARCHENUM) ? (totalItems.addArr(per)) : (filteredItems.addArr(per))
 
 
 	let items = Object.values(arrItems)
+	if (typeof items[0][0] === 'string') items = totalItems
+	else null
 
 	const arrRes = { items, totalCount }
 
 	res.json(arrRes)
+
+	// 아이템이 하나일때 검색어를 입력하면 검색이 제대로 안된다. 
 
 
 }))
