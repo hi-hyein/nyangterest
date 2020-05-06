@@ -2,8 +2,9 @@
 
 🐱😻유기묘 리스트를 제공, 검색이 가능한 앱만들기 프로젝트😻🐱
 
+
 <p align="center">
-  <img src="https://user-images.githubusercontent.com/2981954/81204890-df5e7580-9004-11ea-801c-1313b35a98e3.gif alt="냥터레스트"/>
+  <img src="https://user-images.githubusercontent.com/2981954/81204890-df5e7580-9004-11ea-801c-1313b35a98e3.gif" alt="냥터레스트"/>
 </p>
                                                                                                                            
 ## 개발 환경
