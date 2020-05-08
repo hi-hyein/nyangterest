@@ -76,6 +76,9 @@ router.get("/page/:bgnde/:endde/:numOfRows/:kind/:searchField", doAsync(async (r
 
 	let defaultItem = defaultRes.items.item;
 
+	// 그럼 언디파인드인 경우는?
+	if (typeof defaultItem === 'undefined') defaultItem = defaultRes.items;
+
 	const strObj = {
 		"F": "암컷",
 		"M": "수컷",
@@ -86,10 +89,9 @@ router.get("/page/:bgnde/:endde/:numOfRows/:kind/:searchField", doAsync(async (r
 		"한국 고양이": "코리안숏헤어"
 	}
 
+	let defaultValue = Object.values(defaultItem)
 
-	if (typeof defaultItem === 'undefined') defaultItem = defaultRes.items;
-
-	const defaultValue = Object.values(defaultItem)
+	if (typeof defaultValue[0] === 'string') defaultValue = [defaultItem]
 
 	let filteredItems = defaultValue.filter(item => {
 		let re = new RegExp(Object.keys(strObj).join("|"), "gi");
@@ -108,12 +110,13 @@ router.get("/page/:bgnde/:endde/:numOfRows/:kind/:searchField", doAsync(async (r
 
 	})
 
+	console.log(filteredItems)
+
+	let totalItems;
 
 	let totalCount = (SEARCHENUM) ? defaultRes.totalCount : filteredItems.length
 
 	defaultRes.totalCount = totalCount;
-
-	let totalItems;
 
 	// 1보다 클때
 	if (totalCount > 1) totalItems = defaultItem || []
@@ -121,18 +124,24 @@ router.get("/page/:bgnde/:endde/:numOfRows/:kind/:searchField", doAsync(async (r
 	// 1보다 작거나 같을때 (totalItems.constructor.name === Object)
 	else if (totalCount <= 1) totalItems = [defaultItem]
 
+	let items;
+
+	// if (totalCount === 1) items = [totalItems]
+
 	let arrItems = (SEARCHENUM) ? (totalItems.addArr(per)) : (filteredItems.addArr(per))
 
+	items = Object.values(arrItems)
 
-	let items = Object.values(arrItems)
-	if (typeof items[0][0] === 'string') items = totalItems
-	else null
+
+
 
 	const arrRes = { items, totalCount }
 
+	// if (typeof items[0][0] === 'string') items = [totalItems]
+	// else null
+
 	res.json(arrRes)
 
-	// 아이템이 하나일때 검색어를 입력하면 검색이 제대로 안된다. 
 
 
 }))
