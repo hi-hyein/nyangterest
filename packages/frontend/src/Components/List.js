@@ -19,6 +19,26 @@ const ListWrapper = styled.ul`
 	& > li {
 		grid-column: span 1;
 		animation: ${fadeInUp} 1s both;
+
+		&:nth-child(16n+1),:nth-child(16n+2),:nth-child(16n+3),:nth-child(16n+4)> button > div  {
+			 border-top: 2px solid #ee9b97;
+			  border-radius: 8px;
+		}	
+
+		&:nth-child(16n+5),:nth-child(16n+6),:nth-child(16n+7),:nth-child(16n+8) > button > div  {
+			 border-top: 1px solid #4A8391;
+			 border-radius: 8px;
+		}
+
+		&:nth-child(16n+9),:nth-child(16n+10),:nth-child(16n+11),:nth-child(16n+12) > button > div  {
+			 border-top: 2px solid #A1CEAB;
+			 border-radius: 8px;
+		}	
+
+		&:nth-child(16n+13),:nth-child(16n+14),:nth-child(16n+15),:nth-child(16n+16) > button > div  {
+			 border-top: 2px solid #d2e5c5;
+			 border-radius: 8px;
+		}	
 	}
 
 	& + div {

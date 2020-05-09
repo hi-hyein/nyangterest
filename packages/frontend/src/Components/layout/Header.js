@@ -68,11 +68,11 @@ class Header extends React.Component {
 	}
 
 	menuToggle = () => {
-		if(this.state.btnMenuArea===true){
+		if (this.state.btnMenuArea === true) {
 			this.setState({
 				btnMenuArea: false
 			})
-		}else {
+		} else {
 			this.setState({
 				btnMenuArea: true
 			})
@@ -81,7 +81,7 @@ class Header extends React.Component {
 
 	logout = () => {
 		this.props.loginStore.changeUserState()
-		fetch('/logout').then(res=>{
+		fetch('/logout').then(res => {
 			console.log(res)
 		})
 		localStorage.removeItem('userInfo')
@@ -92,7 +92,7 @@ class Header extends React.Component {
 	}
 
 	render() {
-		const {userState} = this.props.loginStore;
+		const { userState } = this.props.loginStore;
 		const { openLogin, openJoin, openModify, btnMenuArea, openFindPassword, openUnresister } = this.state;
 		const HeaderStyle = {
 			position: 'fixed',
@@ -101,15 +101,16 @@ class Header extends React.Component {
 			right: '0',
 			padding: "0 20px",
 			zIndex: '999',
-			backgroundColor: 'skyblue',
+			backgroundColor: '#edf4e7',
+			borderBottom: '1px solid #a1ceab'
 		}
 
 		const LogoStyle = {
-			position:'absolute',
+			position: 'absolute',
 			top: '50%',
 			left: '50%',
-			transform:'translate(-50%,-50%)',
-			fontSize:'30px',
+			transform: 'translate(-50%,-50%)',
+			fontSize: '2rem',
 			fontWeight: 'bold',
 			letterSpacing: '3px'
 		}
@@ -128,35 +129,36 @@ class Header extends React.Component {
 		}
 
 		return (
+
 			<>
 				<div className="header" style={HeaderStyle}>
-					<h1 style={LogoStyle}><Link exact="true" to="/" style={{ textDecoration: 'none', color: '#000' }} onClick={this.reload}>NYANGTEREST</Link></h1>
+					<h1 style={LogoStyle}><Link exact="true" to="/" style={{ textDecoration: 'none', color: '#a1ceab' }} onClick={this.reload}>NYANGTEREST</Link></h1>
 
 					{/* 로그아웃 상태 : 로그인 상태 */}
 					<div className="button-area" style={{ float: "right", margin: "20px 0" }}>
 						{userState === 'logout' ?
 							<Fragment>
-								<Button variant="contained" onClick={this.popupOpenLogin} style={{ marginRight: "10px" }}>LOGIN</Button>
-								<Button variant="contained" color="primary" onClick={this.popupOpenJoin}>JOIN</Button>
+								<Button variant="contained" onClick={this.popupOpenLogin} style={{ 'background-color': '#fbf6e9', marginRight: "10px" }}>LOGIN</Button>
+								<Button variant="contained" style={{ background: '#a1ceab', color: '#fff' }} onClick={this.popupOpenJoin}>JOIN</Button>
 							</Fragment> :
 							<>
-							<span>{localStorage.getItem('userInfo')}님 안녕하세요</span>
-							<div className="btn-menu-area" style={menuBtnArea}>
-								<button type="button" title="메뉴" onClick={this.menuToggle} style={{background: "none"}}>
-									<DehazeIcon />
-								</button>
-								{btnMenuArea === true && 
-								<div className="my-menu-list" style={myMenuList}>
-									<Paper>
-										<MenuList>
-										<MenuItem onClick={this.logout}>로그아웃</MenuItem>
-										<MenuItem onClick={this.popupOpenModify}>회원정보수정</MenuItem>
-										<MenuItem onClick={this.popoupOpenUnresister}>회원탈퇴</MenuItem>
-										</MenuList>
-									</Paper>
+								<span>{localStorage.getItem('userInfo')}님 안녕하세요</span>
+								<div className="btn-menu-area" style={menuBtnArea}>
+									<button type="button" title="메뉴" onClick={this.menuToggle} style={{ background: "none" }}>
+										<DehazeIcon />
+									</button>
+									{btnMenuArea === true &&
+										<div className="my-menu-list" style={myMenuList}>
+											<Paper>
+												<MenuList>
+													<MenuItem onClick={this.logout}>로그아웃</MenuItem>
+													<MenuItem onClick={this.popupOpenModify}>회원정보수정</MenuItem>
+													<MenuItem onClick={this.popoupOpenUnresister}>회원탈퇴</MenuItem>
+												</MenuList>
+											</Paper>
+										</div>
+									}
 								</div>
-								}
-							</div>
 							</>
 						}
 					</div>
