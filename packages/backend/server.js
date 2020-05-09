@@ -20,7 +20,6 @@ const serviceKey = process.env.SERVICE_KEY;
 
 const api = 'http://openapi.animal.go.kr/openapi/service/rest/abandonmentPublicSrvc';
 
-
 const doAsync = fn => async (req, res, next) => await fn(req, res, next).catch(next);
 
 async function err() {
@@ -77,7 +76,7 @@ router.get("/page/:bgnde/:endde/:numOfRows/:kind/:searchField", doAsync(async (r
 	let defaultItem = defaultRes.items.item;
 
 	// 그럼 언디파인드인 경우는?
-	if (typeof defaultItem === 'undefined') defaultItem = defaultRes.items;
+	if (typeof defaultItem === 'undefined') defaultItem = defaultRes.items
 
 	const strObj = {
 		"F": "암컷",
@@ -98,19 +97,21 @@ router.get("/page/:bgnde/:endde/:numOfRows/:kind/:searchField", doAsync(async (r
 		let regExp = /[()]/gi;
 		let searchKeyword = searchField.toUpperCase().trim()
 
-		return (
-			Object.keys(item).some(
-				key =>
-					typeof item[key] === "string" &&
-					item[key].replace(re, (matched => {
-						return strObj[matched]
-					})).replace(regExp, "").toUpperCase().includes(searchKeyword)
-			)
-		);
+		if (typeof item === "object") {
+			return (
+				Object.keys(item).some(
+					key =>
+						typeof item[key] === "string" &&
+						item[key].replace(re, (matched => {
+							return strObj[matched]
+						})).replace(regExp, "").toUpperCase().includes(searchKeyword)
+				)
+			);
+		} else {
+			return null;
+		}
 
 	})
-
-	console.log(filteredItems)
 
 	let totalItems;
 
@@ -121,28 +122,18 @@ router.get("/page/:bgnde/:endde/:numOfRows/:kind/:searchField", doAsync(async (r
 	// 1보다 클때
 	if (totalCount > 1) totalItems = defaultItem || []
 
-	// 1보다 작거나 같을때 (totalItems.constructor.name === Object)
+	// 1보다 작거나 같을때 
 	else if (totalCount <= 1) totalItems = [defaultItem]
-
-	let items;
-
-	// if (totalCount === 1) items = [totalItems]
 
 	let arrItems = (SEARCHENUM) ? (totalItems.addArr(per)) : (filteredItems.addArr(per))
 
-	items = Object.values(arrItems)
+	let items = Object.values(arrItems)
 
-
-
+	if (totalCount === 0) items = [[]]
 
 	const arrRes = { items, totalCount }
 
-	// if (typeof items[0][0] === 'string') items = [totalItems]
-	// else null
-
 	res.json(arrRes)
-
-
 
 }))
 
