@@ -15,7 +15,7 @@ const Container = styled.div`
 	background-position: center center;
 	align-items: center;
 	justify-content: space-between;
-	padding: 20px;
+	padding: 10px;
 	border: 1px solid ${props => props.borderBottomColor};
 	border-bottom: 5px solid ${props => props.borderBottomColor};
 	border-top: unset;

@@ -25,7 +25,7 @@ const SearchDiv = styled.div`
   max-width: 1280px;
   // max-height: 110px;
   padding: 0 5%;
-  background: rgba(245,250,246, 0.8);
+  background: #f5faf6;
   transition: all 0.2s ease;
 
   @media screen and (max-width: 1024px) {

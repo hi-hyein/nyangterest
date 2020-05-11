@@ -133,7 +133,7 @@ const DayPickerStyle = createGlobalStyle`
 
 		&--selected:not(.DayPicker-Day--disabled):not(.DayPicker-Day--outside) {
 			position: relative;
-			background-color: #4A90E2;
+			background-color: #a1ceab;
 			color: #F0F8FF;
 		}
 
@@ -167,12 +167,12 @@ const DayPickerStyle = createGlobalStyle`
 
 		&--selected:not(.DayPicker-Day--disabled):not(.DayPicker-Day--outside) {
 			position: relative;
-			background-color: #3f51b5;
+			background-color: #a1ceab;
 			color: #F0F8FF;
 		}
 
 		&--selected:not(&-Day--disabled):not(&-Day--outside):hover {
-			background-color: #51A0FA;
+			background-color: #6e9ba7;
 		}
 
 	}

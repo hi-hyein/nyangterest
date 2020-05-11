@@ -138,7 +138,7 @@ class Header extends React.Component {
 					<div className="button-area" style={{ float: "right", margin: "20px 0" }}>
 						{userState === 'logout' ?
 							<Fragment>
-								<Button variant="contained" onClick={this.popupOpenLogin} style={{ 'background-color': '#fbf6e9', marginRight: "10px" }}>LOGIN</Button>
+								<Button variant="contained" onClick={this.popupOpenLogin} style={{ backgroundColor: '#fbf6e9', marginRight: "10px" }}>LOGIN</Button>
 								<Button variant="contained" style={{ background: '#a1ceab', color: '#fff' }} onClick={this.popupOpenJoin}>JOIN</Button>
 							</Fragment> :
 							<>

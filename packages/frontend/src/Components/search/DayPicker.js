@@ -36,6 +36,7 @@ const InputFromDiv = styled.div`
 			max-width:127px; 
 			border:none
 			// border-bottom: 1px dotted #f00;
+			background: transparent;
 			font-size: 1rem;
 			line-height: 1.5rem;
 			text-align: center;
