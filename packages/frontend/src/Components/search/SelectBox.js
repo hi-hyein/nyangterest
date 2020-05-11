@@ -65,15 +65,24 @@ const ValueDiv = styled.div`
 
 const TextFieldDiv = styled(TextField)`
 	&& {
+
+		& label[class*="-focused"] {
+			color: #a1ceab;
+		}
+
+		& div[class*="-focused"] fieldset {
+			border: 2px solid #a1ceab;
+		}
+
 		& fieldset + div {
 			display: flex;
 			padding: 10px 0 10px;
 
-			& div[class$= singleValue] {
+			& div[class$="singleValue"] {
 				max-width: calc(100% - 60px);
 			}
 
-			& div[class$= -Input] {
+			& div[class$="-Input"] {
 				color: #fff;
 
 				& input{
@@ -81,7 +90,8 @@ const TextFieldDiv = styled(TextField)`
 				}
 			}
 		}
-	}
+	}	
+	 
 `;
 
 const NoOptionsMessage = props => {

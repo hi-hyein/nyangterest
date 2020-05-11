@@ -38,10 +38,10 @@ const Fieldset = styled.fieldset`
 
 	// 인풋의 부모 폼창에 포커스 효과
 	:focus-within { 
-		border: 2px solid #3f51b5;
+		border: 2px solid #a1ceab;
 
 		& legend {
-			color: #3f51b5
+			color: #a1ceab
 		}
 	}
 

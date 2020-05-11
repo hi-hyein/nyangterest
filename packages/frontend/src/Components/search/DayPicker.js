@@ -8,10 +8,35 @@ import styled from 'styled-components';
 const InputFromDiv = styled.div`
 	display: inline-block;
 
+		&.InputFromTo {
+
+		right: 0;
+
+			@media screen and (max-width: 700px) {
+				.DayPickerInput-Overlay {
+					right: unset;
+				}
+	
+			}
+			
+		}
+
+		&.InputFromTo-to {
+
+			@media screen and (max-width: 700px) {
+				.DayPickerInput-Overlay {
+					right: 0;
+				}
+	
+			}
+			
+		}
+
 	input {
 			max-width:127px; 
 			border:none
 			// border-bottom: 1px dotted #f00;
+			background: transparent;
 			font-size: 1rem;
 			line-height: 1.5rem;
 			text-align: center;

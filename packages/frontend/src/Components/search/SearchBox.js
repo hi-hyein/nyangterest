@@ -13,6 +13,14 @@ const TextFieldDiv = styled(TextField)`
 			text-overflow: ellipsis;
 			padding-left: 12px;
 		}
+
+		& label[class*="-focused"] {
+			color: #a1ceab;
+		}
+
+		& div[class*="-focused"] fieldset {
+			border: 2px solid #a1ceab;
+		}
 	}
 `;
 

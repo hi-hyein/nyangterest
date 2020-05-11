@@ -6,7 +6,7 @@ const Container = styled.div`
 	position: relative;
 	max-height: 300px;
 	min-height: 100%;
-	background-image: linear-gradient(rgba(0, 0, 0, 0.28), rgba(0, 0, 0, 0.7));
+	background: rgba(244,229,189,0.2);
 	background-size: cover;
 	border-radius: 8px;
 	box-shadow: 0 3px 8px 0 rgba(0, 0, 0, 0.08);
@@ -15,8 +15,11 @@ const Container = styled.div`
 	background-position: center center;
 	align-items: center;
 	justify-content: space-between;
-	padding: 20px;
+	padding: 10px;
+	border: 1px solid ${props => props.borderBottomColor};
 	border-bottom: 5px solid ${props => props.borderBottomColor};
+	border-top: unset;
+	
 `;
 
 const Content = styled.div`
@@ -24,7 +27,7 @@ const Content = styled.div`
 	display: flex;
 	justify-content: space-between;
 	align-items: flex-end;
-	color: white;
+	color:#7a7d7b;
 `;
 
 const Info = styled.div`
@@ -32,6 +35,7 @@ const Info = styled.div`
 
 	& > h2 {
 		padding-bottom: 0.5rem;
+		font-weight: 600;
 	}
 
 	& > p {
@@ -43,20 +47,17 @@ const Info = styled.div`
 		height: 180px;
 		justify-content: center;
 		align-items: center;
-
+	
 		& > img {
+			width: 100%;
 			max-width: 100%;
 			max-height: 100%;
-
-			@media screen and (max-width: 700px) {
-				width: 100%;
-				object-fit: cover;
-			}
+		  object-fit: cover;
 		}
 	}
 `;
 
-const Item = ({ kindCd, happenDt, borderBottomColor = "#5262bc", popfile, desertionNo }) => {
+const Item = ({ kindCd, happenDt, borderBottomColor = "#d2e5c5", popfile, desertionNo }) => {
 	const kind = kindCd.replace("한국 고양이", "코리안숏헤어")
 	return (
 		<Container borderBottomColor={borderBottomColor} >
@@ -75,7 +76,7 @@ const Item = ({ kindCd, happenDt, borderBottomColor = "#5262bc", popfile, desert
 const CatImage = props => {
 	return (
 		<span>
-			<img src={props.popfile} alt={props.alt} className="CatImage" />
+			<img src={props.popfile} alt={props.alt} loading="eager" className="CatImage" />
 		</span>
 	);
 };

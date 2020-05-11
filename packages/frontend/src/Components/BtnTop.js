@@ -24,7 +24,7 @@ const ButtonTop = styled.button`
   &.on {
 	  	bottom: unset;
 	  	top: 12.5%;
-		background: #3f51b5;
+		background: #a1ceab;
 		animation: ${fadeInUp} 1s both;
   	}
 

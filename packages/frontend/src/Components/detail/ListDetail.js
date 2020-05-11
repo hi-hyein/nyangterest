@@ -6,7 +6,7 @@ const Container = styled.div`
 	position: relative;
 	max-height: 100%;
 	min-height: 100%;
-	background: #eee;
+	background: rgba(244,229,189,0.2);
 	background-size: cover;
 	border: 1px solid #cac7c0;
 	box-shadow: 0 3px 8px 0 rgba(0, 0, 0, 0.08);
@@ -78,7 +78,7 @@ const ListWrapper = styled.ul`
 	}
 
 	& > li {
-		color: #3f51b5;
+		color: #4A8391;
 		padding-bottom: 1rem;
 		font-weight: 600;
 		text-indent: -14px;
@@ -119,7 +119,7 @@ const ListWrapper = styled.ul`
 		& > span {
 			margin-right:5px;
 			&:first-child{color: #333;}
-			&:nth-child(3) {color: #3f8cb5;}
+			&:nth-child(3) {color: #6e9ba7;}
 
 			@media screen and (max-width: 375px) {
 				&:nth-child(3){display:block;padding-left: 5.2rem;}
@@ -150,7 +150,7 @@ const StatusDiv = styled.div`
 	text-align: center;
 
 `
-const Item = ({ neuterYn, age, backgroundColor = "#87CEEB", sexCd, weight, colorCd, processState, kindCd, noticeNo, happenDt, noticeEdt, happenPlace, specialMark, popfile, desertionNo, careNm, careTel, orgNm, officetel }) => {
+const Item = ({ neuterYn, age, backgroundColor = "#a1ceab", sexCd, weight, colorCd, processState, kindCd, noticeNo, happenDt, noticeEdt, happenPlace, specialMark, popfile, desertionNo, careNm, careTel, orgNm, officetel }) => {
 
 	// 성별여부 알파벳을 한글로 변경
 	const female = sexCd.replace("F", "암컷");
