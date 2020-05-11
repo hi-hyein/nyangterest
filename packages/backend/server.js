@@ -113,11 +113,11 @@ router.get("/page/:bgnde/:endde/:numOfRows/:kind/:searchField", doAsync(async (r
 
 	})
 
-	let totalItems;
-
 	let totalCount = (SEARCHENUM) ? defaultRes.totalCount : filteredItems.length
 
 	defaultRes.totalCount = totalCount;
+
+	let totalItems;
 
 	// 1보다 클때
 	if (totalCount > 1) totalItems = defaultItem || []
@@ -125,14 +125,17 @@ router.get("/page/:bgnde/:endde/:numOfRows/:kind/:searchField", doAsync(async (r
 	// 1보다 작거나 같을때 
 	else if (totalCount <= 1) totalItems = [defaultItem]
 
+	console.log(totalItems.length)
 	let arrItems = (SEARCHENUM) ? (totalItems.addArr(per)) : (filteredItems.addArr(per))
 
 	let items = Object.values(arrItems)
 
-	if (totalCount === 0) items = [[]]
+	console.log(items[0], items)
 
+	if (totalCount === 0) items = []
 	const arrRes = { items, totalCount }
 
+	console.log(items, items.length)
 	res.json(arrRes)
 
 }))
