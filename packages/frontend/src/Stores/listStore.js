@@ -33,11 +33,7 @@ export default class ListStore {
 
 			runInAction(() => {
 
-
-				if (Array.isArray(json.items[index])) {
-					this.setItems([...items, ...(json.items[index] || [])]);
-
-				}
+				this.setItems([...items, ...(json.items[index] || [])]);
 
 				this.setCount(json.totalCount);
 

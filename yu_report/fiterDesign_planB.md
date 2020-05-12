@@ -72,6 +72,7 @@
 
 * 검색어를 입력하면 유효범위내의 날짜의 전체 데이터에서 검색 결과값을 포함한 리스트를 무한 스크롤링으로 볼 수 있다.
 
+
 ### 4. 아이템 갯수 선택
 
 * 한페이지결과 갯수를 셀렉트박스를 이용하여 선택할 수 있다.
@@ -79,23 +80,24 @@
 
 ### 5. Data-flow 
 
-![냥터레스트 search data flow](https://user-images.githubusercontent.com/2981954/80299197-7e959880-87cd-11ea-9660-0be4fc956d0d.png)
+![냥터레스트 search data flow](https://user-images.githubusercontent.com/2981954/77760520-6693f300-702e-11ea-999e-fab3f7d6b7cb.jpg)
 
 
 ### 6-1. (Front <-> Back) (ft.멘토님)
 
-* Front에서 시작일,종료일,한페이지결과수,품종,검색어를 Request Parameter로 url에 넣고 Get메소드로 요청을 하면 Back은 openAPI에서 JSON 데이터 중 아이템과 전체결과수를 받아서 Front에 전달해준다. 이를 Front가 화면에 보여준다.
+* Front에서 시작일,종료일,한페이지결과수,품종을 Request Parameter로 url에 넣고 Get메소드로 요청을 하면 Back은 openAPI에서 JSON 데이터 중 아이템과 전체결과수를 받아서 Front에 전달해준다. 이를 Front가 화면에 보여준다.
 
 #### 데이터 구조
 
 ![Data structure](https://user-images.githubusercontent.com/2981954/80299545-388e0400-87d0-11ea-8eec-a8b4d82c5526.png)
+
 
 * Array in Array 구조 - 밖의 Array는 페이지번호(인덱스)이고 안의  Array는  한 페이지에 보여줄 유기묘 데이터 객체이다.
 
 
 ### 6-2. (Back <-> openAPI)
 
-* Back에서 시작일,종료일,결과보다 큰 수,품종을  Request Parameter로 url에 넣고 Get메소드로 요청을 하면 oPenAPI는 JSON 데이터를 Back에  전달해준다. 
+* Back에서 시작일,종료일,결과보다 큰 수,품종을  Request Parameter로 url에 넣고 Get메소드로 요청을 하면 oPenAPI는 JSON 데이터를 Back에 전달해준다. 
   
 * endPoint : 'http://openapi.animal.go.kr/openapi/service/rest/abandonmentPublicSrvc';
 
@@ -112,7 +114,6 @@
 | endde             | 종료일       | string |
 | numOfRows         | 한페이지 결과 수 | number |
 | kind              | 품종        | string |
-| searchField       | 검색어       | string |
 
 
 > Request
@@ -126,17 +127,6 @@
 * 프론트에서 품종 셀렉트박스로 선택한 품종코드를  품종에 대한 Request Parameter 품종명의 값으로 받아와서 url에 추가해 API를 요청한다.
 
 <pre>GET /page/:bgnde/:endde/:numOfRows/:kind</pre>
-
-
-[조건3] 검색어를 입력했을 때 
-
-* 프론트엔드에서 검색어창에 검색어를 입력했을때 검색어의 입력값을 url에 추가한다.
-	
-<pre>GET /page/:bgnde/:endde/:numOfRows/:검색어</pre>
-
-[조건4] 검색어를 입력 후 품종 셀렉트박스에서 품종을 선택했을 때 
-
-  <pre>GET /page/:bgnde/:endde/:numOfRows/:kind/:검색어</pre>
 
 
 > Response
@@ -180,7 +170,7 @@ items: {item: [{age: "2017(년생)", careAddr: "경상남도 거제시 사등면
 		[0 … 99]
 		[100 … 199]
 		[200 … 282]
-numOfRows: 1000000
+numOfRows: 10000
 pageNo: 1
 totalCount: 283
 </pre>
