@@ -36,7 +36,7 @@ const NavList = styled.ul`
 				}
 
 				&.active {
-					* {color: #45B3E0;}
+					* {color: #a1ceab;}
 				}
 			}
 	}
