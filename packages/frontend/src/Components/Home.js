@@ -203,9 +203,9 @@ class Home extends Component {
 					<Message><p>해당 데이터가 없습니다.</p></Message>
 				}
 
-				{!loading && (totalCount === 0) &&
+				{/* {!loading && (totalCount === 0) &&
 					<Message><p>검색결과가 없습니다.</p></Message>
-				}
+				} */}
 
 
 				{/* {!loading && !(isLoading && hasMore) && !(items.length) && (

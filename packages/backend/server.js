@@ -30,18 +30,6 @@ async function err() {
 
 router.get("/page/:bgnde/:endde/:numOfRows/:kind/:searchField", doAsync(async (req, res) => {
 
-	const getData = async (url) => {
-		try {
-			const response = await fetch(url);
-			const json = await response.json();
-			const body = await json.response.body;
-			return body;
-
-		} catch (error) {
-			console.log(error);
-		}
-	};
-
 	const { bgnde, endde, kind, searchField } = req.params;
 
 	// 시작일,종료일,결과보다 큰 수,품종
@@ -54,87 +42,114 @@ router.get("/page/:bgnde/:endde/:numOfRows/:kind/:searchField", doAsync(async (r
 
 	const SEARCHENUM = searchField === "keyword";
 
-	let url = (KINDENUM) ? `${baseUrl}` : `${baseUrl}${kindParam}`;
+	const getData = async (url) => {
+		try {
+			const response = await fetch(url);
+			const json = await response.json();
+			const body = await json.response.body;
+			return body;
 
-	let defaultRes = await getData(url)
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
+	const fetchData = async () => {
+
+		let url = (KINDENUM) ? `${baseUrl}` : `${baseUrl}${kindParam}`;
+
+		let defaultData = await getData(url)
+
+		return defaultData
+
+		// res.json(defaultRes)
+	}
+
+	const defaultRes = await fetchData()
 
 	const per = 100;
 
-	Array.prototype.addArr = function (n) {
-		const arr = this;
-		const length = arr.length;
-		const count = Math.ceil(length / n);
-		const item = [];
+	const filterArr = async () => {
 
-		for (let i = 0; i < count; i++) {
-			item.push(arr.splice(0, n));
+		Array.prototype.addArr = function (n) {
+			const arr = this;
+			const length = arr.length;
+			const count = Math.ceil(length / n);
+			const item = [];
+
+			for (let i = 0; i < count; i++) {
+				item.push(arr.splice(0, n));
+			}
+
+			return item;
 		}
 
-		return item;
-	}
+		let defaultItem = defaultRes.items.item;
 
-	let defaultItem = defaultRes.items.item;
+		// 그럼 언디파인드인 경우는?
+		if (typeof defaultItem === 'undefined') defaultItem = defaultRes.items
 
-	// 그럼 언디파인드인 경우는?
-	if (typeof defaultItem === 'undefined') defaultItem = defaultRes.items
-
-	const strObj = {
-		"F": "암컷",
-		"M": "수컷",
-		"Q": "성별 미상",
-		"Y": "중성화O",
-		"N": "중성화X",
-		"U": "중성화 미상",
-		"한국 고양이": "코리안숏헤어"
-	}
-
-	let defaultValue = Object.values(defaultItem)
-
-	if (typeof defaultValue[0] === 'string') defaultValue = [defaultItem]
-
-	let filteredItems = defaultValue.filter(item => {
-		let re = new RegExp(Object.keys(strObj).join("|"), "gi");
-		let regExp = /[()]/gi;
-		let searchKeyword = searchField.toUpperCase().trim()
-
-		if (typeof item === "object") {
-			return (
-				Object.keys(item).some(
-					key =>
-						typeof item[key] === "string" &&
-						item[key].replace(re, (matched => {
-							return strObj[matched]
-						})).replace(regExp, "").toUpperCase().includes(searchKeyword)
-				)
-			);
-		} else {
-			return null;
+		const strObj = {
+			"F": "암컷",
+			"M": "수컷",
+			"Q": "성별 미상",
+			"Y": "중성화O",
+			"N": "중성화X",
+			"U": "중성화 미상",
+			"한국 고양이": "코리안숏헤어"
 		}
 
-	})
+		let defaultValue = Object.values(defaultItem)
 
-	let totalItems;
+		if (typeof defaultValue[0] === 'string') defaultValue = [defaultItem]
 
-	let totalCount = (SEARCHENUM) ? defaultRes.totalCount : filteredItems.length
+		let filteredItems = defaultValue.filter(item => {
+			let re = new RegExp(Object.keys(strObj).join("|"), "gi");
+			let regExp = /[()]/gi;
+			let searchKeyword = searchField.toUpperCase().trim()
 
-	defaultRes.totalCount = totalCount;
+			if (typeof item === "object") {
+				return (
+					Object.keys(item).some(
+						key =>
+							typeof item[key] === "string" &&
+							item[key].replace(re, (matched => {
+								return strObj[matched]
+							})).replace(regExp, "").toUpperCase().includes(searchKeyword)
+					)
+				);
+			} else {
+				return null;
+			}
 
-	// 1보다 클때
-	if (totalCount > 1) totalItems = defaultItem || []
+		})
 
-	// 1보다 작거나 같을때 
-	else if (totalCount <= 1) totalItems = [defaultItem]
+		let totalItems;
 
-	let arrItems = (SEARCHENUM) ? (totalItems.addArr(per)) : (filteredItems.addArr(per))
+		let totalCount = (SEARCHENUM) ? defaultRes.totalCount : filteredItems.length
 
-	let items = Object.values(arrItems)
+		defaultRes.totalCount = totalCount;
 
-	if (totalCount === 0) items = [[]]
+		// 1보다 클때
+		if (totalCount > 1) totalItems = defaultItem || []
 
-	const arrRes = { items, totalCount }
+		// 1보다 작거나 같을때 
+		else if (totalCount <= 1) totalItems = [defaultItem]
 
-	console.log(items, items.length)
-	res.json(arrRes)
+		let arrItems = (SEARCHENUM) ? (totalItems.addArr(per)) : (filteredItems.addArr(per))
+
+		let items = Object.values(arrItems)
+
+		if (totalCount === 0) items = [[]]
+
+		const arrRes = { items, totalCount }
+
+		return arrRes;
+
+	}
+	const resultItem = await filterArr()
+
+	res.json(resultItem)
 
 }))
 
