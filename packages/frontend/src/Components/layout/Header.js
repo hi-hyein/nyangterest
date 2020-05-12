@@ -110,8 +110,9 @@ class Header extends React.Component {
 			top: '50%',
 			left: '50%',
 			transform: 'translate(-50%,-50%)',
-			fontSize: '2rem',
-			fontWeight: 'bold',
+			fontFamily: 'Cute Stitch',
+			fontSize: '2.5rem',
+			fontWeight: 'normal',
 			letterSpacing: '3px'
 		}
 
@@ -132,7 +133,7 @@ class Header extends React.Component {
 
 			<>
 				<div className="header" style={HeaderStyle}>
-					<h1 style={LogoStyle}><Link exact="true" to="/" style={{ textDecoration: 'none', color: '#a1ceab' }} onClick={this.reload}>NYANGTEREST</Link></h1>
+					<h1 style={LogoStyle}><Link exact="true" to="/" style={{ textDecoration: 'none', color: '#a1ceab' }} onClick={this.reload}>"NYANGTEREST"</Link></h1>
 
 					{/* 로그아웃 상태 : 로그인 상태 */}
 					<div className="button-area" style={{ float: "right", margin: "20px 0" }}>
