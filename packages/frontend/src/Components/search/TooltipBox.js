@@ -34,7 +34,7 @@ const IconButton = styled.button`
 	transition: all 2s ease;
 
 		&.active {
-			color: #45B3E0;
+			color: #a1ceab;
 
 
 			& + div {

@@ -1,7 +1,9 @@
 import { createGlobalStyle } from "styled-components";
 import resetCSS from "reset-css";
+import "../fonts/fonts.css";
 
 const GlobalStyle = createGlobalStyle`
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@700&display=swap');
   ${resetCSS};
   body {
 		margin: 0;
@@ -19,11 +21,16 @@ const GlobalStyle = createGlobalStyle`
 
   #wrap {
 			padding-top: 76px;
+			background: #f5faf6
 
 			@media screen and (max-width:1024px) {
 				padding-top:0;
 			}
   }	
+
+  h1 {
+	  font-family: 'Caveat', cursive
+  }
 
   input {
 

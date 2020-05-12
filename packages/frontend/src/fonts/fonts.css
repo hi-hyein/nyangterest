@@ -1,0 +1,11 @@
+@font-face {
+    font-family: 'Cute Stitch';
+    src: url('../fonts/CuteStitch.woff2') format('woff2'),
+        url('../fonts/CuteStitch.woff') format('woff'),
+        url('../fonts/CuteStitch.ttf') format('truetype'),
+        url('../fonts/CuteStitch.otf') format('otf'),
+        url('../fonts/CuteStitch.svg#CuteStitch') format('svg');
+    
+}
+
+
