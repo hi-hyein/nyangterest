@@ -18,7 +18,8 @@ const GlobalStyle = createGlobalStyle`
     	box-sizing:border-box;
   }
 
-  #wrap {
+  #wrap {	
+	  		min-height: 100vh;
 			padding-top: 76px;
 			background: #f5faf6
 
