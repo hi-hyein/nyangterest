@@ -20,7 +20,6 @@ const serviceKey = process.env.SERVICE_KEY;
 
 const api = 'http://openapi.animal.go.kr/openapi/service/rest/abandonmentPublicSrvc';
 
-
 const doAsync = fn => async (req, res, next) => await fn(req, res, next).catch(next);
 
 async function err() {
@@ -76,6 +75,9 @@ router.get("/page/:bgnde/:endde/:numOfRows/:kind/:searchField", doAsync(async (r
 
 	let defaultItem = defaultRes.items.item;
 
+	// 그럼 언디파인드인 경우는?
+	if (typeof defaultItem === 'undefined') defaultItem = defaultRes.items
+
 	const strObj = {
 		"F": "암컷",
 		"M": "수컷",
@@ -86,48 +88,52 @@ router.get("/page/:bgnde/:endde/:numOfRows/:kind/:searchField", doAsync(async (r
 		"한국 고양이": "코리안숏헤어"
 	}
 
-	if (typeof defaultItem === 'undefined') Object.values(defaultItem)
+	let defaultValue = Object.values(defaultItem)
 
-	let filteredItems = defaultItem.filter(item => {
+	if (typeof defaultValue[0] === 'string') defaultValue = [defaultItem]
+
+	let filteredItems = defaultValue.filter(item => {
 		let re = new RegExp(Object.keys(strObj).join("|"), "gi");
 		let regExp = /[()]/gi;
 		let searchKeyword = searchField.toUpperCase().trim()
 
-		return (
-			Object.keys(item).some(
-				key =>
-					typeof item[key] === "string" &&
-					item[key].replace(re, (matched => {
-						return strObj[matched]
-					})).replace(regExp, "").toUpperCase().includes(searchKeyword)
-			)
-		);
+		if (typeof item === "object") {
+			return (
+				Object.keys(item).some(
+					key =>
+						typeof item[key] === "string" &&
+						item[key].replace(re, (matched => {
+							return strObj[matched]
+						})).replace(regExp, "").toUpperCase().includes(searchKeyword)
+				)
+			);
+		} else {
+			return null;
+		}
 
 	})
 
+	let totalItems;
 
 	let totalCount = (SEARCHENUM) ? defaultRes.totalCount : filteredItems.length
 
 	defaultRes.totalCount = totalCount;
 
-	let totalItems;
-
 	// 1보다 클때
 	if (totalCount > 1) totalItems = defaultItem || []
 
-	// 1보다 작거나 같을때 (totalItems.constructor.name === Object)
+	// 1보다 작거나 같을때 
 	else if (totalCount <= 1) totalItems = [defaultItem]
 
-	// else if (totalCount === undefined) totalItems = []
-
-	const arrItems = (SEARCHENUM) ? (totalItems.addArr(per)) : filteredItems.addArr(per)
+	let arrItems = (SEARCHENUM) ? (totalItems.addArr(per)) : (filteredItems.addArr(per))
 
 	let items = Object.values(arrItems)
+
+	if (totalCount === 0) items = [[]]
 
 	const arrRes = { items, totalCount }
 
 	res.json(arrRes)
-
 
 }))
 

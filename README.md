@@ -2,8 +2,8 @@
 
 🐱😻유기묘 리스트를 제공, 검색이 가능한 앱만들기 프로젝트😻🐱
 
-![냥터레스트](https://user-images.githubusercontent.com/2981954/80301007-2ca83f00-87dc-11ea-897a-b33bca20d6a6.jpg)
-
+[![냥터레스트](https://user-images.githubusercontent.com/2981954/81968524-75bf1680-9657-11ea-8d84-0217b4246347.gif)](https://www.youtube.com/watch?v=Jg1u7te4EYI&feature=emb_logo)
+                                                                                                                           
 ## 개발 환경
 * **Database** : mysql(>=8.0) - **host**: nyangterest.cqn96a5xogpk.ap-northeast-2.rds.amazonaws.com  **version**:1.0
 * **Framewrok** : Node.js(>=10.13.0), Express / React
