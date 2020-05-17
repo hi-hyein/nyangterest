@@ -42,6 +42,8 @@ router.get("/page/:bgnde/:endde/:numOfRows/:kind/:searchField", doAsync(async (r
 
 	const SEARCHENUM = searchField === "keyword";
 
+	const per = 100;
+
 	const getData = async (url) => {
 		try {
 			const response = await fetch(url);
@@ -62,31 +64,14 @@ router.get("/page/:bgnde/:endde/:numOfRows/:kind/:searchField", doAsync(async (r
 
 		return defaultData
 
-		// res.json(defaultRes)
 	}
 
 	const defaultRes = await fetchData()
 
-	const per = 100;
-
 	const filterArr = async () => {
 
-		Array.prototype.addArr = function (n) {
-			const arr = this;
-			const length = arr.length;
-			const count = Math.ceil(length / n);
-			const item = [];
+		let defaultItem = defaultRes.items.item || []
 
-			for (let i = 0; i < count; i++) {
-				item.push(arr.splice(0, n));
-			}
-
-			return item;
-		}
-
-		let defaultItem = defaultRes.items.item;
-
-		// 그럼 언디파인드인 경우는?
 		if (typeof defaultItem === 'undefined') defaultItem = defaultRes.items
 
 		const strObj = {
@@ -124,44 +109,36 @@ router.get("/page/:bgnde/:endde/:numOfRows/:kind/:searchField", doAsync(async (r
 
 		})
 
-		let totalItems;
+		let selectItems = (SEARCHENUM) ? defaultItem : filteredItems;
 
-		let totalCount = (SEARCHENUM) ? defaultRes.totalCount : filteredItems.length
+		let typeItems = (Array.isArray(selectItems)) ? selectItems : [selectItems];
 
-		defaultRes.totalCount = totalCount;
+		Array.prototype.addArr = function (n) {
+			const arr = this;
+			const length = arr.length;
+			const count = Math.ceil(length / n);
+			const item = [];
+			for (let i = 0; i < count; i++) {
+				item.push(arr.splice(0, n));
+			}
+			return item;
+		}
 
-		// 1보다 클때
-		if (totalCount > 1) totalItems = defaultItem || []
+		let items = typeItems.addArr(per);
 
-		// 1보다 작거나 같을때 
-		else if (totalCount <= 1) totalItems = [defaultItem]
+		if (items.length === 0) items = [[]]
 
-		let arrItems = (SEARCHENUM) ? (totalItems.addArr(per)) : (filteredItems.addArr(per))
-
-		let items = Object.values(arrItems)
-
-		if (totalCount === 0) items = [[]]
-
-		const arrRes = { items, totalCount }
+		let arrRes = { items }
 
 		return arrRes;
 
 	}
+
 	const resultItem = await filterArr()
 
 	res.json(resultItem)
 
 }))
-
-// router.get("/input/:searchField", doAsync(async (req, res) => {
-
-// 	const { searchField } = req.params;
-
-// 	const te = { success: "test" }
-// 	console.log(searchField, te)
-// 	res.send(te)
-
-// }))
 
 
 // 품종

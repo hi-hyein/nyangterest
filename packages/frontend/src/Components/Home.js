@@ -158,12 +158,10 @@ class Home extends Component {
 
 
 	render() {
-		const { items, isLoading, loading, hasMore, totalPage, totalCount } = this.props.listStore;
+		const { items, isLoading, loading, hasMore, totalPage } = this.props.listStore;
 		const { active, isVisible, toggleHidden, on, handleScrollTop } = this.props.btnStore;
 		const { from, to, handleFromChange, handleToChange, selectedCategory, categoryChange, searchChange } = this.props.searchStore;
 		const renderLoader = () => < Preloader> <div><Loading /></div></Preloader >
-
-		// 품종 카테고리 셀렉트박스  && 검색어 입력
 
 		// 수행시간 로그
 		// let t0 = performance.now();
@@ -203,29 +201,14 @@ class Home extends Component {
 					<Message><p>해당 데이터가 없습니다.</p></Message>
 				}
 
-				{/* {!loading && (totalCount === 0) &&
-					<Message><p>검색결과가 없습니다.</p></Message>
-				} */}
-
-
-				{/* {!loading && !(isLoading && hasMore) && !(items.length) && (
-					<Message><p>해당 데이터가 없습니다.</p></Message>
-				)} */}
-
-
-
-				{!loading && (isLoading && hasMore) && (!(totalPage && (totalCount === items.length))) && (
+				{!loading && (isLoading && hasMore) && (!(totalPage && (totalPage > items.length))) && (
 					<div>
 						Loading...
 						<Loading />
 					</div>
 				)}
 
-				{/* {(items.length > 0) &&
-					(<Message><p>마지막 페이지입니다!</p></Message>,console.log(items.length))
-				} */}
-
-				{totalPage && (items.length === totalCount) && (items.length > 0) &&
+				{totalPage && (!(isLoading && hasMore)) && (items.length > 0) &&
 					(<Message><p>마지막 페이지입니다!</p></Message>)
 				}
 
