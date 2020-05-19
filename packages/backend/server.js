@@ -26,57 +26,18 @@ async function err() {
 	throw new Error('에러 발생');
 }
 
-// 기본주소
-
-router.get("/page/:bgnde/:endde/:numOfRows/:kind/:searchField", doAsync(async (req, res) => {
-
-	const getData = async (url) => {
-		try {
-			const response = await fetch(url);
-			const json = await response.json();
-			const body = await json.response.body;
-			return body;
-
-		} catch (error) {
-			console.log(error);
-		}
-	};
-
-	const { bgnde, endde, kind, searchField } = req.params;
-
-	// 시작일,종료일,결과보다 큰 수,품종
-
-	const baseUrl = `${api}/abandonmentPublic?ServiceKey=${serviceKey}&_type=json&bgnde=${bgnde}&endde=${endde}&numOfRows=1000000&upkind=422400&`;
-
-	const kindParam = `kind=${kind}&`
-
-	const KINDENUM = (kind === "000116");
-
-	const SEARCHENUM = searchField === "keyword";
-
-	let url = (KINDENUM) ? `${baseUrl}` : `${baseUrl}${kindParam}`;
-
-	let defaultRes = await getData(url)
-
-	const per = 100;
+const filterArr = async (defaultItem, searchField) => {
 
 	Array.prototype.addArr = function (n) {
 		const arr = this;
 		const length = arr.length;
 		const count = Math.ceil(length / n);
 		const item = [];
-
 		for (let i = 0; i < count; i++) {
 			item.push(arr.splice(0, n));
 		}
-
 		return item;
 	}
-
-	let defaultItem = defaultRes.items.item;
-
-	// 그럼 언디파인드인 경우는?
-	if (typeof defaultItem === 'undefined') defaultItem = defaultRes.items
 
 	const strObj = {
 		"F": "암컷",
@@ -96,7 +57,6 @@ router.get("/page/:bgnde/:endde/:numOfRows/:kind/:searchField", doAsync(async (r
 		let re = new RegExp(Object.keys(strObj).join("|"), "gi");
 		let regExp = /[()]/gi;
 		let searchKeyword = searchField.toUpperCase().trim()
-
 		if (typeof item === "object") {
 			return (
 				Object.keys(item).some(
@@ -113,39 +73,62 @@ router.get("/page/:bgnde/:endde/:numOfRows/:kind/:searchField", doAsync(async (r
 
 	})
 
-	let totalItems;
+	return filteredItems;
 
-	let totalCount = (SEARCHENUM) ? defaultRes.totalCount : filteredItems.length
+}
 
-	defaultRes.totalCount = totalCount;
+// 기본주소
+router.get("/page/:bgnde/:endde/:numOfRows/:kind/:searchField", doAsync(async (req, res) => {
 
-	// 1보다 클때
-	if (totalCount > 1) totalItems = defaultItem || []
+	// 시작일,종료일,결과보다 큰 수,품종
 
-	// 1보다 작거나 같을때 
-	else if (totalCount <= 1) totalItems = [defaultItem]
+	const { bgnde, endde, kind, searchField } = req.params;
 
-	let arrItems = (SEARCHENUM) ? (totalItems.addArr(per)) : (filteredItems.addArr(per))
+	const baseUrl = `${api}/abandonmentPublic?ServiceKey=${serviceKey}&_type=json&bgnde=${bgnde}&endde=${endde}&numOfRows=1000000&upkind=422400&`;
 
-	let items = Object.values(arrItems)
+	const kindParam = `kind=${kind}&`
 
-	if (totalCount === 0) items = [[]]
+	const KINDENUM = (kind === "000116");
 
-	const arrRes = { items, totalCount }
+	const SEARCHENUM = searchField === "keyword";
+
+	const per = 100;
+
+	const getData = async (url) => {
+		try {
+			const response = await fetch(url);
+			const json = await response.json();
+			const body = await json.response.body;
+			return body;
+
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
+	let url = (KINDENUM) ? `${baseUrl}` : `${baseUrl}${kindParam}`;
+
+	const defaultRes = await getData(url)
+
+	let defaultItem = defaultRes.items.item || []
+
+	if (typeof defaultItem === 'undefined') defaultItem = defaultRes.items
+
+	const filteredItems = await filterArr(defaultItem, searchField)
+
+	let selectItems = (SEARCHENUM) ? defaultItem : filteredItems;
+
+	let typeItems = (Array.isArray(selectItems)) ? selectItems : [selectItems];
+
+	let items = typeItems.addArr(per);
+
+	if (items.length === 0) items = [[]]
+
+	let arrRes = { items }
 
 	res.json(arrRes)
 
 }))
-
-// router.get("/input/:searchField", doAsync(async (req, res) => {
-
-// 	const { searchField } = req.params;
-
-// 	const te = { success: "test" }
-// 	console.log(searchField, te)
-// 	res.send(te)
-
-// }))
 
 
 // 품종

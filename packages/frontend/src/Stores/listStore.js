@@ -2,12 +2,12 @@ import { observable, action, runInAction, computed } from "mobx";
 import moment from "moment";
 
 export default class ListStore {
+
 	@observable items = [];
 	@observable loading = true;
 	@observable timer = null;
 	@observable index = [0];
 	@observable numOfRows = 100;
-	@observable totalCount = 0;
 	@observable scrolling = false;
 	@observable hasMore = true;
 	@observable isLoading = false;
@@ -35,9 +35,6 @@ export default class ListStore {
 
 				this.setItems([...items, ...(json.items[index] || [])]);
 
-				this.setCount(json.totalCount);
-
-
 			});
 
 		} catch (err) {
@@ -56,12 +53,6 @@ export default class ListStore {
 		this.isLoading = false;
 		this.scrolling = false;
 		this.hasMore = true;
-	}
-
-	@action
-	setCount = (totalCount) => {
-		this.totalCount = totalCount;
-
 	}
 
 	@action
@@ -112,7 +103,7 @@ export default class ListStore {
 
 	@action
 	resetList = () => {
-		this.items = []
+		this.items = [];
 		this.index = [0]
 		this.isLoading = true;
 	};
@@ -133,11 +124,12 @@ export default class ListStore {
 
 	@computed
 	get totalPage() {
-		const { index, numOfRows, totalCount } = this;
-		let paging = Math.ceil(numOfRows * (index + 1)) >= totalCount;
+		const { index, numOfRows, items } = this;
+		let paging = Math.ceil(numOfRows * (index + 1)) > items.length
 		return paging;
 	}
 
-
 }
+
+
 
