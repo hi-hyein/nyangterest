@@ -2,7 +2,69 @@
 const request = require('supertest')
 const app = require('../server')
 
-describe("Nyangterest unit test!", () => {
+describe("Nyangterest Unit test!", () => {
+
+	// Mock Object
+	const body = {
+		"items": {
+			"item": [
+				{
+					"age": "2020(년생)",
+					"colorCd": "치즈노랑",
+					"happenDt": 20200519,
+					"kindCd": "[고양이] 한국 고양이",
+					"neuterYn": "U",
+					"sexCd": "F",
+					"weight": "1(Kg)"
+				},
+				{
+					"age": "2020(년생)",
+					"colorCd": "검정,갈색",
+					"happenDt": 20200519,
+					"kindCd": "[고양이] 기타",
+					"neuterYn": "Y",
+					"sexCd": "M",
+					"weight": "0.4(Kg)"
+				},
+				{
+					"age": "2018(년생)",
+					"colorCd": "흰색",
+					"happenDt": 20200518,
+					"kindCd": "[고양이] 한국 고양이",
+					"neuterYn": "N",
+					"sexCd": "M",
+					"weight": "0.4(Kg)"
+				},
+				{
+					"age": "2017(년생)",
+					"colorCd": "회색",
+					"happenDt": 20200517,
+					"kindCd": "[고양이] 러시안 블루",
+					"neuterYn": "Y",
+					"sexCd": "M",
+					"weight": "0.8(Kg)"
+				},
+				{
+					"age": "2018(년생)",
+					"colorCd": "흰색",
+					"happenDt": 20200516,
+					"kindCd": "[고양이] 한국 고양이",
+					"neuterYn": "N",
+					"sexCd": "M",
+					"weight": "0.4(Kg)"
+				},
+				{
+					"age": "2020(년생)",
+					"colorCd": "치즈노랑",
+					"happenDt": 20200515,
+					"kindCd": "[고양이] 한국 고양이",
+					"neuterYn": "Y",
+					"sexCd": "F",
+					"weight": "3(Kg)"
+				}
+			]
+		}
+	}
 
 	describe('GET request parameters test', () => {
 
@@ -11,6 +73,7 @@ describe("Nyangterest unit test!", () => {
 		const per = 100;
 		const str = "keyword"
 		const url = `/page/${startDay}/${endDay}/${per}/000116/${str}`;
+		const data = body.items.item;
 
 		const getData = async (url) => {
 			try {
@@ -53,9 +116,11 @@ describe("Nyangterest unit test!", () => {
 
 		// 품종코드(변하지 않는 값)
 		test('Change kind with async / await', async () => {
-			const data = await getData(`/page/${startDay}/${endDay}/${per}/000197/${str}`);
+
+			// const data = await getData(`/page/${startDay}/${endDay}/${per}/000197/${str}`);
 			for (let i = 0; i < data.length; i++) {
-				expect(data[0][i].kindCd).toContain("페르시안-페르시안 친칠라");
+				expect(data[i].kindCd).toContain("[고양이] 한국 고양이");
+				console.log(data[i])
 
 			}
 		})
