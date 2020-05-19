@@ -26,13 +26,63 @@ async function err() {
 	throw new Error('에러 발생');
 }
 
-// 기본주소
+const filterArr = async (defaultItem, searchField) => {
 
+	Array.prototype.addArr = function (n) {
+		const arr = this;
+		const length = arr.length;
+		const count = Math.ceil(length / n);
+		const item = [];
+		for (let i = 0; i < count; i++) {
+			item.push(arr.splice(0, n));
+		}
+		return item;
+	}
+
+	const strObj = {
+		"F": "암컷",
+		"M": "수컷",
+		"Q": "성별 미상",
+		"Y": "중성화O",
+		"N": "중성화X",
+		"U": "중성화 미상",
+		"한국 고양이": "코리안숏헤어"
+	}
+
+	let defaultValue = Object.values(defaultItem)
+
+	if (typeof defaultValue[0] === 'string') defaultValue = [defaultItem]
+
+	let filteredItems = defaultValue.filter(item => {
+		let re = new RegExp(Object.keys(strObj).join("|"), "gi");
+		let regExp = /[()]/gi;
+		let searchKeyword = searchField.toUpperCase().trim()
+		if (typeof item === "object") {
+			return (
+				Object.keys(item).some(
+					key =>
+						typeof item[key] === "string" &&
+						item[key].replace(re, (matched => {
+							return strObj[matched]
+						})).replace(regExp, "").toUpperCase().includes(searchKeyword)
+				)
+			);
+		} else {
+			return null;
+		}
+
+	})
+
+	return filteredItems;
+
+}
+
+// 기본주소
 router.get("/page/:bgnde/:endde/:numOfRows/:kind/:searchField", doAsync(async (req, res) => {
 
-	const { bgnde, endde, kind, searchField } = req.params;
-
 	// 시작일,종료일,결과보다 큰 수,품종
+
+	const { bgnde, endde, kind, searchField } = req.params;
 
 	const baseUrl = `${api}/abandonmentPublic?ServiceKey=${serviceKey}&_type=json&bgnde=${bgnde}&endde=${endde}&numOfRows=1000000&upkind=422400&`;
 
@@ -56,87 +106,27 @@ router.get("/page/:bgnde/:endde/:numOfRows/:kind/:searchField", doAsync(async (r
 		}
 	};
 
-	const fetchData = async () => {
+	let url = (KINDENUM) ? `${baseUrl}` : `${baseUrl}${kindParam}`;
 
-		let url = (KINDENUM) ? `${baseUrl}` : `${baseUrl}${kindParam}`;
+	const defaultRes = await getData(url)
 
-		let defaultData = await getData(url)
+	let defaultItem = defaultRes.items.item || []
 
-		return defaultData
+	if (typeof defaultItem === 'undefined') defaultItem = defaultRes.items
 
-	}
+	const filteredItems = await filterArr(defaultItem, searchField)
 
-	const defaultRes = await fetchData()
+	let selectItems = (SEARCHENUM) ? defaultItem : filteredItems;
 
-	const filterArr = async () => {
+	let typeItems = (Array.isArray(selectItems)) ? selectItems : [selectItems];
 
-		let defaultItem = defaultRes.items.item || []
+	let items = typeItems.addArr(per);
 
-		if (typeof defaultItem === 'undefined') defaultItem = defaultRes.items
+	if (items.length === 0) items = [[]]
 
-		const strObj = {
-			"F": "암컷",
-			"M": "수컷",
-			"Q": "성별 미상",
-			"Y": "중성화O",
-			"N": "중성화X",
-			"U": "중성화 미상",
-			"한국 고양이": "코리안숏헤어"
-		}
+	let arrRes = { items }
 
-		let defaultValue = Object.values(defaultItem)
-
-		if (typeof defaultValue[0] === 'string') defaultValue = [defaultItem]
-
-		let filteredItems = defaultValue.filter(item => {
-			let re = new RegExp(Object.keys(strObj).join("|"), "gi");
-			let regExp = /[()]/gi;
-			let searchKeyword = searchField.toUpperCase().trim()
-
-			if (typeof item === "object") {
-				return (
-					Object.keys(item).some(
-						key =>
-							typeof item[key] === "string" &&
-							item[key].replace(re, (matched => {
-								return strObj[matched]
-							})).replace(regExp, "").toUpperCase().includes(searchKeyword)
-					)
-				);
-			} else {
-				return null;
-			}
-
-		})
-
-		let selectItems = (SEARCHENUM) ? defaultItem : filteredItems;
-
-		let typeItems = (Array.isArray(selectItems)) ? selectItems : [selectItems];
-
-		Array.prototype.addArr = function (n) {
-			const arr = this;
-			const length = arr.length;
-			const count = Math.ceil(length / n);
-			const item = [];
-			for (let i = 0; i < count; i++) {
-				item.push(arr.splice(0, n));
-			}
-			return item;
-		}
-
-		let items = typeItems.addArr(per);
-
-		if (items.length === 0) items = [[]]
-
-		let arrRes = { items }
-
-		return arrRes;
-
-	}
-
-	const resultItem = await filterArr()
-
-	res.json(resultItem)
+	res.json(arrRes)
 
 }))
 
