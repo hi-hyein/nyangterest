@@ -327,91 +327,58 @@ describe("Nyangterest Unit test!", () => {
 			]]
 	}
 
-	// console.log(filterArr)
-
 	describe('GET request parameters test', () => {
 
-		const per = 100;
+		const per = 6;
 		const data = body.items;
 
+		test('True and False test', () => {
+			expect(data).toBeDefined()
+			expect(data).not.toBeNull();
+			expect((data[0][0]).age.length > 0).toBeTruthy();
+		})
 
-		// const getData = async (url) => {
-		// 	try {
-		// 		const response = await request(app).get(url);
-		// 		const items = await response.body.items;
-		// 		return items;
-
-		// 	} catch (error) {
-		// 		console.log(error);
-		// 	}
-		// };
-
-
-		// before('test', () => {
-
-		// })
-
-		// 품종을 선택했을때 조회된 아이템이 하나일때 배열을 만들어주기?
-		// test.only('Change kind  Object with async / await', async () => {
-		// 	const resTotalCount = await request(app).get(`/page/20200423/20200423/${per}/000172/${str}`);
-		// 	const items = await resTotalCount.body.items
-		// 	const totalCount = await resTotalCount.body.totalCount;
-		// 	console.log(items)
-		// 	expect(totalCount).toBe(1);
-
-		// })
-
-
-		// 검색어를 입력했을때 data[0][0]에 string이 들어 있는지 확인
-		// test('Input keyword with async / await', async () => {
-
-		// 	const changeStr = encodeURI("2020년생");
-		// 	const newUrl = `/page/${startDay}/${endDay}/${per}/000116/${changeStr}`;
-
-		// 	const data = await getData(newUrl);
-
-		// 	expect.assertions(1);
-		// 	expect(data[0][0].age.length > 0).toBeTruthy();
-		// })
-
-		// 품종코드(변하지 않는 값)
-		test.only('Change kind ', () => {
+		// 품종코드
+		test('kind ', () => {
 
 			for (let i = 0; i < data.length; i++) {
-				expect(data).not.toBeNull();
 				expect(data).toBeDefined()
-				expect(data[i].kindCd).toContain("[고양이] 한국고양이");
+				expect(data).not.toBeNull();
+				expect(data[i][0].kindCd).toContain("[고양이] 한국 고양이");
+				expect((data[i][0]).length).not.toBe(0);
 			}
 		})
 
 		// 예외처리 
-		test('Change kind with async(error) / await', async () => {
-			// const kindCd = Promise.resolve(data[0][0].kindCd)
+		test('async(error) / await', async () => {
+			const kindCd = Promise.resolve(data[0][1].kindCd)
 			const error = Promise.reject('error')
-			await expect(kindCd).resolves.toEqual("[고양이] 노르웨이 숲");
+			await expect(kindCd).toBeDefined()
+			await expect(kindCd).not.toBeNull();
+			await expect(kindCd).resolves.toContain("[고양이]");
 			await expect(error).rejects.toBe('error')
 
 		})
 
 
-		// 응답받은 데이터에 고양이가 포함되어있는지 확인
-		test('ToHaveProperty default with async / await', async () => {
-			for (let i = 0; i < 10; i++) {
-				expect(data[i][0].kindCd).toMatch(/고양이/)
+		// 고양이가 포함되어있는지 확인  
+		test('TtoMatch default ', () => {
+			expect(data[0][0].length).not.toBe(0)
+			for (let i = 0; i < data.length; i++) {
+				expect((data[i][0]).kindCd).toMatch(/고양이/)
+				expect((data[i][0])).toBeDefined()
+				expect((data[i][0])).not.toBeNull();
 			}
 
 		})
 
-		test('Default with async / await', async () => {
-			expect.assertions(2);
+		test('Default', () => {
+			expect.assertions(4);
+			expect(data[0].length).toBeDefined()
+			expect(data[0].length).not.toBeNull();
 			expect(data[0].length <= per).toBeTruthy();
 			expect(data[0].length > per).toBeFalsy();
 		})
-
-		// test('Async / await status code', async () => {
-		// 	const response = await request(app).get(url);
-		// 	expect(response.statusCode).toBe(200);
-		// })
 
 		test('Test search/kind', (done) => {
 			request(app)
