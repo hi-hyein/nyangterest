@@ -81,7 +81,8 @@ npm run dev
 
 ### 조윤우
 
-* 문서 : https://github.com/henyy1004/nyangterest/tree/master/yu_report
+* 문서(was) : https://github.com/henyy1004/nyangterest/tree/master/yu_report 
+* 문서(now) : https://github.com/henyy1004/nyangterest/wiki   
 * projects : https://github.com/henyy1004/nyangterest/projects/1
 
 
