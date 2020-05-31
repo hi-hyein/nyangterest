@@ -163,12 +163,8 @@ class Home extends Component {
 		const { from, to, handleFromChange, handleToChange, selectedCategory, categoryChange, searchChange } = this.props.searchStore;
 		const renderLoader = () => < Preloader> <div><Loading /></div></Preloader >
 
-		// 수행시간 로그
-		// let t0 = performance.now();
 
-		// 수행시간 로그
-		// let t1 = performance.now();
-		// console.log((t1 - t0) + 'ms')
+		// 품종 카테고리 셀렉트박스  && 검색어 입력
 
 		return (
 			<Fragment>

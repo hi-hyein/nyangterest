@@ -14,72 +14,72 @@ const MAIL_FORMAT = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
 const PASSWORD_FORMAT = /^(?=[a-zA-Z0-9!@$%^*#])(?!.*[^a-zA-Z0-9!@$%^*#]).{6,15}$/
 
 class LayerJoin extends Component {
-    state = {
-        email:"",
-        emailValidate: false,
-        emailMatchText: "사용 가능한 이메일 주소입니다",
-        emailNotMatchText: "잘못된 이메일 형식 입니다",
-        password:"",
-        passwordValidate: false,
-        passwordMatchText: "사용 가능한 비밀번호입니다",
-        passwordNotMatchText: "6자이상 15자 이하 입력해주세요",
-        passwordCheck:"",
-        passwordCheckValidate: false,
-        memberInfo: []
-    }
+	state = {
+		email: "",
+		emailValidate: false,
+		emailMatchText: "사용 가능한 이메일 주소입니다",
+		emailNotMatchText: "잘못된 이메일 형식 입니다",
+		password: "",
+		passwordValidate: false,
+		passwordMatchText: "사용 가능한 비밀번호입니다",
+		passwordNotMatchText: "6자이상 15자 이하 입력해주세요",
+		passwordCheck: "",
+		passwordCheckValidate: false,
+		memberInfo: []
+	}
 
-    validate = (format, value) => {
-        const reg = format;
+	validate = (format, value) => {
+		const reg = format;
 		const validate = reg.test(value);
 		return validate;
-    }
+	}
 
-    emailOnChange = (e) => {
-        const value = e.target.value
-        const Validate = this.validate(MAIL_FORMAT, value)
+	emailOnChange = (e) => {
+		const value = e.target.value
+		const Validate = this.validate(MAIL_FORMAT, value)
 
-        this.setState ({
-            email: value
-        })
-        
-        if(Validate){
-            this.setState({
-                emailValidate: true
-            })
-        }else {
-            this.setState({
-                emailValidate: false,
-            })
-        }
-    }
+		this.setState({
+			email: value
+		})
 
-    passwordOnChange = (e) => {
-        const value = e.target.value
-        const Validate = this.validate(PASSWORD_FORMAT, value)
+		if (Validate) {
+			this.setState({
+				emailValidate: true
+			})
+		} else {
+			this.setState({
+				emailValidate: false,
+			})
+		}
+	}
 
-        this.setState ({
-            password: value
-        })
+	passwordOnChange = (e) => {
+		const value = e.target.value
+		const Validate = this.validate(PASSWORD_FORMAT, value)
 
-        if(Validate){
-            this.setState({
-                passwordValidate: true
-            })
-        }else {
-            this.setState({
-                passwordValidate: false,
-            })
-        }
-    }
+		this.setState({
+			password: value
+		})
 
-    passwordCheckOnChange = (e) => {
-        const value = e.target.value
+		if (Validate) {
+			this.setState({
+				passwordValidate: true
+			})
+		} else {
+			this.setState({
+				passwordValidate: false,
+			})
+		}
+	}
 
-        this.setState ({
-            passwordCheck: value
-        })
+	passwordCheckOnChange = (e) => {
+		const value = e.target.value
 
-        if (this.state.password === value) {
+		this.setState({
+			passwordCheck: value
+		})
+
+		if (this.state.password === value) {
 			this.setState({
 				passwordCheckValidate: true,
 			})
@@ -88,122 +88,122 @@ class LayerJoin extends Component {
 				passwordCheckValidate: false,
 			})
 		}
-    }
+	}
 
-    sendJoinInfo = ()=> {
-        const state = this.state
-        const stateTojson = JSON.stringify(state)
+	sendJoinInfo = () => {
+		const state = this.state
+		const stateTojson = JSON.stringify(state)
 
-        if ( state.emailValidate && state.passwordValidate && state.passwordCheckValidate){
-            fetch('/join', {
+		if (state.emailValidate && state.passwordValidate && state.passwordCheckValidate) {
+			fetch('/join', {
 				headers: {
 					'Accept': 'application/json',
 					'Content-Type': 'application/json'
 				},
 				method: 'POST',
 				body: stateTojson,
-            }).then(res=>res.json()).then(json=>{
-                this.setState({
-                    memberInfo: json
-                })
+			}).then(res => res.json()).then(json => {
+				this.setState({
+					memberInfo: json
+				})
 
-                if(this.state.memberInfo.emailOverlapping === true){
-                    this.setState({
-                        emailValidate: false
-                    })
-                    alert("이미 가입된 이메일입니다. 다른 이메일을 입력해주세요")
-                }else {
-                    this.setState({
-                        emailValidate: true
-                    })
-                    alert("회원가입이 완료되었습니다! 이메일 인증을 완료해주세요!")
-                }
-            })
-        }else {
-            alert("모든 입력사항을 알맞게 입력해주세요")
-        }
-    }
+				if (this.state.memberInfo.emailOverlapping === true) {
+					this.setState({
+						emailValidate: false
+					})
+					alert("이미 가입된 이메일입니다. 다른 이메일을 입력해주세요")
+				} else {
+					this.setState({
+						emailValidate: true
+					})
+					alert("회원가입이 완료되었습니다! 이메일 인증을 완료해주세요!")
+				}
+			})
+		} else {
+			alert("모든 입력사항을 알맞게 입력해주세요")
+		}
+	}
 
-    render(){
-        const {email, password, emailValidate, emailMatchText, emailNotMatchText, passwordValidate, passwordMatchText, passwordNotMatchText, passwordCheck, passwordCheckValidate} = this.state
-        return (
-            <div>      
-                <div>
-                    <TextField
-                        id="outlined-name"
-                        label="이메일주소"
-                        value={email}
-                        placeholder="ex)nyangterest@email.com"
-                        margin="normal"
-                        variant="outlined"
-                        onChange={this.emailOnChange}
-                        error={!emailValidate&&email!==""}
-                        fullWidth={true}
-                    />
-                    <FormHelperText id="component-helper-text">
-                        { emailValidate && emailMatchText}
-                        { !emailValidate&&email!=="" && emailNotMatchText }
-                    </FormHelperText>
-                </div>
-                <div>
-                    <TextField
-                        id="outlined-name"
-                        label="비밀번호"
-                        value={password}
-                        placeholder="6자 이상 15자이하"
-                        margin="normal"
-                        variant="outlined"
-                        type="password"
-                        onChange={this.passwordOnChange}
-                        fullWidth={true}
-                        error={!passwordValidate&&password!==""}
-                    />
-                    <FormHelperText id="component-helper-text">
-                        { passwordValidate && passwordMatchText}
-                        { !passwordValidate&&password!=="" && passwordNotMatchText }
-                    </FormHelperText>
-                </div>
-                <div>
-                    <TextField
-                        id="outlined-name"
-                        label="비밀번호 확인"
-                        value={passwordCheck}
-                        placeholder="비밀번호를 다시한번 입력해주세요"
-                        margin="normal"
-                        variant="outlined"
-                        type="password"
-                        onChange={this.passwordCheckOnChange}
-                        fullWidth={true}
-                        error={!passwordCheckValidate&&passwordCheck!==""}
-                    />
-                    <FormHelperText id="component-helper-text">
-                        {passwordCheckValidate && "비밀번호가 일치합니다"}
-                        { !passwordCheckValidate&&passwordCheck!=="" && "비밀번호가 일치하지 않습니다" }
-                    </FormHelperText>
-                </div>
-                <div className="check-area" style={{marginTop:"10px",paddingTop:"10px", borderTop:"1px solid #eee"}}>
-                    <Router>
-                        <label htmlFor="checkAgree">
-                            <Checkbox
-                                color="primary"
-                            />
-                            <AgreeLink />
-                            <Switch>
-                                <Route path="/agree/service" component={Service} />
-                                <Route path="/agree/privacy" component={Privacy} />
-                            </Switch>
-                        </label>
-                    </Router>
-                </div>
-                <div style={{marginTop:"30px",paddingTop:"30px", borderTop:"1px solid #eee"}}>
-                <Button fullWidth={true} size="large" variant="contained" color="primary" onClick={this.sendJoinInfo}>
-                    계속하기
+	render() {
+		const { email, password, emailValidate, emailMatchText, emailNotMatchText, passwordValidate, passwordMatchText, passwordNotMatchText, passwordCheck, passwordCheckValidate } = this.state
+		return (
+			<div>
+				<div>
+					<TextField
+						id="outlined-name"
+						label="이메일주소"
+						value={email}
+						placeholder="ex)nyangterest@email.com"
+						margin="normal"
+						variant="outlined"
+						onChange={this.emailOnChange}
+						error={!emailValidate && email !== ""}
+						fullWidth={true}
+					/>
+					<FormHelperText id="component-helper-text">
+						{emailValidate && emailMatchText}
+						{!emailValidate && email !== "" && emailNotMatchText}
+					</FormHelperText>
+				</div>
+				<div>
+					<TextField
+						id="outlined-name"
+						label="비밀번호"
+						value={password}
+						placeholder="6자 이상 15자이하"
+						margin="normal"
+						variant="outlined"
+						type="password"
+						onChange={this.passwordOnChange}
+						fullWidth={true}
+						error={!passwordValidate && password !== ""}
+					/>
+					<FormHelperText id="component-helper-text">
+						{passwordValidate && passwordMatchText}
+						{!passwordValidate && password !== "" && passwordNotMatchText}
+					</FormHelperText>
+				</div>
+				<div>
+					<TextField
+						id="outlined-name"
+						label="비밀번호 확인"
+						value={passwordCheck}
+						placeholder="비밀번호를 다시한번 입력해주세요"
+						margin="normal"
+						variant="outlined"
+						type="password"
+						onChange={this.passwordCheckOnChange}
+						fullWidth={true}
+						error={!passwordCheckValidate && passwordCheck !== ""}
+					/>
+					<FormHelperText id="component-helper-text">
+						{passwordCheckValidate && "비밀번호가 일치합니다"}
+						{!passwordCheckValidate && passwordCheck !== "" && "비밀번호가 일치하지 않습니다"}
+					</FormHelperText>
+				</div>
+				<div className="check-area" style={{ marginTop: "10px", paddingTop: "10px", borderTop: "1px solid #eee" }}>
+					<Router>
+						<label htmlFor="checkAgree">
+							<Checkbox
+								style={{ background: '#fff', color: '#a1ceab' }}
+							/>
+							<AgreeLink />
+							<Switch>
+								<Route path="/agree/service" component={Service} />
+								<Route path="/agree/privacy" component={Privacy} />
+							</Switch>
+						</label>
+					</Router>
+				</div>
+				<div style={{ marginTop: "30px", paddingTop: "30px", borderTop: "1px solid #eee" }}>
+					<Button fullWidth={true} size="large" variant="contained" style={{ background: '#a1ceab', color: '#fff' }} onClick={this.sendJoinInfo}>
+						계속하기
                 </Button>
-                </div>
-            </div>
-        )
-        
-    }
+				</div>
+			</div>
+		)
+
+	}
 }
 
 export default LayerJoin;

@@ -1,4 +1,11 @@
 const nodemailer = require('nodemailer');
+const path = require("path");
+const dotenv = require('dotenv')
+
+// 환경설정 파일에서 Gmail계정정보 가져오기
+dotenv.config({ path: path.join(__dirname, './.env') })
+const GMAILID = process.env.GMAILID;
+const GMAILPW = process.env.GMAILPW;
 
 // 메일 발송 객체
 const mailSender = {
@@ -11,8 +18,8 @@ const mailSender = {
             ,secure : false
             ,requireTLS : true
             , auth: {
-              user: 'nyangterest@gmail.com'
-              ,pass: 'hzdyfwgydlsalfkg'
+              user: `${GMAILID}`
+              ,pass: `${GMAILPW}`
             }
 		});
 		
