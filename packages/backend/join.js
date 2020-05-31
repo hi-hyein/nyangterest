@@ -22,6 +22,41 @@ const connection = mysql.createConnection({
 
 connection.connect();
 
+// 메일 발송 객체
+const mailSender = {
+	// gmail발송
+	sendGmail : function(param){
+        const transporter = nodemailer.createTransport({
+            service: 'gmail'
+            ,prot : 587
+            ,host :'smtp.gmlail.com'
+            ,secure : false
+            ,requireTLS : true
+            , auth: {
+              user: 'nyangterest@gmail.com'
+              ,pass: 'hzdyfwgydlsalfkg'
+            }
+		});
+		
+        // 메일 옵션
+        const mailOptions = {
+			from: 'nyangterest@gmail.com',
+			to: param.toEmail, // 수신할 이메일
+			subject: param.subject, // 메일 제목
+			text: param.text // 메일 내용
+		};
+
+        // 메일 발송    
+        transporter.sendMail(mailOptions, function(error, info){
+            if (error) {
+            console.log(error);
+            } else {
+            console.log('Email sent: ' + info.response);
+            }
+        });
+    }
+}
+
 router.post("/join", (req, res) => {
 	const body = req.body;
 	console.log('test', body);
@@ -34,37 +69,33 @@ router.post("/join", (req, res) => {
 	const emailToken = hash.sha256().update(`${memberMail}+${tokenUnique}`).digest('hex')
 	const emailLink = `http://localhost:8080/welcome?email=${memberMail}&token=${emailToken}`;
 
-	let transporter = nodemailer.createTransport({
-		service: 'gmail',
-		auth: {
-			user: 'nyangterest@gmail.com',  // gmail 계정 아이디를 입력
-			pass: 'sidxjfptmxm!'          // gmail 계정의 비밀번호를 입력
-		}
-	});
+	// 메일 발송 params
+	const mailSenderParams = {
+		toEmail: memberMail,
+		subject: '냥터레스트 회원가입을 위한 이메일 인증을 부탁드립니다.',
+		text: `안녕하세요 회원가입을 축하드립니다. ${emailLink} 해당 링크로 접속해주시면 인증이 완료되어 냥터레스트에 로그인하실 수 있습니다.`,
+	}
 
-	let mailOptions = {
-		from: 'nyangterest@gmail.com',    // 발송 메일 주소 (위에서 작성한 gmail 계정 아이디)
-		to: memberMail,                     // 수신 메일 주소
-		subject: '냥터레스트 회원가입을 위한 이메일 인증을 부탁드립니다.',   // 제목
-		text: `안녕하세요 회원가입을 축하드립니다. ${emailLink} 해당 링크로 접속해주시면 인증이 완료되어 냥터레스트에 로그인하실 수 있습니다.`  // 내용
-	};
-
-	connection.query(`SELECT * FROM member WHERE email='${memberMail}'`, (err, rows, fields) => {
+	// 회원 가입 처리 query 
+	connection.query(`SELECT * FROM nyang_member WHERE email='${memberMail}'`, (err, rows, fields) => {
 		// 가입 이메일 중복 처리
 		if (rows[0] !== undefined) {
 			// 가입된 이메일이 있을때
-			console.log('있으니까 안돼')
+			console.log('가입된 이메일이 있음, 회원가입 불가')
+
+			// 이메일 중복 여부 front로 전송
 			res.send(
 				{ emailOverlapping: true }
 			)
 		} else {
-			// 가입된 이메일 존재
-			console.log('아이디없을때', rows)
-			console.log('없으니까 가입가능')
+			// 가입된 이메일이 없을때
+			console.log('가입된 이메일이 없음, 회원가입 가능')
 
 			// 회언 정보 DB저장
-			const sql = "INSERT INTO `member` (`email`, `password`, `signupdate`, `certify`, `token`) VALUES ( ?,?,?,?,? )"
+			const sql = "INSERT INTO `nyang_member` (`email`, `password`, `signupdate`, `certify`, `token`) VALUES ( ?,?,?,?,? )"
 			const params = [memberMail, passwordHash, signupdate, certify, emailToken]
+			
+			// 가입된 이메일 없을때 query 처리
 			connection.query(sql, params, (err, rows, fields) => {
 				if (err) {
 					console.log(err);
@@ -73,16 +104,10 @@ router.post("/join", (req, res) => {
 				}
 			});
 
-			// 가입인증메일 보내기
-			transporter.sendMail(mailOptions, function (error, info) {
-				if (error) {
-					console.log(error);
-				}
-				else {
-					console.log('Email sent: ' + info.response);
-				}
-			});
+			// 회원가입 인증 메일 발송
+			mailSender.sendGmail(mailSenderParams);
 
+			// 이메일 중복 여부 front로 전송
 			res.send({
 				emailOverlapping: false
 			})
@@ -102,14 +127,14 @@ router.get("/welcome", (req, res) => {
 		token: req.query.token
 	}
 
-	connection.query(`SELECT * FROM member WHERE email='${certifyInfo.email}'`, (err, rows, fields) => {
+	connection.query(`SELECT * FROM nyang_member WHERE email='${certifyInfo.email}'`, (err, rows, fields) => {
 		// 회원가입시 저장된 토큰 가져오기
 		const dbToken = rows[0].token
 
 		// 메일로 받은 토큰과 db토큰 비교 && 인증상태가 false일때
 		if (dbToken === certifyInfo.token && rows[0].certify === 0) {
 			res.sendFile(path.join(__dirname + '/welcome.html'))
-			connection.query(`UPDATE member SET certify=true WHERE token='${dbToken}'`)
+			connection.query(`UPDATE nyang_member SET certify=true WHERE token='${dbToken}'`)
 		} else {
 			// 인증상태가 true일때
 			res.sendFile(path.join(__dirname + '/welcome2.html'))
