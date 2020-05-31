@@ -5,7 +5,7 @@
 [![냥터레스트](https://user-images.githubusercontent.com/2981954/81968524-75bf1680-9657-11ea-8d84-0217b4246347.gif)](https://www.youtube.com/watch?v=Jg1u7te4EYI&feature=emb_logo)
                                                                                                                            
 ## 개발 환경
-* **Database** : mysql(>=8.0) - **host**: nyangterest.cqn96a5xogpk.ap-northeast-2.rds.amazonaws.com  **version**:1.0
+* **Database** : mysql(>=8.0) - **host**: nyangterest.ca2yj31zk4ar.ap-northeast-2.rds.amazonaws.com  **version**:2.0 
 * **Framewrok** : Node.js(>=10.13.0), Express / React
 * **Language** : javaScript
 * **상세기술스택** : https://stackshare.io/yoonucho/nyangterest
