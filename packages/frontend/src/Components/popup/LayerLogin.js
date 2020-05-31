@@ -9,163 +9,164 @@ const MAIL_FORMAT = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
 const PASSWORD_FORMAT =  /^(?=[a-zA-Z0-9!@$%^*#])(?!.*[^a-zA-Z0-9!@$%^*#]).{6,15}$/
 
 
+
 @inject('loginStore')
 @observer
 class LayerLogin extends Component {
-    state = {
-        userId: "",
-        userIdValidate: false,
-        userIdMatchText: "사용 가능한 이메일 주소입니다",
-        userIdNotMatchText: "잘못된 이메일 형식 입니다",
-        userPassword:'',
-        userPasswordValidate: false,
-        userPasswordMatchText: "사용 가능한 비밀번호입니다",
-        userPasswordNotMatchText: "6자이상 15자 이하 입력해주세요",
-    }
+	state = {
+		userId: "",
+		userIdValidate: false,
+		userIdMatchText: "사용 가능한 이메일 주소입니다",
+		userIdNotMatchText: "잘못된 이메일 형식 입니다",
+		userPassword: '',
+		userPasswordValidate: false,
+		userPasswordMatchText: "사용 가능한 비밀번호입니다",
+		userPasswordNotMatchText: "6자이상 15자 이하 입력해주세요",
+	}
 
-    validate = (format, value) => {
-        const reg = format;
-        const validate = reg.test(value);
+	validate = (format, value) => {
+		const reg = format;
+		const validate = reg.test(value);
 		return validate;
-    }
+	}
 
-    userIdHandler = (e) => {
-        const value = e.target.value
-        const Validate = this.validate(MAIL_FORMAT, value)
+	userIdHandler = (e) => {
+		const value = e.target.value
+		const Validate = this.validate(MAIL_FORMAT, value)
 
-        this.setState({
-            userId: e.target.value
-        })
+		this.setState({
+			userId: e.target.value
+		})
 
-        if(Validate){
-            this.setState({
-                userIdValidate: true
-            })
-        }else {
-            this.setState({
-                userIdValidate: false,
-            })
-        }
-    }
+		if (Validate) {
+			this.setState({
+				userIdValidate: true
+			})
+		} else {
+			this.setState({
+				userIdValidate: false,
+			})
+		}
+	}
 
-    userPwHandler = (e) => {
-        const value = e.target.value
-        const Validate = this.validate(PASSWORD_FORMAT, value)
+	userPwHandler = (e) => {
+		const value = e.target.value
+		const Validate = this.validate(PASSWORD_FORMAT, value)
 
-        this.setState({
-            userPassword: e.target.value
-        })
+		this.setState({
+			userPassword: e.target.value
+		})
 
-        if(Validate){
-            this.setState({
-                userPasswordValidate: true
-            })
-        }else {
-            this.setState({
-                userPasswordValidate: false,
-            })
-        }
-    }
+		if (Validate) {
+			this.setState({
+				userPasswordValidate: true
+			})
+		} else {
+			this.setState({
+				userPasswordValidate: false,
+			})
+		}
+	}
 
-    sendUserInfo = () => {
-        const state = this.state
-        const onClose = this.props.onClose
-        const stateTojson = JSON.stringify(state)
-        const {changeUserId,changeUserState} = this.props.loginStore
+	sendUserInfo = () => {
+		const state = this.state
+		const onClose = this.props.onClose
+		const stateTojson = JSON.stringify(state)
+		const { changeUserId, changeUserState } = this.props.loginStore
 
-        if ( state.userIdValidate && state.userPasswordValidate ){
-            fetch('/login',{
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                method: 'POST',
-                body: stateTojson,
-            })
-            .then(res=>res.json()).then(json=>{
-                if(!json.sucess){
-                    console.log('로그인실패')
-                }else {
-                    console.log('로그인성공')
-                    console.log(json._userId)
-                    changeUserState()
-                    changeUserId(json._userId)
-                    localStorage.setItem(
-                        "userInfo",
-                        JSON.stringify(json._userId)
-                    )
-                    
-                    onClose()
-                }
-            })
+		if (state.userIdValidate && state.userPasswordValidate) {
+			fetch('/login', {
+				headers: {
+					'Accept': 'application/json',
+					'Content-Type': 'application/json'
+				},
+				method: 'POST',
+				body: stateTojson,
+			})
+				.then(res => res.json()).then(json => {
+					if (!json.sucess) {
+						console.log('로그인실패')
+					} else {
+						console.log('로그인성공')
+						console.log(json._userId)
+						changeUserState()
+						changeUserId(json._userId)
+						localStorage.setItem(
+							"userInfo",
+							JSON.stringify(json._userId)
+						)
 
-        }else {
-            alert("아이디와 패스워드를 알맞게 입력해주세요")
-        }
-    }
+						onClose()
+					}
+				})
 
-    findPasswordHandler = () => {
-        this.props.openFindPassword()
-    }
+		} else {
+			alert("아이디와 패스워드를 알맞게 입력해주세요")
+		}
+	}
 
-    btnJoinHandler = () => {
-        this.props.openJoinLayer()
-    }
+	findPasswordHandler = () => {
+		this.props.openFindPassword()
+	}
 
-    render(){
-        const {userId, userIdValidate, userIdMatchText, userIdNotMatchText, userPassword, userPasswordValidate, userPasswordMatchText, userPasswordNotMatchText} = this.state
-        return (    
-            <div>      
-                <div>
-                    <TextField
-                        id="userIdInput"
-                        label="이메일주소"
-                        placeholder="ex)nyangterest@email.com"
-                        margin="normal"
-                        variant="outlined"
-                        fullWidth={true}
-                        onChange={this.userIdHandler}
-                        error={!userIdValidate&&userId!==""}
-                    />
-                    <FormHelperText id="component-helper-text">
-                        { userIdValidate && userIdMatchText}
-                        { !userIdValidate&&userId!=="" && userIdNotMatchText }
-                    </FormHelperText>
-                </div>
-                <div>
-                    <TextField
-                        id="userPasswordInput"
-                        label="비밀번호"
-                        placeholder="비밀번호를 입력해주세요"
-                        margin="normal"
-                        variant="outlined"
-                        type="password"
-                        fullWidth={true}
-                        onChange={this.userPwHandler}
-                        error={!userPasswordValidate&&userPassword!==""}
-                    />
-                    <FormHelperText id="component-helper-text">
-                        { userPasswordValidate && userPasswordMatchText}
-                        { !userPasswordValidate&&userPassword!=="" && userPasswordNotMatchText }
-                    </FormHelperText>
-                </div>
-                <div>
-                    <button type="button" style={{fontSize:"16px",color: "#808080",fontWeight:"bold"}} onClick={this.findPasswordHandler}>
-                        가입한 이메일 / 비밀번호 찾기
+	btnJoinHandler = () => {
+		this.props.openJoinLayer()
+	}
+
+	render() {
+		const { userId, userIdValidate, userIdMatchText, userIdNotMatchText, userPassword, userPasswordValidate, userPasswordMatchText, userPasswordNotMatchText } = this.state
+		return (
+			<div>
+				<div>
+					<TextField
+						id="userIdInput"
+						label="이메일주소"
+						placeholder="ex)nyangterest@email.com"
+						margin="normal"
+						variant="outlined"
+						fullWidth={true}
+						onChange={this.userIdHandler}
+						error={!userIdValidate && userId !== ""}
+					/>
+					<FormHelperText id="component-helper-text">
+						{userIdValidate && userIdMatchText}
+						{!userIdValidate && userId !== "" && userIdNotMatchText}
+					</FormHelperText>
+				</div>
+				<div>
+					<TextField
+						id="userPasswordInput"
+						label="비밀번호"
+						placeholder="비밀번호를 입력해주세요"
+						margin="normal"
+						variant="outlined"
+						type="password"
+						fullWidth={true}
+						onChange={this.userPwHandler}
+						error={!userPasswordValidate && userPassword !== ""}
+					/>
+					<FormHelperText id="component-helper-text">
+						{userPasswordValidate && userPasswordMatchText}
+						{!userPasswordValidate && userPassword !== "" && userPasswordNotMatchText}
+					</FormHelperText>
+				</div>
+				<div>
+					<button type="button" style={{ fontSize: "16px", color: "#808080", fontWeight: "bold" }} onClick={this.findPasswordHandler}>
+						가입한 이메일 / 비밀번호 찾기
                     </button>
-                </div>
-                <div style={{marginTop:"30px",paddingTop:"30px", borderTop:"1px solid #eee"}}>
-                <Button fullWidth={true} size="large" variant="contained" color="primary" onClick={this.sendUserInfo}>
-                    로그인
+				</div>
+				<div style={{ marginTop: "30px", paddingTop: "30px", borderTop: "1px solid #eee" }}>
+					<Button fullWidth={true} size="large" variant="contained" style={{ background: '#a1ceab', color: '#fff' }} onClick={this.sendUserInfo}>
+						로그인
                 </Button>
-                <Button fullWidth={true} size="large" variant="contained" style={{marginTop:"15px"}} onClick={this.btnJoinHandler}>
-                    회원가입
+					<Button fullWidth={true} size="large" variant="contained" style={{ marginTop: "15px" }} onClick={this.btnJoinHandler}>
+						회원가입
                 </Button>
-                </div>
-            </div>
-        )
-        
-    }
+				</div>
+			</div>
+		)
+
+	}
 }
 
 export default LayerLogin;
