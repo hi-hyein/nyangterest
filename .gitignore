@@ -155,6 +155,10 @@ packages/backend/db.json
 *.txt
 *.csv
 
-
 # session
 sessions/*
+
+# debug log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
