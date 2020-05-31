@@ -20,16 +20,79 @@ const serviceKey = process.env.SERVICE_KEY;
 
 const api = 'http://openapi.animal.go.kr/openapi/service/rest/abandonmentPublicSrvc';
 
-
 const doAsync = fn => async (req, res, next) => await fn(req, res, next).catch(next);
 
 async function err() {
 	throw new Error('에러 발생');
 }
 
-// 기본주소
+const filterArr = async (defaultItem, searchField) => {
 
+	Array.prototype.addArr = function (n) {
+		const arr = this;
+		const length = arr.length;
+		const count = Math.ceil(length / n);
+		const item = [];
+		for (let i = 0; i < count; i++) {
+			item.push(arr.splice(0, n));
+		}
+		return item;
+	}
+
+	const strObj = {
+		"F": "암컷",
+		"M": "수컷",
+		"Q": "성별 미상",
+		"Y": "중성화O",
+		"N": "중성화X",
+		"U": "중성화 미상",
+		"한국 고양이": "코리안숏헤어"
+	}
+
+	let defaultValue = Object.values(defaultItem)
+
+	if (typeof defaultValue[0] === 'string') defaultValue = [defaultItem]
+
+	let filteredItems = defaultValue.filter(item => {
+		let re = new RegExp(Object.keys(strObj).join("|"), "gi");
+		let regExp = /[()]/gi;
+		let searchKeyword = searchField.toUpperCase().trim()
+		if (typeof item === "object") {
+			return (
+				Object.keys(item).some(
+					key =>
+						typeof item[key] === "string" &&
+						item[key].replace(re, (matched => {
+							return strObj[matched]
+						})).replace(regExp, "").toUpperCase().includes(searchKeyword)
+				)
+			);
+		} else {
+			return null;
+		}
+
+	})
+
+	return filteredItems;
+
+}
+
+// 기본주소
 router.get("/page/:bgnde/:endde/:numOfRows/:kind/:searchField", doAsync(async (req, res) => {
+
+	// 시작일,종료일,결과보다 큰 수,품종
+
+	const { bgnde, endde, kind, searchField } = req.params;
+
+	const baseUrl = `${api}/abandonmentPublic?ServiceKey=${serviceKey}&_type=json&bgnde=${bgnde}&endde=${endde}&numOfRows=1000000&upkind=422400&`;
+
+	const kindParam = `kind=${kind}&`
+
+	const KINDENUM = (kind === "000116");
+
+	const SEARCHENUM = searchField === "keyword";
+
+	const per = 100;
 
 	const getData = async (url) => {
 		try {
@@ -43,103 +106,29 @@ router.get("/page/:bgnde/:endde/:numOfRows/:kind/:searchField", doAsync(async (r
 		}
 	};
 
-	const { bgnde, endde, kind, searchField } = req.params;
-
-	// 시작일,종료일,결과보다 큰 수,품종
-
-	const baseUrl = `${api}/abandonmentPublic?ServiceKey=${serviceKey}&_type=json&bgnde=${bgnde}&endde=${endde}&numOfRows=1000000&upkind=422400&`;
-
-	const kindParam = `kind=${kind}&`
-
-	const KINDENUM = (kind === "000116");
-
-	const SEARCHENUM = searchField === "keyword";
-
 	let url = (KINDENUM) ? `${baseUrl}` : `${baseUrl}${kindParam}`;
 
-	let defaultRes = await getData(url)
+	const defaultRes = await getData(url)
 
-	const per = 100;
+	let defaultItem = defaultRes.items.item || []
 
-	Array.prototype.addArr = function (n) {
-		const arr = this;
-		const length = arr.length;
-		const count = Math.ceil(length / n);
-		const item = [];
+	if (typeof defaultItem === 'undefined') defaultItem = defaultRes.items
 
-		for (let i = 0; i < count; i++) {
-			item.push(arr.splice(0, n));
-		}
+	const filteredItems = await filterArr(defaultItem, searchField)
 
-		return item;
-	}
+	let selectItems = (SEARCHENUM) ? defaultItem : filteredItems;
 
-	let defaultItem = defaultRes.items.item;
+	let typeItems = (Array.isArray(selectItems)) ? selectItems : [selectItems];
 
-	const strObj = {
-		"F": "암컷",
-		"M": "수컷",
-		"Q": "성별 미상",
-		"Y": "중성화O",
-		"N": "중성화X",
-		"U": "중성화 미상",
-		"한국 고양이": "코리안숏헤어"
-	}
+	let items = typeItems.addArr(per);
 
-	if (typeof defaultItem === 'undefined') Object.values(defaultItem)
+	if (items.length === 0) items = [[]]
 
-	let filteredItems = defaultItem.filter(item => {
-		let re = new RegExp(Object.keys(strObj).join("|"), "gi");
-		let regExp = /[()]/gi;
-		let searchKeyword = searchField.toUpperCase().trim()
-
-		return (
-			Object.keys(item).some(
-				key =>
-					typeof item[key] === "string" &&
-					item[key].replace(re, (matched => {
-						return strObj[matched]
-					})).replace(regExp, "").toUpperCase().includes(searchKeyword)
-			)
-		);
-
-	})
-
-
-	let totalCount = (SEARCHENUM) ? defaultRes.totalCount : filteredItems.length
-
-	defaultRes.totalCount = totalCount;
-
-	let totalItems;
-
-	// 1보다 클때
-	if (totalCount > 1) totalItems = defaultItem || []
-
-	// 1보다 작거나 같을때 (totalItems.constructor.name === Object)
-	else if (totalCount <= 1) totalItems = [defaultItem]
-
-	// else if (totalCount === undefined) totalItems = []
-
-	const arrItems = (SEARCHENUM) ? (totalItems.addArr(per)) : filteredItems.addArr(per)
-
-	let items = Object.values(arrItems)
-
-	const arrRes = { items, totalCount }
+	let arrRes = { items }
 
 	res.json(arrRes)
 
-
 }))
-
-// router.get("/input/:searchField", doAsync(async (req, res) => {
-
-// 	const { searchField } = req.params;
-
-// 	const te = { success: "test" }
-// 	console.log(searchField, te)
-// 	res.send(te)
-
-// }))
 
 
 // 품종
@@ -176,7 +165,7 @@ const connection = mysql.createConnection({
 connection.connect();
 
 app.get("/admin/member", (req, res) => {
-	connection.query("SELECT * FROM member", (err, rows, fields) => {
+	connection.query("SELECT * FROM nyang_member", (err, rows, fields) => {
 		res.send(rows);
 		// console.log(rows.id);
 	});
