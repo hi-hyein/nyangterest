@@ -6,7 +6,7 @@ import { observer, inject } from "mobx-react";
 
 // eslint-disable-next-line
 const MAIL_FORMAT = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
-const PASSWORD_FORMAT =  /^(?=[a-zA-Z0-9!@$%^*])(?!.*[^a-zA-Z0-9!@$%^*]).{6,15}$/
+const PASSWORD_FORMAT =  /^(?=[a-zA-Z0-9!@$%^*#])(?!.*[^a-zA-Z0-9!@$%^*#]).{6,15}$/
 
 
 @inject('loginStore')

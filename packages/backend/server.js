@@ -165,7 +165,7 @@ const connection = mysql.createConnection({
 connection.connect();
 
 app.get("/admin/member", (req, res) => {
-	connection.query("SELECT * FROM member", (err, rows, fields) => {
+	connection.query("SELECT * FROM nyang_member", (err, rows, fields) => {
 		res.send(rows);
 		// console.log(rows.id);
 	});

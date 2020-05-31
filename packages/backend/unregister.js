@@ -29,7 +29,7 @@ router.use(passport.session()); // 세션 연결
 router.get('/:userId', (req, res) => {
     const {userId} =  req.params;
     console.log(userId)
-    const sql = `DELETE FROM member WHERE email="${userId}"`
+    const sql = `DELETE FROM nyang_member WHERE email="${userId}"`
 
     connection.query(sql, function (err, rows, fields) {
         if (err){

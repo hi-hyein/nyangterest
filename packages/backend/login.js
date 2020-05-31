@@ -34,7 +34,7 @@ passport.serializeUser((user, done) => { // Strategy 성공 시 호출됨
 
 passport.deserializeUser((id, done) => { // 매개변수 user는 serializeUser의 done의 인자 user를 받은 것
 	console.log('deserializeUser', id)
-	connection.query(`SELECT * FROM member WHERE email='${id}'`, (err, rows, fields) => {
+	connection.query(`SELECT * FROM nyang_member WHERE email='${id}'`, (err, rows, fields) => {
 		done(null, rows[0].email); // 여기의 user가 req.user가 됨
 	})
 });
@@ -47,7 +47,7 @@ passport.use(new LocalStrategy({ // local 전략을 세움
 }, (id, password, done) => {
 	console.log("id:", id, "pw:", password, "done:", done)
 	const userPwHash = hash.sha256().update(password).digest('hex');
-	connection.query(`SELECT * FROM member WHERE email='${id}'`, function (err, result) {
+	connection.query(`SELECT * FROM nyang_member WHERE email='${id}'`, function (err, result) {
 		if (err) {
 			console.log('err :' + err);
 			return done(false, null);
