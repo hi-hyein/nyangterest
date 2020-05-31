@@ -22,7 +22,7 @@ connection.connect();
 router.post("/memberInfo", (req, res) => {
 	const memberData = req.body.email
 	console.log("회원정보이메일",memberData)
-	connection.query(`SELECT * FROM member WHERE email="${memberData}"`, (err, rows, fields) => {
+	connection.query(`SELECT * FROM nyang_member WHERE email="${memberData}"`, (err, rows, fields) => {
 		res.json({
 			_username : rows[0].username,
 			_signupDate : rows[0].signupDate
@@ -39,7 +39,7 @@ router.post("/modifyMemberInfo", (req,res) => {
 	if(modifyName.length > 0) {
 		console.log("수정된이름",modifyName)
 		console.log("유저이메일",userEmail)
-		connection.query(`UPDATE member SET username="${modifyName}" WHERE email="${userEmail}"`,(err,rows,filed)=>{
+		connection.query(`UPDATE nyang_member SET username="${modifyName}" WHERE email="${userEmail}"`,(err,rows,filed)=>{
 			
 			if(err){
 				// 수정실패 알려주기
@@ -60,7 +60,7 @@ router.post("/modifyMemberInfo", (req,res) => {
 
 	// 비밀번호 수정
 	if(userModifyPassword!==undefined){
-		connection.query(`UPDATE member SET password="${userModifyPassword}" WHERE email="${userEmail}"`,(err,rows,filed)=>{
+		connection.query(`UPDATE nyang_member SET password="${userModifyPassword}" WHERE email="${userEmail}"`,(err,rows,filed)=>{
 			if(err){
 				// 수정실패 알려주기
 				res.json({

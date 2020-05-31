@@ -2,8 +2,8 @@ const fs = require("fs");
 const express = require("express");
 const router = express.Router();
 const hash = require('hash.js');
-const nodemailer = require('nodemailer');
 const path = require("path");
+const mailSender = require("./mailSender.js");
 
 // db접속
 const data = fs.readFileSync(__dirname + "/db.json");
@@ -25,11 +25,9 @@ connection.connect();
 router.post('/password/find',(req, res)=>{
 	console.log("비밀번호찾기",req.body)
 	const userEmail = req.body.email
-	
-
 
 	// DB에서 비교
-	connection.query(`SELECT * FROM member WHERE email='${userEmail}'`, (err,rows,fields) => {
+	connection.query(`SELECT * FROM nyang_member WHERE email='${userEmail}'`, (err,rows,fields) => {
 		if(err){
 			console.log("에러",err)
 			res.json({
@@ -46,42 +44,23 @@ router.post('/password/find',(req, res)=>{
 					
 				let radomToken = hash.sha256().update(userEmail+Math.random()*1).digest('hex');
 				
-				connection.query(`UPDATE member SET token='${radomToken}' WHERE email='${userEmail}'`,(err)=>{
+				connection.query(`UPDATE nyang_member SET token='${radomToken}' WHERE email='${userEmail}'`,(err)=>{
 					if(err){
 						console.log('에러',err)
 					}else {
 						console.log('토큰UPDATE')
 					}
 				})
-
 				
-				let transporter = nodemailer.createTransport({
-					service: 'gmail',
-					auth: {
-						user: 'nyangterest@gmail.com',  // gmail 계정 아이디를 입력
-						pass: 'sidxjfptmxm!'          // gmail 계정의 비밀번호를 입력
-					}
-				});
 			
-				let mailOptions = {
-					from: 'nyangterest@gmail.com',    // 발송 메일 주소 (위에서 작성한 gmail 계정 아이디)
-					to: userEmail,                     // 수신 메일 주소
+				let mailSenderOption = {
+					toEmail: userEmail,                     // 수신 메일 주소
 					subject: '냥터레스트 비밀번호를 재설정해주세요.',   // 제목
 					text: `http://localhost:8080/account/password/modify?&token=${radomToken} 해당 링로 접속하여 비밀번호를 재설정해주세요.`  // 내용
 				};
 
-				transporter.sendMail(mailOptions, (error, info)=> {
-			
-					if (error) {
-						console.log(error);
-					}
-					else {
-						console.log('Email sent: ' + info.response);
-						res.json({
-							emailMatch:  true
-						})
-					}
-				});
+				// 비밀번호 재설정 이메일 전송
+				mailSender.sendGmail(mailSenderOption);
 
 			}
 		}
@@ -97,7 +76,7 @@ router.post('/password/modify',(req,res)=>{
 	const token = req.body.modifyToken;
 	const password = hash.sha256().update(req.body.password).digest('hex');
 
-	connection.query(`UPDATE member SET password='${password}' WHERE token='${token}'`,(err,rows)=>{
+	connection.query(`UPDATE nyang_member SET password='${password}' WHERE token='${token}'`,(err,rows)=>{
 		if(err){
 			console.log("비밀번호찾기 비번 업데이트 에러",err)
 			res.json({

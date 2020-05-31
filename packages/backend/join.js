@@ -3,8 +3,8 @@ const express = require("express");
 const path = require("path");
 const router = express.Router();
 const hash = require('hash.js');
-const nodemailer = require('nodemailer');
 const moment = require("moment");
+const mailSender = require('./mailSender.js');
 
 // db접속
 const data = fs.readFileSync(__dirname + "/db.json");
@@ -22,40 +22,6 @@ const connection = mysql.createConnection({
 
 connection.connect();
 
-// 메일 발송 객체
-const mailSender = {
-	// gmail발송
-	sendGmail : function(param){
-        const transporter = nodemailer.createTransport({
-            service: 'gmail'
-            ,prot : 587
-            ,host :'smtp.gmlail.com'
-            ,secure : false
-            ,requireTLS : true
-            , auth: {
-              user: 'nyangterest@gmail.com'
-              ,pass: 'hzdyfwgydlsalfkg'
-            }
-		});
-		
-        // 메일 옵션
-        const mailOptions = {
-			from: 'nyangterest@gmail.com',
-			to: param.toEmail, // 수신할 이메일
-			subject: param.subject, // 메일 제목
-			text: param.text // 메일 내용
-		};
-
-        // 메일 발송    
-        transporter.sendMail(mailOptions, function(error, info){
-            if (error) {
-            console.log(error);
-            } else {
-            console.log('Email sent: ' + info.response);
-            }
-        });
-    }
-}
 
 router.post("/join", (req, res) => {
 	const body = req.body;
@@ -70,7 +36,7 @@ router.post("/join", (req, res) => {
 	const emailLink = `http://localhost:8080/welcome?email=${memberMail}&token=${emailToken}`;
 
 	// 메일 발송 params
-	const mailSenderParams = {
+	let mailSenderOption = {
 		toEmail: memberMail,
 		subject: '냥터레스트 회원가입을 위한 이메일 인증을 부탁드립니다.',
 		text: `안녕하세요 회원가입을 축하드립니다. ${emailLink} 해당 링크로 접속해주시면 인증이 완료되어 냥터레스트에 로그인하실 수 있습니다.`,
@@ -105,7 +71,7 @@ router.post("/join", (req, res) => {
 			});
 
 			// 회원가입 인증 메일 발송
-			mailSender.sendGmail(mailSenderParams);
+			mailSender.sendGmail(mailSenderOption);
 
 			// 이메일 중복 여부 front로 전송
 			res.send({
