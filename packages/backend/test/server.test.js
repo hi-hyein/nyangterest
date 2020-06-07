@@ -1,8 +1,25 @@
 
 const request = require('supertest')
 const app = require('../server')
+const filter = require('../server')
+// jest.mock('../server')
 
 describe("Nyangterest Unit test!", () => {
+	const startDay = new Date(Date.now() + -14 * 24 * 3600 * 1000).toISOString().slice(0, 10).replace(/-/g, "");
+	const endDay = new Date().toISOString().slice(0, 10).replace(/-/g, "");
+	const str = "keyword"
+	// const url = `/page/${startDay}/${endDay}/${per}/000116/${str}`;
+
+	const getData = async (url) => {
+		try {
+			const response = await request(app).get(url);
+			const items = await response.body.items;
+			return items;
+
+		} catch (error) {
+			console.log(error);
+		}
+	};
 
 	// Mock Object
 	const body = {
@@ -332,9 +349,16 @@ describe("Nyangterest Unit test!", () => {
 		const per = 6;
 		const data = body.items;
 
+
+		test('Test function ', () => {
+			filter.addArr = jest.fn();
+			filter.filterItems = jest.fn()
+
+			expect(filter.addArr.mock).toBeTruthy()
+			expect(filter.filterItems.mock).toBeTruthy()
+		})
+
 		test('True and False test', () => {
-			expect(data).toBeDefined()
-			expect(data).not.toBeNull();
 			expect((data[0][0]).age.length > 0).toBeTruthy();
 		})
 
@@ -373,19 +397,17 @@ describe("Nyangterest Unit test!", () => {
 		})
 
 		test('Default', () => {
-			expect.assertions(4);
-			expect(data[0].length).toBeDefined()
-			expect(data[0].length).not.toBeNull();
+			expect.assertions(2);
 			expect(data[0].length <= per).toBeTruthy();
 			expect(data[0].length > per).toBeFalsy();
 		})
 
-		test('Test search/kind', (done) => {
-			request(app)
-				.get('/search/kind')
-				.set('Content-Type', 'application/json')
-				.expect(200, done)
-		})
+		// test('Test search/kind', (done) => {
+		// 	request(app)
+		// 		.get('/search/kind')
+		// 		.set('Content-Type', 'application/json')
+		// 		.expect(200, done)
+		// })
 	})
 
 })
