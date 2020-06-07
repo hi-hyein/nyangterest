@@ -162,3 +162,12 @@ sessions/*
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+
+# lock
+packages-lock.json
+yarn.lock
+packages/backend/package-lock.json
+packages/backend/yarn.lock
+packages/frontend/package-lock.json
+packages/frontend/yarn.lock
