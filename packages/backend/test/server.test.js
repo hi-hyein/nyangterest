@@ -1,18 +1,17 @@
 
 const request = require('supertest')
-const app = require('../server')
-const filter = require('../server')
-// jest.mock('../server')
+const server = require('../server')
 
 describe("Nyangterest Unit test!", () => {
-	const startDay = new Date(Date.now() + -14 * 24 * 3600 * 1000).toISOString().slice(0, 10).replace(/-/g, "");
+	const per = 6;
+	const startDay = new Date(Date.now() + -1 * 24 * 3600 * 1000).toISOString().slice(0, 10).replace(/-/g, "");
 	const endDay = new Date().toISOString().slice(0, 10).replace(/-/g, "");
 	const str = "keyword"
-	// const url = `/page/${startDay}/${endDay}/${per}/000116/${str}`;
+	const url = `/page/${startDay}/${endDay}/${per}/000116/${str}`;
 
 	const getData = async (url) => {
 		try {
-			const response = await request(app).get(url);
+			const response = await request(server.app).get(url);
 			const items = await response.body.items;
 			return items;
 
@@ -22,7 +21,7 @@ describe("Nyangterest Unit test!", () => {
 	};
 
 	// Mock Object
-	const body = {
+	const body_ex = {
 		"items":
 			[[
 				{
@@ -343,19 +342,327 @@ describe("Nyangterest Unit test!", () => {
 				}
 			]]
 	}
+	const body = {
+		"items":
+			[
+				{
+					"age": "2020(년생)",
+					"colorCd": "치즈노랑",
+					"happenDt": 20200519,
+					"kindCd": "[고양이] 한국 고양이",
+					"neuterYn": "U",
+					"sexCd": "F",
+					"weight": "1(Kg)"
+				},
+				{
+					"age": "2020(년생)",
+					"colorCd": "검정,갈색",
+					"happenDt": 20200519,
+					"kindCd": "[고양이] 기타",
+					"neuterYn": "Y",
+					"sexCd": "M",
+					"weight": "0.4(Kg)"
+				},
+				{
+					"age": "2018(년생)",
+					"colorCd": "흰색",
+					"happenDt": 20200519,
+					"kindCd": "[고양이] 한국 고양이",
+					"neuterYn": "N",
+					"sexCd": "M",
+					"weight": "0.4(Kg)"
+				},
+				{
+					"age": "2017(년생)",
+					"colorCd": "회색",
+					"happenDt": 20200519,
+					"kindCd": "[고양이] 러시안 블루",
+					"neuterYn": "Y",
+					"sexCd": "M",
+					"weight": "0.8(Kg)"
+				},
+				{
+					"age": "2018(년생)",
+					"colorCd": "흰색",
+					"happenDt": 20200519,
+					"kindCd": "[고양이] 한국 고양이",
+					"neuterYn": "N",
+					"sexCd": "M",
+					"weight": "0.4(Kg)"
+				},
+				{
+					"age": "2020(년생)",
+					"colorCd": "치즈노랑",
+					"happenDt": 20200519,
+					"kindCd": "[고양이] 한국 고양이",
+					"neuterYn": "Y",
+					"sexCd": "F",
+					"weight": "3(Kg)"
+				},
+				{
+					"age": "2020(년생)",
+					"colorCd": "치즈노랑",
+					"happenDt": 20200518,
+					"kindCd": "[고양이] 한국 고양이",
+					"neuterYn": "U",
+					"sexCd": "F",
+					"weight": "1(Kg)"
+				},
+				{
+					"age": "2020(년생)",
+					"colorCd": "검정,갈색",
+					"happenDt": 20200518,
+					"kindCd": "[고양이] 기타",
+					"neuterYn": "Y",
+					"sexCd": "M",
+					"weight": "0.4(Kg)"
+				},
+				{
+					"age": "2018(년생)",
+					"colorCd": "흰색",
+					"happenDt": 20200518,
+					"kindCd": "[고양이] 한국 고양이",
+					"neuterYn": "N",
+					"sexCd": "M",
+					"weight": "0.4(Kg)"
+				},
+				{
+					"age": "2017(년생)",
+					"colorCd": "회색",
+					"happenDt": 20200518,
+					"kindCd": "[고양이] 러시안 블루",
+					"neuterYn": "Y",
+					"sexCd": "M",
+					"weight": "0.8(Kg)"
+				},
+				{
+					"age": "2018(년생)",
+					"colorCd": "흰색",
+					"happenDt": 20200518,
+					"kindCd": "[고양이] 한국 고양이",
+					"neuterYn": "N",
+					"sexCd": "M",
+					"weight": "0.4(Kg)"
+				},
+				{
+					"age": "2020(년생)",
+					"colorCd": "치즈노랑",
+					"happenDt": 20200518,
+					"kindCd": "[고양이] 한국 고양이",
+					"neuterYn": "Y",
+					"sexCd": "F",
+					"weight": "3(Kg)"
+				},
+				{
+					"age": "2020(년생)",
+					"colorCd": "치즈노랑",
+					"happenDt": 20200517,
+					"kindCd": "[고양이] 한국 고양이",
+					"neuterYn": "U",
+					"sexCd": "F",
+					"weight": "1(Kg)"
+				},
+				{
+					"age": "2020(년생)",
+					"colorCd": "검정,갈색",
+					"happenDt": 20200517,
+					"kindCd": "[고양이] 기타",
+					"neuterYn": "Y",
+					"sexCd": "M",
+					"weight": "0.4(Kg)"
+				},
+				{
+					"age": "2018(년생)",
+					"colorCd": "흰색",
+					"happenDt": 20200517,
+					"kindCd": "[고양이] 한국 고양이",
+					"neuterYn": "N",
+					"sexCd": "M",
+					"weight": "0.4(Kg)"
+				},
+				{
+					"age": "2017(년생)",
+					"colorCd": "회색",
+					"happenDt": 20200517,
+					"kindCd": "[고양이] 러시안 블루",
+					"neuterYn": "Y",
+					"sexCd": "M",
+					"weight": "0.8(Kg)"
+				},
+				{
+					"age": "2018(년생)",
+					"colorCd": "흰색",
+					"happenDt": 20200517,
+					"kindCd": "[고양이] 한국 고양이",
+					"neuterYn": "N",
+					"sexCd": "M",
+					"weight": "0.4(Kg)"
+				},
+				{
+					"age": "2020(년생)",
+					"colorCd": "치즈노랑",
+					"happenDt": 20200517,
+					"kindCd": "[고양이] 한국 고양이",
+					"neuterYn": "Y",
+					"sexCd": "F",
+					"weight": "3(Kg)"
+				},
+				{
+					"age": "2020(년생)",
+					"colorCd": "치즈노랑",
+					"happenDt": 20200516,
+					"kindCd": "[고양이] 한국 고양이",
+					"neuterYn": "U",
+					"sexCd": "F",
+					"weight": "1(Kg)"
+				},
+				{
+					"age": "2020(년생)",
+					"colorCd": "검정,갈색",
+					"happenDt": 20200516,
+					"kindCd": "[고양이] 기타",
+					"neuterYn": "Y",
+					"sexCd": "M",
+					"weight": "0.4(Kg)"
+				},
+				{
+					"age": "2018(년생)",
+					"colorCd": "흰색",
+					"happenDt": 20200516,
+					"kindCd": "[고양이] 한국 고양이",
+					"neuterYn": "N",
+					"sexCd": "M",
+					"weight": "0.4(Kg)"
+				},
+				{
+					"age": "2017(년생)",
+					"colorCd": "회색",
+					"happenDt": 20200516,
+					"kindCd": "[고양이] 러시안 블루",
+					"neuterYn": "Y",
+					"sexCd": "M",
+					"weight": "0.8(Kg)"
+				},
+				{
+					"age": "2018(년생)",
+					"colorCd": "흰색",
+					"happenDt": 20200516,
+					"kindCd": "[고양이] 한국 고양이",
+					"neuterYn": "N",
+					"sexCd": "M",
+					"weight": "0.4(Kg)"
+				},
+				{
+					"age": "2020(년생)",
+					"colorCd": "치즈노랑",
+					"happenDt": 20200516,
+					"kindCd": "[고양이] 한국 고양이",
+					"neuterYn": "Y",
+					"sexCd": "F",
+					"weight": "3(Kg)"
+				},
+				{
+					"age": "2020(년생)",
+					"colorCd": "치즈노랑",
+					"happenDt": 20200515,
+					"kindCd": "[고양이] 한국 고양이",
+					"neuterYn": "U",
+					"sexCd": "F",
+					"weight": "1(Kg)"
+				},
+				{
+					"age": "2020(년생)",
+					"colorCd": "검정,갈색",
+					"happenDt": 20200515,
+					"kindCd": "[고양이] 기타",
+					"neuterYn": "Y",
+					"sexCd": "M",
+					"weight": "0.4(Kg)"
+				},
+				{
+					"age": "2018(년생)",
+					"colorCd": "흰색",
+					"happenDt": 20200515,
+					"kindCd": "[고양이] 한국 고양이",
+					"neuterYn": "N",
+					"sexCd": "M",
+					"weight": "0.4(Kg)"
+				},
+				{
+					"age": "2017(년생)",
+					"colorCd": "회색",
+					"happenDt": 20200515,
+					"kindCd": "[고양이] 러시안 블루",
+					"neuterYn": "Y",
+					"sexCd": "M",
+					"weight": "0.8(Kg)"
+				},
+				{
+					"age": "2018(년생)",
+					"colorCd": "흰색",
+					"happenDt": 20200515,
+					"kindCd": "[고양이] 한국 고양이",
+					"neuterYn": "N",
+					"sexCd": "M",
+					"weight": "0.4(Kg)"
+				},
+				{
+					"age": "2020(년생)",
+					"colorCd": "치즈노랑",
+					"happenDt": 20200515,
+					"kindCd": "[고양이] 한국 고양이",
+					"neuterYn": "Y",
+					"sexCd": "F",
+					"weight": "3(Kg)"
+				},
+				{
+					"age": "2020(년생)",
+					"colorCd": "치즈노랑",
+					"happenDt": 20200514,
+					"kindCd": "[고양이] 한국 고양이",
+					"neuterYn": "U",
+					"sexCd": "F",
+					"weight": "1(Kg)"
+				},
+				{
+					"age": "2020(년생)",
+					"colorCd": "검정,갈색",
+					"happenDt": 20200514,
+					"kindCd": "[고양이] 기타",
+					"neuterYn": "Y",
+					"sexCd": "M",
+					"weight": "0.4(Kg)"
+				},
+				{
+					"age": "2018(년생)",
+					"colorCd": "흰색",
+					"happenDt": 20200514,
+					"kindCd": "[고양이] 한국 고양이",
+					"neuterYn": "N",
+					"sexCd": "M",
+					"weight": "0.4(Kg)"
+				},
+				{
+					"age": "2017(년생)",
+					"colorCd": "회색",
+					"happenDt": 20200514,
+					"kindCd": "[고양이] 러시안 블루",
+					"neuterYn": "Y",
+					"sexCd": "M",
+					"weight": "0.8(Kg)"
+				}
+			]
+	}
 
 	describe('GET request parameters test', () => {
 
-		const per = 6;
 		const data = body.items;
 
+		test.only('Test function async/await', async () => {
+			const result = await server.filterArr(data, "흰색");
+			expect((result.length) > 0).toBeTruthy();
+			expect(result[0].colorCd).toEqual("흰색")
 
-		test('Test function ', () => {
-			filter.addArr = jest.fn();
-			filter.filterItems = jest.fn()
-
-			expect(filter.addArr.mock).toBeTruthy()
-			expect(filter.filterItems.mock).toBeTruthy()
 		})
 
 		test('True and False test', () => {
@@ -371,6 +678,7 @@ describe("Nyangterest Unit test!", () => {
 				expect(data[i][0].kindCd).toContain("[고양이] 한국 고양이");
 				expect((data[i][0]).length).not.toBe(0);
 			}
+
 		})
 
 		// 예외처리 

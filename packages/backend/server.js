@@ -153,8 +153,6 @@ if (process.env.NODE_ENV !== 'test') {
 	});
 }
 
-module.exports = app;
-
 const filterArr = async (defaultItem, searchField) => {
 
 	Array.prototype.addArr = function (n) {
@@ -206,4 +204,7 @@ const filterArr = async (defaultItem, searchField) => {
 
 }
 
-exports.filterArr = filterArr; 
+module.exports = {
+	app: app,
+	filterArr: filterArr
+}
