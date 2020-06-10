@@ -3,6 +3,7 @@
 		"app-root-path": "^3.0.0",
 		"connect-flash": "^0.1.1",
 		"cors": "^2.8.5",
+		"cross-env": "^7.0.2",
 		"dotenv": "^8.2.0",
 		"express": "^4.16.4",
 		"express-session": "^1.16.2",
@@ -23,7 +24,7 @@
 	},
 	"scripts": {
 		"start": "node server.js",
-		"test": "NODE_ENV=test jest --setupFiles dotenv/config --watch --runInBand --detectOpenHandles --forceExit"
+		"test": "cross-env NODE_ENV=test jest --setupFiles dotenv/config --watch --runInBand --detectOpenHandles --forceExit"
 	},
 	"name": "backend",
 	"version": "1.0.0",

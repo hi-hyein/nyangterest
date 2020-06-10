@@ -26,56 +26,6 @@ async function err() {
 	throw new Error('에러 발생');
 }
 
-const filterArr = async (defaultItem, searchField) => {
-
-	Array.prototype.addArr = function (n) {
-		const arr = this;
-		const length = arr.length;
-		const count = Math.ceil(length / n);
-		const item = [];
-		for (let i = 0; i < count; i++) {
-			item.push(arr.splice(0, n));
-		}
-		return item;
-	}
-
-	const strObj = {
-		"F": "암컷",
-		"M": "수컷",
-		"Q": "성별 미상",
-		"Y": "중성화O",
-		"N": "중성화X",
-		"U": "중성화 미상",
-		"한국 고양이": "코리안숏헤어"
-	}
-
-	let defaultValue = Object.values(defaultItem)
-
-	if (typeof defaultValue[0] === 'string') defaultValue = [defaultItem]
-
-	let filteredItems = defaultValue.filter(item => {
-		let re = new RegExp(Object.keys(strObj).join("|"), "gi");
-		let regExp = /[()]/gi;
-		let searchKeyword = searchField.toUpperCase().trim()
-		if (typeof item === "object") {
-			return (
-				Object.keys(item).some(
-					key =>
-						typeof item[key] === "string" &&
-						item[key].replace(re, (matched => {
-							return strObj[matched]
-						})).replace(regExp, "").toUpperCase().includes(searchKeyword)
-				)
-			);
-		} else {
-			return null;
-		}
-
-	})
-
-	return filteredItems;
-
-}
 
 // 기본주소
 router.get("/page/:bgnde/:endde/:numOfRows/:kind/:searchField", doAsync(async (req, res) => {
@@ -203,4 +153,58 @@ if (process.env.NODE_ENV !== 'test') {
 	});
 }
 
-module.exports = app;
+const filterArr = async (defaultItem, searchField) => {
+
+	Array.prototype.addArr = function (n) {
+		const arr = this;
+		const length = arr.length;
+		const count = Math.ceil(length / n);
+		const item = [];
+		for (let i = 0; i < count; i++) {
+			item.push(arr.splice(0, n));
+		}
+		return item;
+	}
+
+	const strObj = {
+		"F": "암컷",
+		"M": "수컷",
+		"Q": "성별 미상",
+		"Y": "중성화O",
+		"N": "중성화X",
+		"U": "중성화 미상",
+		"한국 고양이": "코리안숏헤어"
+	}
+
+	let defaultValue = Object.values(defaultItem)
+
+	if (typeof defaultValue[0] === 'string') defaultValue = [defaultItem]
+
+	let filteredItems = defaultValue.filter(item => {
+		let re = new RegExp(Object.keys(strObj).join("|"), "gi");
+		let regExp = /[()]/gi;
+		let searchKeyword = searchField.toUpperCase().trim()
+		if (typeof item === "object") {
+			return (
+				Object.keys(item).some(
+					key =>
+						typeof item[key] === "string" &&
+						item[key].replace(re, (matched => {
+							return strObj[matched]
+						})).replace(regExp, "").toUpperCase().includes(searchKeyword)
+				)
+			);
+		} else {
+			return null;
+		}
+
+	})
+
+	return filteredItems;
+
+}
+
+module.exports = {
+	app: app,
+	filterArr: filterArr
+}
