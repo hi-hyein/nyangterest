@@ -30,5 +30,61 @@ export const fadeInLeft = keyframes`
 		to {transform:translateX(0); opacity: 1;}
 
 `
+export const scaleFoot = keyframes`
+	0% {
+		transform: scale(1.5);
+		-webkit-transform: scale(1.5);
+		-moz-transform: scale(1.5);
+		-ms-transform: scale(1.5);
+		-o-transform: scale(1.5);
+	}
+
+	50% {
+		transform: scale(1.2);
+		-webkit-transform: scale(1.2);
+		-moz-transform: scale(1.2);
+		-ms-transform: scale(1.2);
+		-o-transform: scale(1.2);
+	}
+
+	100% {
+		transform: scale(1.5);
+		-webkit-transform: scale(1.5);
+		-moz-transform: scale(1.5);
+		-ms-transform: scale(1.5);
+		-o-transform: scale(1.5);
+	}
+
+
+`
+export const rotateFoot = keyframes`
+	0%{
+		transform: rotate(-10deg)	;
+		-webkit-transform: rotate(-10deg)	;
+		-moz-transform: rotate(-10deg)	;
+		-ms-transform: rotate(-10deg)	;
+		-o-transform: rotate(-10deg)	;
+	}
+
+	50%{
+		transform: rotate(0deg)	;
+		-webkit-transform: rotate(0deg)	;
+		-moz-transform: rotate(0deg)	;
+		-ms-transform: rotate(0deg)	;
+		-o-transform: rotate(0deg)	;
+	}
+
+	100% {
+		transform:rotate(10deg);
+		-webkit-transform:rotate(10deg);
+		-moz-transform:rotate(10deg);
+		-ms-transform:rotate(10deg);
+		-o-transform:rotate(10deg);
+	}
+
+
+`
+
+
 
 

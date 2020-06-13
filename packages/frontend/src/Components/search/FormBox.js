@@ -25,7 +25,7 @@ const Fieldset = styled.fieldset`
 	min-width: 100%;
 	height: 62px;
     min-height: 1.1875em;
-	// padding: 0 14px;
+	padding-left: 8px;
     border: 1px solid rgba(0, 0, 0, 0.23);
 	border-radius: 4px;
 	transition: padding-left 200ms cubic-bezier(0.0, 0, 0.2, 1) 0ms,border-color 200ms cubic-bezier(0.0, 0, 0.2, 1) 0ms,border-width 200ms cubic-bezier(0.0, 0, 0.2, 1) 0ms;
@@ -47,7 +47,7 @@ const Fieldset = styled.fieldset`
 
 	& legend {	
 				color: rgba(0, 0, 0, 0.54);
-				padding: 0;
+				padding: 0 0 0 3px;
 				font-size: 12px;
 				line-height: 1;
 				text-align: left;
@@ -67,7 +67,7 @@ const FormBox = (props) => {
 		<Fragment>
 			<FormControlDiv variant="outlined">
 				<Fieldset>
-					<legend>시작일 &amp; 종료일 </legend>
+					<legend>날짜</legend>
 					{props.children}
 				</Fieldset>
 			</FormControlDiv>
