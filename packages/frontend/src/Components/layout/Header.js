@@ -12,6 +12,7 @@ import Paper from '@material-ui/core/Paper';
 import LayerModifyInfo from "../popup/LayerModifyInfo";
 import LayerFindPassword from "../popup/LayerFindPassword";
 import LayerUnregister from "../popup/LayerUnregister";
+import LogoIcon from "./LogoIcon";
 
 @inject('loginStore')
 @observer
@@ -99,7 +100,7 @@ class Header extends React.Component {
 			top: '0',
 			left: '0',
 			right: '0',
-			padding: "0 20px",
+			padding: "0 20px 10px",
 			zIndex: '999',
 			backgroundColor: '#edf4e7',
 			borderBottom: '1px solid #a1ceab'
@@ -107,13 +108,26 @@ class Header extends React.Component {
 
 		const LogoStyle = {
 			position: 'absolute',
-			top: '50%',
+			top: '46%',
 			left: '50%',
 			transform: 'translate(-50%,-50%)',
 			fontFamily: 'Cute Stitch',
 			fontSize: '2.5rem',
 			fontWeight: 'normal',
 			letterSpacing: '3px'
+		}
+
+		const AppInfo = {
+			position: 'absolute',
+			width: '100%',
+			bottom: '-4px',
+			paddingRight: '3rem',
+			fontSize: '0.8rem',
+			color: '#90b999',
+			textAlign: 'center',
+			lineHeight: '2rem',
+			letterSpacing: '3px'
+
 		}
 
 		const menuBtnArea = {
@@ -133,8 +147,8 @@ class Header extends React.Component {
 
 			<>
 				<div className="header" style={HeaderStyle}>
-					<h1 style={LogoStyle}><Link exact="true" to="/" style={{ textDecoration: 'none', color: '#a1ceab' }} onClick={this.reload}>"NYANGTEREST"</Link></h1>
-
+					<h1 style={LogoStyle}><Link exact="true" to="/" style={{ textDecoration: 'none', color: '#a1ceab' }} onClick={this.reload}><LogoIcon /> NYANGTEREST</Link></h1>
+					<p style={AppInfo}>냥터레스트는 유기묘 정보 조회 서비스입니다.</p>
 					{/* 로그아웃 상태 : 로그인 상태 */}
 					<div className="button-area" style={{ float: "right", margin: "20px 0" }}>
 						{userState === 'logout' ?
@@ -163,30 +177,35 @@ class Header extends React.Component {
 							</>
 						}
 					</div>
-				</div>
+				</div >
 				{/* 레이어 */}
-				{openLogin &&
+				{
+					openLogin &&
 					<Layer onClose={this.popupCLose} layerTitle="Login">
 						<LayerLogin onClose={this.popupCLose} openFindPassword={this.popupOpenFindPassword} openJoinLayer={this.popupOpenJoin} />
 					</Layer>
 				}
-				{openJoin &&
+				{
+					openJoin &&
 					<Layer onClose={this.popupCLose} layerTitle="Join">
 						<LayerJoin />
 					</Layer>
 				}
-				{openModify &&
+				{
+					openModify &&
 					<Layer onClose={this.popupCLose} layerTitle="회원정보수정">
 						<LayerModifyInfo />
 					</Layer>
 				}
-				{openFindPassword &&
+				{
+					openFindPassword &&
 					<Layer onClose={this.popupCLose} layerTitle="이메일 / 비밀번호 찾기" >
 						<LayerFindPassword />
 					</Layer>
 				}
 
-				{openUnresister &&
+				{
+					openUnresister &&
 					<Layer onClose={this.popupCLose} layerTitle="회원탈퇴" >
 						<LayerUnregister />
 					</Layer>

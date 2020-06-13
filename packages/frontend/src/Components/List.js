@@ -20,17 +20,17 @@ const ListWrapper = styled.ul`
 		grid-column: span 1;
 		animation: ${fadeInUp} 1s both;
 
-		&:nth-child(16n+1),:nth-child(16n+2),:nth-child(16n+3),:nth-child(16n+4)> button > div  {
+		&:nth-child(16n+1),:nth-child(16n+2),:nth-child(16n+3),:nth-child(16n+4)> div > div  {
 			 border-top: 2px solid #ee9b97;
 			  border-radius: 8px;
 		}	
 
-		&:nth-child(16n+5),:nth-child(16n+6),:nth-child(16n+7),:nth-child(16n+8) > button > div  {
+		&:nth-child(16n+5),:nth-child(16n+6),:nth-child(16n+7),:nth-child(16n+8) > div > div  {
 			 border-top: 1px solid #4A8391;
 			 border-radius: 8px;
 		}
 
-		&:nth-child(16n+9),:nth-child(16n+10),:nth-child(16n+11),:nth-child(16n+12) > button > div  {
+		&:nth-child(16n+9),:nth-child(16n+10),:nth-child(16n+11),:nth-child(16n+12) > div > div  {
 			 border-top: 2px solid #A1CEAB;
 			 border-radius: 8px;
 		}	
@@ -56,7 +56,7 @@ const ListWrapper = styled.ul`
 	}
 `;
 
-const Button = styled.button`
+const Button = styled.div`
 	width: 100%;
     padding: 0;
 	font-size: inherit;
@@ -79,7 +79,7 @@ class List extends Component {
 				{products.map((product) => {
 					return (
 						<li key={product.desertionNo}>
-							<Button onClick={() => popupOpen(product.desertionNo)}>
+							<Button role="button" onClick={() => popupOpen(product.desertionNo)}>
 								<Item {...product} />
 							</Button>
 							{isOpen === product.desertionNo &&
