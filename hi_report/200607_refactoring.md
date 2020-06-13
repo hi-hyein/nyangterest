@@ -221,7 +221,7 @@ validate = (format, value) => {
 ```
 위 코드를 보면 caalient에서 실패시에 대한 처리가 없음. 로그인 실패시 로직을 추가하여 개선
 
-### 불필요한 분리일까?
+### changeUserState, changeUserId 합치기?분리?(고민중...)
 로그인,로그아웃시에 로그인 상태유무와, 유저아이디는 동시에 변경이 되어야한다.
 그러나 내가 만든 기능은 모두 분리되어있음.
 직관적이기 위해 둘은 분리되어야하는가? 하나로 합쳐 불필요한 분리를 개선해야하는가..?
@@ -271,7 +271,8 @@ export default class loginStore {
 })
 ```
 
-- 개선될 부분은 계속 추가중입니다!
-
-
-
+### 정적인 html 페이지 개선
+정적인 html페이지로 작업되어있는 페이지들을 react에 맞게 개선하기
+- backend/welcome.html
+- backend/welcome2.html
+- backend/password.html
