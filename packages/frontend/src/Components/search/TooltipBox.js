@@ -14,12 +14,13 @@ const TooltipBoxWrapper = styled.div`
 	height: 100px;
 
 	@media screen and (max-width: 1024px) {
-		top: unset;
+		top: 52px;
 		height: auto;
 	}
 	
 	@media screen and (max-width: 700px) {
-		margin:24px 0 0;
+		top: unset;
+		margin: 10px 0 0;
 		height: 0;
 	}
 
@@ -34,11 +35,14 @@ const IconButton = styled.button`
 	transition: all 2s ease;
 
 		&.active {
+			// position: absolute;
+			// right: 0;
 			color: #a1ceab;
 
 
 			& + div {
 				opacity: 0;
+				height: 0;
 				// animation: ${fadeOutDown} 0.5s both;
 
 			}
@@ -111,7 +115,7 @@ const TooltipBox = (props) => {
 			<TooltipBoxWrapper className="btn-wrap">
 				<IconButton className={props.active ? 'active' : ''} onClick={props.onClick} ><MdPets /></IconButton>
 				<CookieConsent disableStyles cookieName="TooltipBox" buttonText={"오늘 하루 보이지 않기 X"} location="none" onAccept={() => { alert("24시간 동안 툴팁박스가 보이지 않게 되었습니다! ") }} expires={1} >
-					<p>시작일,종료일/품종/검색어 <br />[검색어 입력 예시]<br /> 색상: 치즈 <br />성별: 암컷 또는 수컷<br />나이: 2019년생 <br />주소: 인천광역시</p>
+					<p>날짜/품종/검색어 <br />[검색어 입력 예시]<br /> 색상: 치즈 <br />성별: 암컷 또는 수컷<br />나이: 2019년생 <br />주소: 인천광역시</p>
 				</CookieConsent>
 			</TooltipBoxWrapper>
 		</Fragment>

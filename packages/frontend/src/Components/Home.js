@@ -29,7 +29,7 @@ const SearchDiv = styled.div`
   transition: all 0.2s ease;
 
   @media screen and (max-width: 1024px) {
-    position: relative;
+    // position: relative;
     align-items: center;
     justify-content: center;
   }
@@ -46,6 +46,14 @@ const SearchDiv = styled.div`
   @media screen and (max-width: 640px) {
     padding-top: 20%;
   }
+
+  @media screen and (max-width:639px) and (min-width:361px) {
+    padding-top: 24%;
+  }
+
+  @media screen and (max-width: 360px) {
+    padding-top: 25%;
+  }
 `;
 
 const Form = styled.form`
@@ -60,17 +68,20 @@ const Form = styled.form`
   }
 
   &.slide-in {
+	top: 52px;  
     margin-top: 24px;
     height: 86px;
     transform: translateX(0);
+
+	& + div {
+		min-width: 50px;
+	}
 
     @media screen and (max-width: 1024px) {
       padding-top: 14%;
       height: auto;
 
       + .btn-wrap {
-        margin-top: 24px;
-        top: unset;
 		min-width: auto;
 		margin-left: 10px;
       }
@@ -88,6 +99,7 @@ const Form = styled.form`
       opacity: 1;
 
       + .btn-wrap {
+		top: unset;  
         margin-top: 15px;
       }
     }
@@ -95,6 +107,10 @@ const Form = styled.form`
 
   &.slide-out {
     transform: translateX(-500%);
+
+	@media screen and (max-width: 1024px) {
+		max-height: 150px;
+    }
 
     @media screen and (max-width: 700px) {
       margin-top: -100px;
