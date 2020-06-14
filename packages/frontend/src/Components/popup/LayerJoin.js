@@ -162,7 +162,7 @@ class LayerJoin extends Component {
 					this.setState(prevState => ({
 						email: {
 							...prevState.email,
-							vaildate : null
+							vaildate : false
 						}
 					}))
 					alert(email.helper.overlapping)
@@ -185,7 +185,6 @@ class LayerJoin extends Component {
 
 	render() {
 		const { email, password } = this.state
-		console.log(this.state)
 		return (
 			<div>
 				<div>
