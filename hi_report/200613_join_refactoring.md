@@ -88,3 +88,42 @@ this.setState(prevState => ({
 ```
 
 
+### 이메일 중복체크 실시간으로 보여주기(helper text로 보여주기)
+
+#### 기존 Flow
+- Front
+  - 회원가입 입력창에 이메일, 비밀번호, 비밀번호확인 입력시 validate 체크
+  - 이메일, 비밀번호, 비빌번호 확인 입력란이 모두 입력되고 회원가입버튼을 누르면 server에 이메일주소와 패스워드를 server로 보내 회원가입 요청(이메일,비밀번호,비밀번호확인 validate === true 이어야함 그렇지 않을시에는 알맞게 입력해달라는 alert 노출)
+  - server에서 중볶유무값을 받아 state에 저장한다.
+  - 저장된 중복 state값이 true면 사용중인 이메일이라는 alert를 띄운다.
+  - 저장된 중복 state값이 false면 회원가입이 완료되었다는ㄴ alert를 띄운다.
+
+- Server
+  - front에서 회원정보(email, password)를 받는다.
+  - 데이터베이스 nyang_member table에서 email조건으로 row를 찾는다.
+  - email조건으로 검색된 결과값으로 이메일 중복여부 boolean값을 front로 보낸다.
+  - 중복여부가 true라면 front로 true를 보낸다
+  - 중복여부가 false라면 이메일, 암호화된 패스워드, 등록날짜, 이메일인증여부, 인증관련토큰을    데이터베이스 nyang_member table에 등록하고, 이메일인증을 위한 메일을 보낸다. 그리고 front로 false를보낸다
+
+지금은 server에 /join 으로 요청을 받으면 멤버중복처리 & 중복처리응답 & 정보db저장 & 인증메일전송기능을 모두 한번에 하고있음.
+
+이메일 중복처리와 가입기능을 분리시켜 처리
+
+- 회원가입 이메일 중복처리 : /user/exists/email/:useremail
+- 회원가입 : /user/join
+
+### 새로운 Flow
+- Front
+  - 회원가입 입력창에 이메일, 비밀번호, 비밀번호확인 입력시 validate 체크
+  - 회원가입 입력창에서 받은 email주소의(onChange) validate가 true면 server에 이메일 중복처리 요청
+  - server에서 받응 응답으로 이메일 중복처리 state(overlapping) 변경
+  - 중복처리에 대한 helper text를 보여준다.
+  - 이메일, 비밀번호, 비빌번호 확인 입력란이 모두 입력되고 회원가입버튼을 누르면 server에 이메일주소와 패스워드를 server로 보내 회원가입 요청(이메일,비밀번호,비밀번호확인 validate && 이메일중복 === false && 모든 입력창 !== '' 이어야함 그렇지 않을시에는 알맞게 입력해달라는 alert 노출)
+  - server에서 등록 유무의 응답을 받아 alert를 띄운다.
+
+- Server
+  - 중복처리 후 응답
+  - front에서 받은 회원정보(이메일,패스워드)를 받아 회원등록을 진행한다.
+  - 이메일, 암호화된 패스워드, 등록날짜, 이메일인증여부, 인증관련토큰을 데이터베이스 nyang_member table에 등록한다.
+  - 등록이 완료되면 이메일인증을 위한 메일을 보낸다.
+  - 등록이 완료되면 등록 유무의 응답을 보낸다.
