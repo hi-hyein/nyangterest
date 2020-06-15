@@ -11,7 +11,6 @@ const Wrapper = styled.div`
 	position: relative;
 	max-width: 1280px;
 	margin: 0 auto;
-	padding-top: 10px;
 	text-align: center;
 `;
 
@@ -21,8 +20,8 @@ class App extends Component {
 			<Router>
 				<Fragment>
 					<div id="wrap">
-						{/* 헤더 */}
-						<Header/>
+						{/* ?? */}
+						<Header />
 						<Wrapper>
 							<GlobalStyle />
 							<Nav />

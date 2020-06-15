@@ -8,19 +8,19 @@ import { fadeOutDown } from "../Animations";
 
 const TooltipBoxWrapper = styled.div`
 	position: relative;
-	top: 42px;
+	// top: 42px;
 	margin-left: auto;
 	min-width: 200px;
-	height: 100px;
+	// height: 100px;
 
-	@media screen and (max-width: 1024px) {
-		top: 52px;
+	@media screen and (max-width: 960px) {
+		position: fixed;
 		height: auto;
+		padding-top: 12vh
 	}
 	
 	@media screen and (max-width: 700px) {
-		top: unset;
-		margin: 10px 0 0;
+		top: 0
 		height: 0;
 	}
 
