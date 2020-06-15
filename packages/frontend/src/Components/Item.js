@@ -33,29 +33,40 @@ const Content = styled.div`
 const Info = styled.div`
 	width: 100%;
 
-	& > h2 {
-		padding-bottom: 0.5rem;
-		font-weight: 600;
-	}
-
-	& > p {
-		padding-bottom: 1rem;
-	}
-
-	& > span {
-		display: flex;
-		height: 180px;
-		justify-content: center;
-		align-items: center;
-	
-		& > img {
-			width: 100%;
-			max-width: 100%;
-			max-height: 100%;
-		  object-fit: cover;
+	& > figure {
+			display: flex;
+			height: 180px;
+			margin-top: 6px;
+			justify-content: center;
+			align-items: center;
+		
+			& > img {
+				width: 100%;
+				max-width: 100%;
+				max-height: 100%;
+			object-fit: cover;
+			}
 		}
-	}
+
 `;
+
+const TextDiv = styled.div`
+	background: rgba(244,229,189,0.5);
+
+	& h2 {
+			padding: 0.5rem;
+			font-weight: 600;
+	}
+
+	&  p {
+		padding-bottom: 0.5rem;
+	}
+
+		
+
+
+`;
+
 
 const Item = ({ kindCd, happenDt, borderBottomColor = "#d2e5c5", popfile, desertionNo }) => {
 	const kind = kindCd.replace("한국 고양이", "코리안숏헤어")
@@ -63,8 +74,10 @@ const Item = ({ kindCd, happenDt, borderBottomColor = "#d2e5c5", popfile, desert
 		<Container borderBottomColor={borderBottomColor} >
 			<Content id={desertionNo}>
 				<Info>
-					<h2>품종: {kind}</h2>
-					<p>등록일: {happenDt}</p>
+					<TextDiv>
+						<h2>품종: {kind}</h2>
+						<p>등록일: {happenDt}</p>
+					</TextDiv>
 					{/* <p>색상: {colorCd}</p> */}
 					<CatImage popfile={popfile} alt={kind} />
 				</Info>
@@ -75,9 +88,9 @@ const Item = ({ kindCd, happenDt, borderBottomColor = "#d2e5c5", popfile, desert
 
 const CatImage = props => {
 	return (
-		<span>
+		<figure>
 			<img src={props.popfile} alt={props.alt} loading="eager" className="CatImage" />
-		</span>
+		</figure>
 	);
 };
 

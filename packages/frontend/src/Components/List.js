@@ -16,8 +16,12 @@ const ListWrapper = styled.ul`
 	justify-content: space-around;
 	transition: all 0.5s ease; 
 
+	@media screen and (min-width: 1281px) {
+		padding-top: 125px;
+	}
+
 	@media screen and (max-width: 960px) {
-		padding-top: 18vh;
+		padding-top: 19vh;
 	}
 
 	@media screen and (max-width: 700px) {
@@ -38,7 +42,7 @@ const ListWrapper = styled.ul`
 		}	
 
 		&:nth-child(16n+5),:nth-child(16n+6),:nth-child(16n+7),:nth-child(16n+8) > div > div  {
-			 border-top: 1px solid #4A8391;
+			 border-top: 2px solid #4A8391;
 			 border-radius: 8px;
 		}
 
