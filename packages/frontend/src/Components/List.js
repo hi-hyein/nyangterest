@@ -8,7 +8,7 @@ import { fadeInUp } from './Animations';
 
 // 리스트
 const ListWrapper = styled.ul`
-	padding: 113px 50px 70px;
+	padding: 113px 50px 30px;
 	display: grid;
 	grid-template-columns: repeat(auto-fill, 250px);
 	grid-gap: 20px;

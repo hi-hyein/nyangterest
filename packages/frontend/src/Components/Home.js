@@ -12,6 +12,7 @@ import SelectBox from "./search/SelectBox";
 import TooltipBox from "./search/TooltipBox";
 import BtnTop from "./BtnTop";
 import { fadeInDown, fadeOutUp } from "./Animations";
+import img from "../img/no_data.gif";
 
 const List = React.lazy(() => import('./List'));
 
@@ -137,7 +138,16 @@ const Form = styled.form`
 
 const Message = styled.div`
 	padding-top: 130px;
-	color: #f00;
+	color: #ee9b97;
+
+	& > p {
+		padding-top: 30px;
+		font-weight: 600;
+	}
+`;
+
+const LastPage = styled.p`
+	color: #4A8391;
 `;
 
 const Preloader = styled.figure`
@@ -214,7 +224,10 @@ class Home extends Component {
 				{!loading && (<Suspense fallback={renderLoader()}><List products={items} /></Suspense>)}
 
 				{!loading && !isLoading && !items.length &&
-					<Message><p>해당 데이터가 없습니다.</p></Message>
+					<Message>
+						<img src={img} alt="" />
+						<p>해당 데이터가 없습니다!</p>
+					</Message>
 				}
 
 				{!loading && (isLoading && hasMore) && (!(totalPage && (totalPage > items.length))) && (
@@ -225,7 +238,7 @@ class Home extends Component {
 				)}
 
 				{totalPage && (!(isLoading && hasMore)) && (items.length > 0) &&
-					(<Message><p>마지막 페이지입니다!</p></Message>)
+					(<Message><LastPage>마지막 페이지입니다!</LastPage></Message>)
 				}
 
 			</Fragment >

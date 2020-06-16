@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from "styled-components";
 import { rotateFoot } from "../Animations";
-import img from "./cat_head.png";
+import img from "../../img/cat_head.png";
 
 const Icon = styled.span`
   position: absolute;
