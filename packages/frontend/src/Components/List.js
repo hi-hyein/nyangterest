@@ -14,14 +14,18 @@ const ListWrapper = styled.ul`
 	grid-gap: 20px;
 	// grid-auto-rows: 300px;
 	justify-content: space-around;
-	transition: all 0.5s ease; 
+	transition: all 0.5s ease;
 
 	@media screen and (min-width: 1281px) {
 		padding-top: 125px;
 	}
 
 	@media screen and (max-width: 960px) {
-		padding-top: 19vh;
+		padding-top: 200px;
+
+		.show-filter + & {
+			padding-top: 450px
+		}
 	}
 
 	@media screen and (max-width: 700px) {

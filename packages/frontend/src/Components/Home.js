@@ -79,7 +79,7 @@ const Form = styled.form`
 	}
 
     @media screen and (max-width: 960px) {
-      padding-top: 20%;
+		padding-top: 170px;
       height: auto;
 	  transform: none;
       text-align: center;
@@ -99,8 +99,6 @@ const Form = styled.form`
     }
 
     @media screen and (max-width: 700px) {
-		padding-top: 17vh;
-
 		+ .btn-wrap {
 			top: 2px;  
 			
@@ -203,7 +201,7 @@ class Home extends Component {
 					onClick={handleScrollTop}
 					title="맨위로 이동"
 				/>
-				<SearchDiv>
+				<SearchDiv className={isVisible ? "show-filter" : ""}>
 					<Form onSubmit={(e) => { e.preventDefault(); }}
 						autoComplete="off"
 						className={isVisible ? "slide-in" : "slide-out"}

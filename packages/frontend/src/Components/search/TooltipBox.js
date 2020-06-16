@@ -16,7 +16,7 @@ const TooltipBoxWrapper = styled.div`
 	@media screen and (max-width: 960px) {
 		position: fixed;
 		height: auto;
-		padding-top: 12vh
+		padding-top: 130px;
 	}
 	
 	@media screen and (max-width: 700px) {
