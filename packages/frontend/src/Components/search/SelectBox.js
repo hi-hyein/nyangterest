@@ -55,6 +55,11 @@ const ValueDiv = styled.div`
 
 	& p {
 		font-size: 16px;
+
+		@media screen and (max-width: 960px) {
+			width: 100%;
+			padding-left: 0;
+		}
 	}
 
 	& + div {

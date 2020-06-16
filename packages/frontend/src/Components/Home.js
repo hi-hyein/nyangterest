@@ -70,9 +70,7 @@ const Form = styled.form`
   }
 
   &.slide-in {
-	// top: 52px;  
-    // margin-top: 24px;
-    // height: 86px;
+    height: 86px;
     transform: translateX(0);
 
 	& + div {

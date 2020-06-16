@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from "react";
 import { MdHome } from "react-icons/md";
 import { MdAssignment } from "react-icons/md";
+import { MdBuild } from "react-icons/md";
 import { NavLink } from "react-router-dom";
 import styled from "styled-components";
 
@@ -10,14 +11,17 @@ const NavWrapper = styled.div`
 	bottom: 0;
 	left: 0;
 	z-index: 100;
-	background: rgba(255,255,255,0.2);
+	background: rgba(255,255,255,0.8);
 	border-top: 1px solid #f8f9fa;
 		
 `
 
 const NavList = styled.ul`
+	max-width: 1280px;
+	margin: 0 auto;
+
 	li {
-		width: 20%;
+		width: 33.33%;
 		float: left;
 		text-align: center;
 
@@ -60,6 +64,16 @@ class Nav extends Component {
 								<MdAssignment />
 								<span>멤버리스트</span>
 							</NavLink>
+						</li>
+						<li>
+							<NavLink to="/dev">
+								<MdBuild />
+								<span>만든 사람들</span>
+							</NavLink>
+							{/* <dl>
+								<dt><MdAssignment /> 만든 사람들</dt>
+								<dd>정혜인, 조윤우 </dd>
+							</dl> */}
 						</li>
 					</NavList>
 				</NavWrapper>

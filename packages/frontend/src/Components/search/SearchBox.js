@@ -12,6 +12,11 @@ const TextFieldDiv = styled(TextField)`
 		[placeholder] {
 			text-overflow: ellipsis;
 			padding-left: 12px;
+
+			@media screen and (max-width: 960px) {
+				text-align: center;
+			
+			}
 		}
 
 		& label[class*="-focused"] {
