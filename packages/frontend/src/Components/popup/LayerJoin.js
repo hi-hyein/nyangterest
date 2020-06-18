@@ -56,14 +56,14 @@ class LayerJoin extends Component {
 				value: value
 			}
 		}))
-
+		
 		if (Validate) {
 			this.setState(prevState => ({
 				email: {
 					...prevState.email,
 					validate: true,
 				}
-			}))
+			}));
 		} else {
 			this.setState(prevState => ({
 				email: {
@@ -71,6 +71,23 @@ class LayerJoin extends Component {
 					validate: false,
 				}
 			}))
+		}
+
+		// 입력된 이메일값이 공백이 아닐때
+		if(value !== '' ) {
+			fetch(`/user/exists/email/${value}`)
+			.then(res => res.json())
+			.then(json => {
+				this.setState(prevState => ({
+					email: {
+						...prevState.email,
+						overlapping: json,
+					}
+				}));
+				console.log(this.state.email.overlapping)
+			})
+		}else {
+			return
 		}
 	}
 
@@ -142,7 +159,7 @@ class LayerJoin extends Component {
 			password: password
 		}
 
-		if (email.vaildate && password.vaildate && password.check.vaildate) {
+		if (email.vaildate && password.vaildate && password.check.vaildate && !email.overlapping ) {
 			fetch('/join', {
 				headers: {
 					'Accept': 'application/json',
@@ -196,12 +213,13 @@ class LayerJoin extends Component {
 						margin="normal"
 						variant="outlined"
 						onChange={this.emailOnChange}
-						error={!email.validate && email.value !== ''}
+						error={email.overlapping ||( !email.validate && email.value !== '')}
 						fullWidth={true}
 					/>
 					<FormHelperText id="component-helper-text">
-						{email.validate && email.helper.available}
+						{email.validate && !email.overlapping && email.helper.available}
 						{!email.validate  && email.value !== '' && email.helper.notAvailable}
+						{email.overlapping && email.helper.overlapping}
 					</FormHelperText>
 				</div>
 				<div>

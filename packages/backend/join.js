@@ -22,6 +22,25 @@ const connection = mysql.createConnection({
 
 connection.connect();
 
+// 이메일 중복 로직
+const existUserEmail = (req, res) => {
+	// url로 받아온 유저이메일
+	const useremail = req.params.useremail;
+	// 유저 이메일 중복 검사
+	connection.query(`SELECT * FROM nyang_member WHERE email='${useremail}'`, (err,rows) => {
+		if(err) {
+			res.send('error')
+		}else {
+			// useremail 검색한 결과가 1개라도 나오면 true 보낸다
+			// true : 중복있음
+			// false : 중복없음
+			res.send(rows.length === 1)
+		}
+	})
+}
+
+// 메일 중복 체크
+router.get('/user/exists/email/:useremail', existUserEmail);
 
 router.post("/join", (req, res) => {
 	const body = req.body;

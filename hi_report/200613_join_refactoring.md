@@ -109,13 +109,13 @@ this.setState(prevState => ({
 
 이메일 중복처리와 가입기능을 분리시켜 처리
 
-- 회원가입 이메일 중복처리 : /user/exists/email/:useremail
-- 회원가입 : /user/join
+- [x] 회원가입 이메일 중복처리 : /user/exists/email/:useremail
+- [ ] 회원등록 : /user/join
 
 ### 새로운 Flow
 - Front
   - 회원가입 입력창에 이메일, 비밀번호, 비밀번호확인 입력시 validate 체크
-  - 회원가입 입력창에서 받은 email주소의(onChange) validate가 true면 server에 이메일 중복처리 요청
+  - 회원가입 입력창에서 받은 email주소의(onChange) 입렵값이 공백이 아닐때 server에 이메일 중복처리 요청
   - server에서 받응 응답으로 이메일 중복처리 state(overlapping) 변경
   - 중복처리에 대한 helper text를 보여준다.
   - 이메일, 비밀번호, 비빌번호 확인 입력란이 모두 입력되고 회원가입버튼을 누르면 server에 이메일주소와 패스워드를 server로 보내 회원가입 요청(이메일,비밀번호,비밀번호확인 validate && 이메일중복 === false && 모든 입력창 !== '' 이어야함 그렇지 않을시에는 알맞게 입력해달라는 alert 노출)
@@ -127,3 +127,62 @@ this.setState(prevState => ({
   - 이메일, 암호화된 패스워드, 등록날짜, 이메일인증여부, 인증관련토큰을 데이터베이스 nyang_member table에 등록한다.
   - 등록이 완료되면 이메일인증을 위한 메일을 보낸다.
   - 등록이 완료되면 등록 유무의 응답을 보낸다.
+
+```javascript
+// front
+
+// 이메일 입력시
+emailOnChange = (e) => {
+		const value = e.target.value
+		const Validate = this.validate(MAIL_FORMAT, value)
+
+		// ..setstate 처리..
+
+		// 입력된 이메일값이 공백이 아닐때
+		if(value !== '' ) {
+			fetch(`/user/exists/email/${value}`)
+			.then(res => res.json())
+			.then(json => {
+				this.setState(prevState => ({
+					email: {
+						...prevState.email,
+						overlapping: json,
+					}
+				}));
+				console.log(this.state.email.overlapping)
+			})
+		}else {
+			return
+		}
+  }
+  
+  // 기타작업
+  ...sendJoinInfo, helper text 에 state.email.overlapping 조건 추가
+```
+```javascript
+// server
+
+// 이메일 중복 로직
+const existUserEmail = (req, res) => {
+	// url로 받아온 유저이메일
+	const useremail = req.params.useremail;
+	// 유저 이메일 중복 검사
+	connection.query(`SELECT * FROM nyang_member WHERE email='${useremail}'`, (err,rows) => {
+		if(err) {
+			res.send('error')
+		}else {
+			// useremail 검색한 결과가 1개라도 나오면 true 보낸다
+			// true : 중복있음
+			// false : 중복없음
+			res.send(rows.length === 1)
+		}
+	})
+}
+
+// 메일 중복 체크
+router.get('/user/exists/email/:useremail', existUserEmail);
+```
+
+email입력값의 validate true일때 중복처리요청을 보내면 되겠다고 생각했는데,
+실시간으로 서버에 중복처리 요청을 보내야 true, fasle가 정확히 들어왔다.
+따라서 이메일 입력시 계속 중복처리 요청을 보내는걸로 변경하였다.
