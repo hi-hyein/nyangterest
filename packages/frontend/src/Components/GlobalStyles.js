@@ -20,6 +20,7 @@ const GlobalStyle = createGlobalStyle`
   }
 
   #wrap {	
+	  		position: relative;
 	  		min-height: 100vh;
 			padding-top: 102px;
 			background: #f5faf6

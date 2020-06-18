@@ -54,7 +54,6 @@ const IconButton = styled.button`
 			width: 100%;
 			min-width: 100%;
 			min-height: 60px;
-			// bottom: 18%;
 			right: 0;	
 			z-index: 99;
 			opacity: 1;
@@ -75,7 +74,7 @@ const IconButton = styled.button`
 			}
 
 			&  p {
-				color: #fff;line-height: 1.5rem;text-align:left
+				color: #fff;line-height: 1.5rem;text-align:center;
 				span {
 					font-size: 0.85rem;
 					font-weight: 600;

@@ -12,7 +12,6 @@ const ListWrapper = styled.ul`
 	display: grid;
 	grid-template-columns: repeat(auto-fill, 250px);
 	grid-gap: 20px;
-	// grid-auto-rows: 300px;
 	justify-content: space-around;
 	transition: all 0.5s ease;
 
@@ -29,10 +28,9 @@ const ListWrapper = styled.ul`
 	}
 
 	@media screen and (max-width: 700px) {
+		padding-top: 162px;
 		grid-template-columns: 1fr;
 		grid-gap: 50px;
-		// padding: 10px;
-		// padding-top: 18vh;
 	}
 
 	

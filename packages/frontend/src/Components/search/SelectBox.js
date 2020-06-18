@@ -9,7 +9,6 @@ import styled from "styled-components";
 
 const SelectDiv = styled(AsyncSelect)`
 	&& {
-		// width: 56%;
 		flex-basis: 30%;
 		min-width: 190px;
 		display: inline-flex;
@@ -85,6 +84,10 @@ const TextFieldDiv = styled(TextField)`
 
 			& div[class$="singleValue"] {
 				max-width: calc(100% - 60px);
+
+				@media screen and (max-width: 960px) {
+					width: 100%;
+				}
 			}
 
 			& div[class$="-Input"] {

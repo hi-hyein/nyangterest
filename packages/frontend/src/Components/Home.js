@@ -4,14 +4,12 @@ import throttle from "lodash.throttle";
 import DayPicker from "./search/DayPicker";
 import "moment/locale/ko";
 import styled from "styled-components";
-// import List from "./List";
 import Loading from "./Loading";
 import FormBox from "./search/FormBox";
 import SearchBox from "./search/SearchBox";
 import SelectBox from "./search/SelectBox";
 import TooltipBox from "./search/TooltipBox";
 import BtnTop from "./BtnTop";
-import { fadeInDown, fadeOutUp } from "./Animations";
 import img from "../img/no_data.gif";
 
 const List = React.lazy(() => import('./List'));
@@ -26,37 +24,18 @@ const SearchDiv = styled.div`
   justify-content: center;
   width: 100%;
   max-width: 1280px;
-  // max-height: 110px;
   padding: 1% 5%;
   background: #f5faf6;
   transition: all 0.2s ease;
 
-  @media screen and (max-width: 1024px) {
-    // position: relative;
-   
-  }
-
   @media screen and (max-width: 960px) {
 	  flex-wrap: wrap-reverse;
-    // padding: 14% 7%;
   }
 
-  @media screen and (max-width: 700px) {
-    // padding-top: 14%;
-    // flex-wrap: wrap-reverse;
-  }
+//   @media screen and (max-width:639px) and (min-width:376px) {
+//     padding-top: 10vh;
+//   }
 
-  @media screen and (max-width: 640px) {
-    // padding-top: 20%;
-  }
-
-  @media screen and (max-width:639px) and (min-width:376px) {
-    // padding-top: 10vh;
-  }
-
-  @media screen and (max-width: 360px) {
-    // padding-top: 25%;
-  }
 `;
 
 const Form = styled.form`
@@ -79,7 +58,7 @@ const Form = styled.form`
 	}
 
     @media screen and (max-width: 960px) {
-		padding-top: 170px;
+	  padding-top: 170px;
       height: auto;
 	  transform: none;
       text-align: center;
@@ -92,9 +71,8 @@ const Form = styled.form`
     }
 
     @media screen and (max-width:780px) and (min-width:701px) {
-
-      + .btn-wrap {
-		top: -8px;  
+    	+ .btn-wrap {
+			top: -8px;  
       }
     }
 
@@ -113,13 +91,18 @@ const Form = styled.form`
 		max-height: 150px;
 		transform: translateY(-100%);
 		opacity: 0;
+
+		 + .btn-wrap {
+			padding-top: 111px;	 
+      }
     }
 
     @media screen and (max-width: 700px) {
       margin-top: -100px;
-    //   transform: translateY(-100%);
-    //   opacity: 0;
+	  max-height: 300px;
     }
+
+
   }
 
   && {
@@ -135,12 +118,19 @@ const Form = styled.form`
 `;
 
 const Message = styled.div`
+	position: relative;
 	padding-top: 130px;
 	color: #ee9b97;
 
 	& > p {
 		padding-top: 30px;
 		font-weight: 600;
+
+		@media screen and (max-width:639px) and (min-width:376px) {
+			position: absolute;
+			top: -50px;
+			width: 100%;
+		}
 	}
 `;
 
@@ -151,15 +141,9 @@ const LastPage = styled.p`
 const Preloader = styled.figure`
 	padding-top: 200px;
 	color: #5262bc;
-	// animation: ${fadeOutUp} 1s both;
 	transition: all 2s ease;
 	opacity: 1
 
-	// &.on {
-	// 	padding-top: 200px;
-	// 	animation: ${fadeInDown} 1s both;
-	// 	opacity: 1
-	// }
 `;
 
 @inject("listStore", "searchStore", "btnStore")
@@ -223,7 +207,7 @@ class Home extends Component {
 
 				{!loading && !isLoading && !items.length &&
 					<Message>
-						<img src={img} alt="" />
+						<img src={img} alt="noData" />
 						<p>해당 데이터가 없습니다!</p>
 					</Message>
 				}

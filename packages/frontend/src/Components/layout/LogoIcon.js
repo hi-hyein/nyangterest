@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from "styled-components";
-import { rotateFoot } from "../Animations";
+import { rotateHead } from "../Animations";
 import img from "../../img/cat_head.png";
 
 const Icon = styled.span`
@@ -10,7 +10,7 @@ const Icon = styled.span`
   width: 4rem;
   height: 4rem;
   transition: all 2s ease;
-  animation: ${rotateFoot} 2s linear .5s  infinite alternate;
+  animation: ${rotateHead} 2s linear .5s  infinite alternate;
   background-image: url(${img});
   background-size: 70%;
   background-repeat: no-repeat;
