@@ -44,7 +44,6 @@
 	-moz-box-shadow: 0px 0px 9px -3px rgba(0,0,0,.9);
 	box-shadow: 0px 0px 9px -3px rgba(0,0,0,.9);
 	overflow: hidden;
-	overflow-y: auto;
 	-ms-overflow-style: none;
 	animation: slideDown .5s both;
 	-webkit-animation: slideDown .5s both;

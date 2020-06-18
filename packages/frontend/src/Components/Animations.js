@@ -30,7 +30,7 @@ export const fadeInLeft = keyframes`
 		to {transform:translateX(0); opacity: 1;}
 
 `
-export const scaleFoot = keyframes`
+export const scaleHead = keyframes`
 	0% {
 		transform: scale(1.5);
 		-webkit-transform: scale(1.5);
@@ -57,7 +57,7 @@ export const scaleFoot = keyframes`
 
 
 `
-export const rotateFoot = keyframes`
+export const rotateHead = keyframes`
 	0%{
 		transform: rotate(-10deg)	;
 		-webkit-transform: rotate(-10deg)	;

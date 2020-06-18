@@ -8,13 +8,31 @@ import { fadeInUp } from './Animations';
 
 // 리스트
 const ListWrapper = styled.ul`
-	padding: 150px 50px 70px;
+	padding: 113px 50px 30px;
 	display: grid;
 	grid-template-columns: repeat(auto-fill, 250px);
 	grid-gap: 20px;
-	// grid-auto-rows: 300px;
 	justify-content: space-around;
-	transition: all 0.5s ease; 
+	transition: all 0.5s ease;
+
+	@media screen and (min-width: 1281px) {
+		padding-top: 125px;
+	}
+
+	@media screen and (max-width: 960px) {
+		padding-top: 200px;
+
+		.show-filter + & {
+			padding-top: 450px
+		}
+	}
+
+	@media screen and (max-width: 700px) {
+		padding-top: 162px;
+		grid-template-columns: 1fr;
+		grid-gap: 50px;
+	}
+
 	
 	& > li {
 		grid-column: span 1;
@@ -26,7 +44,7 @@ const ListWrapper = styled.ul`
 		}	
 
 		&:nth-child(16n+5),:nth-child(16n+6),:nth-child(16n+7),:nth-child(16n+8) > div > div  {
-			 border-top: 1px solid #4A8391;
+			 border-top: 2px solid #4A8391;
 			 border-radius: 8px;
 		}
 
@@ -35,7 +53,7 @@ const ListWrapper = styled.ul`
 			 border-radius: 8px;
 		}	
 
-		&:nth-child(16n+13),:nth-child(16n+14),:nth-child(16n+15),:nth-child(16n+16) > button > div  {
+		&:nth-child(16n+13),:nth-child(16n+14),:nth-child(16n+15),:nth-child(16n+16) > div > div  {
 			 border-top: 2px solid #d2e5c5;
 			 border-radius: 8px;
 		}	
@@ -45,15 +63,6 @@ const ListWrapper = styled.ul`
 		padding: 20px 0;
 	}
 
-	@media screen and (max-width: 1024px) {
-		padding: 50px 50px 100px
-	}
-
-	@media screen and (max-width: 700px) {
-		grid-template-columns: 1fr;
-		grid-gap: 50px;
-		padding: 10px;
-	}
 `;
 
 const Button = styled.div`

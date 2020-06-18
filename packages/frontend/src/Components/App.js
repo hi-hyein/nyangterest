@@ -21,13 +21,13 @@ class App extends Component {
 				<Fragment>
 					<div id="wrap">
 						{/* 헤더 */}
-						<Header/>
+						<Header />
 						<Wrapper>
 							<GlobalStyle />
-							<Nav />
 							<Route exact path="/" component={Home} />
 							<Route path="/admin/member" component={MemberList} />
 						</Wrapper>
+						<Nav />
 					</div>
 				</Fragment>
 			</Router>

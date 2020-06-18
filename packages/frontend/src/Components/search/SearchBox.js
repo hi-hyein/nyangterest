@@ -6,12 +6,17 @@ import { MdSearch } from "react-icons/md";
 
 const TextFieldDiv = styled(TextField)`
 	&& {
-		// width: 56%;
 		flex-basis: 70%;
 
 		[placeholder] {
 			text-overflow: ellipsis;
 			padding-left: 12px;
+
+			@media screen and (max-width: 960px) {
+				margin-left: -16px;
+				text-align: center;
+			
+			}
 		}
 
 		& label[class*="-focused"] {
@@ -39,11 +44,6 @@ const IconButton = styled.button`
 `;
 
 let SearchIcon = styled(InputAdornment)`
-	// position: relative;
-	// width: 2rem;
-	// font-size: 2rem;
-	// color: #ccc;
-
 	& svg {
 		display: inline-block;
 		position: absolute;

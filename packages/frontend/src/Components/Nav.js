@@ -1,23 +1,26 @@
 import React, { Component, Fragment } from "react";
 import { MdHome } from "react-icons/md";
 import { MdAssignment } from "react-icons/md";
+import { MdInfo } from "react-icons/md";
 import { NavLink } from "react-router-dom";
 import styled from "styled-components";
 
 const NavWrapper = styled.div`
-	position: fixed;
+	position: absolute;
 	width: 100%;
 	bottom: 0;
 	left: 0;
 	z-index: 100;
-	background: rgba(255,255,255,0.2);
-	border-top: 1px solid #f8f9fa;
+	background: #edf4e7;
 		
 `
 
 const NavList = styled.ul`
+	max-width: 1280px;
+	margin: 0 auto;
+
 	li {
-		width: 20%;
+		width: 33.33%;
 		float: left;
 		text-align: center;
 
@@ -59,6 +62,12 @@ class Nav extends Component {
 							<NavLink to="/admin/member">
 								<MdAssignment />
 								<span>멤버리스트</span>
+							</NavLink>
+						</li>
+						<li>
+							<NavLink to="/dev">
+								<MdInfo />
+								<span>냥터레스트 소개</span>
 							</NavLink>
 						</li>
 					</NavList>

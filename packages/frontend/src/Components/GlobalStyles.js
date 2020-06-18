@@ -20,11 +20,12 @@ const GlobalStyle = createGlobalStyle`
   }
 
   #wrap {	
+	  		position: relative;
 	  		min-height: 100vh;
-			padding-top: 76px;
+			padding-top: 102px;
 			background: #f5faf6
 
-			@media screen and (max-width:1024px) {
+			@media screen and (max-width:960px) {
 				padding-top:0;
 			}
   }	

@@ -4,14 +4,13 @@ import throttle from "lodash.throttle";
 import DayPicker from "./search/DayPicker";
 import "moment/locale/ko";
 import styled from "styled-components";
-// import List from "./List";
 import Loading from "./Loading";
 import FormBox from "./search/FormBox";
 import SearchBox from "./search/SearchBox";
 import SelectBox from "./search/SelectBox";
 import TooltipBox from "./search/TooltipBox";
 import BtnTop from "./BtnTop";
-import { fadeInDown, fadeOutUp } from "./Animations";
+import img from "../img/no_data.gif";
 
 const List = React.lazy(() => import('./List'));
 
@@ -21,31 +20,22 @@ const SearchDiv = styled.div`
   // position: relative;
   z-index: 99;
   display: flex;
+  align-items: center;
+  justify-content: center;
   width: 100%;
   max-width: 1280px;
-  // max-height: 110px;
-  padding: 0 5%;
+  padding: 1% 5%;
   background: #f5faf6;
   transition: all 0.2s ease;
 
-  @media screen and (max-width: 1024px) {
-    position: relative;
-    align-items: center;
-    justify-content: center;
-  }
-
   @media screen and (max-width: 960px) {
-    padding: 0 7%;
+	  flex-wrap: wrap-reverse;
   }
 
-  @media screen and (max-width: 700px) {
-    padding-top: 14%;
-    flex-wrap: wrap-reverse;
-  }
+//   @media screen and (max-width:639px) and (min-width:376px) {
+//     padding-top: 10vh;
+//   }
 
-  @media screen and (max-width: 640px) {
-    padding-top: 20%;
-  }
 `;
 
 const Form = styled.form`
@@ -55,59 +45,71 @@ const Form = styled.form`
   // transform: translate(-500%);
   transition: all 0.7s ease-in-out;
 
-  @media screen and (max-width: 1024px) {
+  @media screen and (max-width: 960px) {
     flex-wrap: wrap;
   }
 
   &.slide-in {
-    margin-top: 24px;
     height: 86px;
     transform: translateX(0);
 
-    @media screen and (max-width: 1024px) {
-      padding-top: 14%;
-      height: auto;
-
-      + .btn-wrap {
-        margin-top: 24px;
-        top: unset;
-		min-width: auto;
-		margin-left: 10px;
-      }
-    }
+	& + div {
+		min-width: 50px;
+	}
 
     @media screen and (max-width: 960px) {
-      padding: 14% 0 2%;
-      height: 100%;
-    }
-
-    @media screen and (max-width: 700px) {
-      padding: 2% 0;
-      transform: none;
+	  padding-top: 170px;
+      height: auto;
+	  transform: none;
       text-align: center;
       opacity: 1;
 
       + .btn-wrap {
-        margin-top: 15px;
+		top: 0;  
+		min-width: auto;
       }
+    }
+
+    @media screen and (max-width:780px) and (min-width:701px) {
+    	+ .btn-wrap {
+			top: -8px;  
+      }
+    }
+
+    @media screen and (max-width: 700px) {
+		+ .btn-wrap {
+			top: 2px;  
+			
+		}
     }
   }
 
   &.slide-out {
     transform: translateX(-500%);
 
+	@media screen and (max-width: 960px) {
+		max-height: 150px;
+		transform: translateY(-100%);
+		opacity: 0;
+
+		 + .btn-wrap {
+			padding-top: 111px;	 
+      }
+    }
+
     @media screen and (max-width: 700px) {
       margin-top: -100px;
-      transform: translateY(-100%);
-      opacity: 0;
+	  max-height: 300px;
     }
+
+
   }
 
   && {
     & > div {
       margin-right: 2%;
 
-      @media screen and (max-width: 1024px) {
+      @media screen and (max-width: 960px) {
         margin-right: 0;
         min-width: 100%;
       }
@@ -116,22 +118,32 @@ const Form = styled.form`
 `;
 
 const Message = styled.div`
+	position: relative;
 	padding-top: 130px;
-	color: #f00;
+	color: #ee9b97;
+
+	& > p {
+		padding-top: 30px;
+		font-weight: 600;
+
+		@media screen and (max-width:639px) and (min-width:376px) {
+			position: absolute;
+			top: -50px;
+			width: 100%;
+		}
+	}
+`;
+
+const LastPage = styled.p`
+	color: #4A8391;
 `;
 
 const Preloader = styled.figure`
 	padding-top: 200px;
 	color: #5262bc;
-	// animation: ${fadeOutUp} 1s both;
 	transition: all 2s ease;
 	opacity: 1
 
-	// &.on {
-	// 	padding-top: 200px;
-	// 	animation: ${fadeInDown} 1s both;
-	// 	opacity: 1
-	// }
 `;
 
 @inject("listStore", "searchStore", "btnStore")
@@ -173,7 +185,7 @@ class Home extends Component {
 					onClick={handleScrollTop}
 					title="맨위로 이동"
 				/>
-				<SearchDiv>
+				<SearchDiv className={isVisible ? "show-filter" : ""}>
 					<Form onSubmit={(e) => { e.preventDefault(); }}
 						autoComplete="off"
 						className={isVisible ? "slide-in" : "slide-out"}
@@ -194,7 +206,10 @@ class Home extends Component {
 				{!loading && (<Suspense fallback={renderLoader()}><List products={items} /></Suspense>)}
 
 				{!loading && !isLoading && !items.length &&
-					<Message><p>해당 데이터가 없습니다.</p></Message>
+					<Message>
+						<img src={img} alt="noData" />
+						<p>해당 데이터가 없습니다!</p>
+					</Message>
 				}
 
 				{!loading && (isLoading && hasMore) && (!(totalPage && (totalPage > items.length))) && (
@@ -205,7 +220,7 @@ class Home extends Component {
 				)}
 
 				{totalPage && (!(isLoading && hasMore)) && (items.length > 0) &&
-					(<Message><p>마지막 페이지입니다!</p></Message>)
+					(<Message><LastPage>마지막 페이지입니다!</LastPage></Message>)
 				}
 
 			</Fragment >

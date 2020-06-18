@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 
 const Container = styled.div`
 	position: relative;
+	padding: 0 20px;
 	max-height: 100%;
 	min-height: 100%;
 	background: rgba(244,229,189,0.2);
@@ -15,7 +16,6 @@ const Container = styled.div`
 	background-position: center center;
 	align-items: center;
 	justify-content: space-between;
-	padding: 0 20px;
 
 	@media screen and (max-width: 700px) {
 		padding: 0 5px;
@@ -65,6 +65,16 @@ const Info = styled.div`
 		}
 	}
 `;
+
+const ScrollContainer = styled.div`
+  height: 29vh;
+  overflow-y: auto;
+
+//   @media screen and (min-height: 768px) {
+// 	height: 20vh;
+//   }	
+
+`
 
 const ListWrapper = styled.ul`
 	padding: 2rem 1rem;
@@ -182,16 +192,19 @@ const Item = ({ neuterYn, age, backgroundColor = "#a1ceab", sexCd, weight, color
 			<Content id={desertionNo}>
 				<Info>
 					<StatusDiv className={end && "end"} backgroundColor={backgroundColor}><span>{processState}</span></StatusDiv>
+
 					<CatImage popfile={popfile} alt={kind} processState={processState} />
 					<p>{colorCd}/{tnr}/{old}/{gender}/{bodyWeight}</p>
-					<ListWrapper>
-						<li><span>공고번호:</span> <span>{noticeNo}</span></li>
-						<li><span>공고기간:</span> <span>{happenDt} ~ {noticeEdt}</span></li>
-						<li><span>발견장소:</span> <span>{happenPlace}</span></li>
-						<li><span>특이사항:</span> <span>{specialMark}</span></li>
-						<li><span>보호센터:</span> <span>{careNm}</span><span>({careTel})</span></li>
-						<li><span>담당기관:</span> <span>{orgNm}</span><span>({officetel})</span></li>
-					</ListWrapper>
+					<ScrollContainer>
+						<ListWrapper>
+							<li><span>공고번호:</span> <span>{noticeNo}</span></li>
+							<li><span>공고기간:</span> <span>{happenDt} ~ {noticeEdt}</span></li>
+							<li><span>발견장소:</span> <span>{happenPlace}</span></li>
+							<li><span>특이사항:</span> <span>{specialMark}</span></li>
+							<li><span>보호센터:</span> <span>{careNm}</span><span>({careTel})</span></li>
+							<li><span>담당기관:</span> <span>{orgNm}</span><span>({officetel})</span></li>
+						</ListWrapper>
+					</ScrollContainer>
 				</Info>
 			</Content>
 		</Container>
