@@ -13,9 +13,8 @@ const TextFieldDiv = styled(TextField)`
 			padding-left: 12px;
 
 			@media screen and (max-width: 960px) {
-				margin-left: -16px;
+				margin-left: -44px;
 				text-align: center;
-			
 			}
 		}
 
@@ -70,14 +69,14 @@ const SearchBox = ({ searchField, SearchChange }) => {
 			name="search"
 			onChange={SearchChange}
 			InputLabelProps={{
-				shrink: true
+				shrink: true,
 			}}
 			InputProps={{
 				style: {
 					textOverflow: "ellipsis",
 					whiteSpace: "nowrap",
 					overflow: "hidden",
-					width: "100%"
+					width: "100%",
 				},
 				startAdornment: (
 					<IconButton>
@@ -85,7 +84,7 @@ const SearchBox = ({ searchField, SearchChange }) => {
 							<MdSearch />
 						</SearchIcon>
 					</IconButton>
-				)
+				),
 			}}
 		/>
 	);

@@ -24,7 +24,7 @@ const SelectDiv = styled(AsyncSelect)`
 		}
 
 		// @media screen and (max-width: 1280px) {
-			flex-basis: 60%;
+		flex-basis: 60%;
 		// }
 	}
 `;
@@ -52,24 +52,25 @@ const ValueDiv = styled.div`
 	align-items: center;
 	font-size: 16px;
 
+	@media screen and (max-width: 960px) {
+		padding-left: 0;
+	}
+
 	& p {
 		font-size: 16px;
 
 		@media screen and (max-width: 960px) {
 			width: 100%;
-			padding-left: 0;
 		}
 	}
 
 	& + div {
 		cursor: pointer;
 	}
-
 `;
 
 const TextFieldDiv = styled(TextField)`
 	&& {
-
 		& label[class*="-focused"] {
 			color: #a1ceab;
 		}
@@ -93,16 +94,15 @@ const TextFieldDiv = styled(TextField)`
 			& div[class$="-Input"] {
 				color: #fff;
 
-				& input{
+				& input {
 					color: inherit;
 				}
 			}
 		}
-	}	
-	 
+	}
 `;
 
-const NoOptionsMessage = props => {
+const NoOptionsMessage = (props) => {
 	return (
 		<TypographyNo
 			color="textSecondary"
@@ -118,7 +118,7 @@ const inputComponent = ({ inputRef, ...props }) => {
 	return <div ref={inputRef} {...props} />;
 };
 
-const Control = props => {
+const Control = (props) => {
 	return (
 		<TextFieldDiv
 			fullWidth
@@ -127,15 +127,15 @@ const Control = props => {
 				inputProps: {
 					inputRef: props.innerRef,
 					children: props.children,
-					...props.innerProps
-				}
+					...props.innerProps,
+				},
 			}}
 			{...props.selectProps.textFieldProps}
 		/>
 	);
 };
 
-const loadOptions = props => {
+const loadOptions = (props) => {
 	return (
 		<MenuItem
 			buttonRef={props.innerRef}
@@ -148,7 +148,7 @@ const loadOptions = props => {
 	);
 };
 
-const Placeholder = props => {
+const Placeholder = (props) => {
 	return (
 		<TypographyDiv color="textSecondary" {...props.innerProps}>
 			{props.children}
@@ -156,7 +156,7 @@ const Placeholder = props => {
 	);
 };
 
-const SingleValue = props => {
+const SingleValue = (props) => {
 	return (
 		<Typography className="" {...props.innerProps}>
 			{props.children}
@@ -164,12 +164,11 @@ const SingleValue = props => {
 	);
 };
 
-const ValueContainer = props => {
+const ValueContainer = (props) => {
 	return <ValueDiv>{props.children}</ValueDiv>;
 };
 
-
-const Menu = props => {
+const Menu = (props) => {
 	return (
 		<Paper square className="" {...props.innerProps}>
 			{props.children}
@@ -183,11 +182,10 @@ const components = {
 	NoOptionsMessage,
 	loadOptions,
 	Placeholder,
-	ValueContainer
+	ValueContainer,
 };
 
 class SelectBox extends Component {
-
 	getAsyncOptions = async () => {
 		const url = `/search/kind/`;
 		const response = await fetch(url);
@@ -195,41 +193,39 @@ class SelectBox extends Component {
 		const data = json.item;
 
 		// 기타위치에 코리안숏헤어 정보를 넣고 한국고양이위치에 기타정보를 넣음.
-		let dataSort = data.splice(1, 1, { KNm: "코리안숏헤어", kindCd: "000200" })
-		dataSort = data.splice(32, 1, { KNm: "기타", kindCd: "000201" })
-		console.log(dataSort)
+		let dataSort = data.splice(1, 1, { KNm: "코리안숏헤어", kindCd: "000200" });
+		dataSort = data.splice(32, 1, { KNm: "기타", kindCd: "000201" });
+		console.log(dataSort);
 
-		return (
-			this.getData(data)
-			// data
-			// 	.map(x => x.KNm)
-			// 	.map(category => ({ value: category, label: category }))
-			// .map(x => x.KNm.replace("한국 고양이", "코리안숏헤어")) // 배열재정렬
-			// .reduce((arr, elem) => [...arr, ...elem], []) // flatten nested array 중첩배열
-			// .filter((elem, index, arr) => arr.indexOf(elem) === index) // get array of unique values 고유키값
-		)
-
+		return this.getData(data);
+		// data
+		// 	.map(x => x.KNm)
+		// 	.map(category => ({ value: category, label: category }))
+		// .map(x => x.KNm.replace("한국 고양이", "코리안숏헤어")) // 배열재정렬
+		// .reduce((arr, elem) => [...arr, ...elem], []) // flatten nested array 중첩배열
+		// .filter((elem, index, arr) => arr.indexOf(elem) === index) // get array of unique values 고유키값
 	};
 
 	getData = (data) => {
-		const dataCategory = data
-			.map(category => ({ value: category.kindCd, label: category.KNm }))
+		const dataCategory = data.map((category) => ({
+			value: category.kindCd,
+			label: category.KNm,
+		}));
 
-		return dataCategory
-
-	}
+		return dataCategory;
+	};
 
 	render() {
 		return (
-			< Fragment >
+			<Fragment>
 				<SelectDiv
 					textFieldProps={{
 						className: "TextFieldDiv",
 						variant: "outlined",
 						label: "품종",
 						InputLabelProps: {
-							shrink: true
-						}
+							shrink: true,
+						},
 					}}
 					defaultValue={this.props.defaultValue}
 					onChange={this.props.onChange}
@@ -239,7 +235,7 @@ class SelectBox extends Component {
 					cacheOptions
 					defaultOptions
 				/>
-			</Fragment >
+			</Fragment>
 		);
 	}
 }
@@ -253,16 +249,16 @@ NoOptionsMessage.propTypes = {
 	 * Props to be passed on to the wrapper.
 	 */
 	innerProps: PropTypes.object.isRequired,
-	selectProps: PropTypes.object.isRequired
+	selectProps: PropTypes.object.isRequired,
 };
 
 inputComponent.propTypes = {
 	inputRef: PropTypes.oneOfType([
 		PropTypes.func,
 		PropTypes.shape({
-			current: PropTypes.any.isRequired
-		})
-	])
+			current: PropTypes.any.isRequired,
+		}),
+	]),
 };
 
 Control.propTypes = {
@@ -274,16 +270,16 @@ Control.propTypes = {
 	 * The mouse down event and the innerRef to pass down to the controller element.
 	 */
 	innerProps: PropTypes.shape({
-		onMouseDown: PropTypes.func.isRequired
+		onMouseDown: PropTypes.func.isRequired,
 	}).isRequired,
 	innerRef: PropTypes.oneOfType([
 		PropTypes.oneOf([null]),
 		PropTypes.func,
 		PropTypes.shape({
-			current: PropTypes.any.isRequired
-		})
+			current: PropTypes.any.isRequired,
+		}),
 	]).isRequired,
-	selectProps: PropTypes.object.isRequired
+	selectProps: PropTypes.object.isRequired,
 };
 
 loadOptions.propTypes = {
@@ -300,7 +296,7 @@ loadOptions.propTypes = {
 		onClick: PropTypes.func.isRequired,
 		onMouseMove: PropTypes.func.isRequired,
 		onMouseOver: PropTypes.func.isRequired,
-		tabIndex: PropTypes.number.isRequired
+		tabIndex: PropTypes.number.isRequired,
 	}).isRequired,
 	/**
 	 * Inner ref to DOM Node
@@ -309,8 +305,8 @@ loadOptions.propTypes = {
 		PropTypes.oneOf([null]),
 		PropTypes.func,
 		PropTypes.shape({
-			current: PropTypes.any.isRequired
-		})
+			current: PropTypes.any.isRequired,
+		}),
 	]).isRequired,
 	/**
 	 * Whether the option is focused.
@@ -319,7 +315,7 @@ loadOptions.propTypes = {
 	/**
 	 * Whether the option is selected.
 	 */
-	isSelected: PropTypes.bool.isRequired
+	isSelected: PropTypes.bool.isRequired,
 };
 
 Placeholder.propTypes = {
@@ -331,7 +327,7 @@ Placeholder.propTypes = {
 	 * props passed to the wrapping element for the group.
 	 */
 	innerProps: PropTypes.object,
-	selectProps: PropTypes.object.isRequired
+	selectProps: PropTypes.object.isRequired,
 };
 
 SingleValue.propTypes = {
@@ -343,7 +339,7 @@ SingleValue.propTypes = {
 	 * Props passed to the wrapping element for the group.
 	 */
 	innerProps: PropTypes.any.isRequired,
-	selectProps: PropTypes.object.isRequired
+	selectProps: PropTypes.object.isRequired,
 };
 
 ValueContainer.propTypes = {
@@ -351,7 +347,7 @@ ValueContainer.propTypes = {
 	 * The children to be rendered.
 	 */
 	children: PropTypes.node,
-	selectProps: PropTypes.object.isRequired
+	selectProps: PropTypes.object.isRequired,
 };
 
 Menu.propTypes = {
@@ -363,7 +359,7 @@ Menu.propTypes = {
 	 * Props to be passed to the menu wrapper.
 	 */
 	innerProps: PropTypes.object.isRequired,
-	selectProps: PropTypes.object.isRequired
+	selectProps: PropTypes.object.isRequired,
 };
 
 export default SelectBox;
