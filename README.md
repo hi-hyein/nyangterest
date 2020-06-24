@@ -27,22 +27,28 @@ git clone https://github.com/henyy1004/nyangterest.git
 ### 2. node.js 설치(>=10.13.0)
 https://nodejs.org/ko/
 
-### 3. 모듈 설치 & 실행
+### 3. yarn 설치 
+https://classic.yarnpkg.com/en/docs/install#windows-stable
+
+### 4. 모듈 설치 & 실행 (반드시 npm과 yarn install을 같이 병행해야 합니다.)
 
 ~~~sh
 cd packages/backend
 npm install
+yarn install
 ~~~
 
 ~~~sh
 cd packages/frontend
 npm install
+yarn install
 ~~~
 
 ~~~sh
 cd nyangterest
 npm install
-npm run dev
+yarn install 
+npm run dev or yarn dev
 ~~~
 
 ## 작업 브랜치
