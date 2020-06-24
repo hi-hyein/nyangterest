@@ -2,9 +2,14 @@ const fs = require("fs");
 const express = require("express");
 const path = require("path");
 const router = express.Router();
-const hash = require('hash.js');
 const moment = require("moment");
 const mailSender = require('./mailSender.js');
+const bcryptjs = require('bcryptjs');
+const dotenv = require('dotenv')
+
+// 환경설정 파일에서 이메일 인증 Secret key 가져오기
+dotenv.config({ path: path.join(__dirname, './.env') })
+const EMAIL_CERTIFY_KEY = process.env.EMAIL_CERTIFY_KEY;
 
 // db접속
 const data = fs.readFileSync(__dirname + "/db.json");
@@ -22,67 +27,71 @@ const connection = mysql.createConnection({
 
 connection.connect();
 
+// 이메일 중복 로직
+const existUserEmail = (req, res) => {
+	// url로 받아온 유저이메일
+	const useremail = req.params.useremail;
+	// 유저 이메일 중복 검사
+	connection.query(`SELECT * FROM nyang_member WHERE email='${useremail}'`, (err,rows) => {
+		if(err) {
+			res.send('error')
+		}else {
+			// useremail 검색한 결과가 1개라도 나오면 true 보낸다
+			// true : 중복있음
+			// false : 중복없음
+			res.send(rows.length >= 1)
+		}
+	})
+}
+// 회원등록
+const resistUser = async (req, res) => {
+	const resistUserInfo = {
+		email: req.body.email,
+		password: await bcryptjs.hash(req.body.password, 10),
+		signupdate: moment().format('YYYYMMDD'),
+		certify: false,
+		emailToken: await bcryptjs.hash(EMAIL_CERTIFY_KEY, 10),
+	}
 
-router.post("/join", (req, res) => {
-	const body = req.body;
-	console.log('test', body);
-	const memberMail = body.email;
-	const memberPass = body.password;
-	const passwordHash = hash.sha256().update(memberPass).digest('hex');
-	const signupdate = moment().format('YYYYMMDD');
-	const certify = false
-	const tokenUnique = moment().format()
-	const emailToken = hash.sha256().update(`${memberMail}+${tokenUnique}`).digest('hex')
-	const emailLink = `http://localhost:8080/welcome?email=${memberMail}&token=${emailToken}`;
+	const emailLink = `http://localhost:8080/user/join/welcome?email=${resistUserInfo.email}&token=${resistUserInfo.emailToken}`
 
 	// 메일 발송 params
 	let mailSenderOption = {
-		toEmail: memberMail,
+		toEmail: resistUserInfo.email,
 		subject: '냥터레스트 회원가입을 위한 이메일 인증을 부탁드립니다.',
 		text: `안녕하세요 회원가입을 축하드립니다. ${emailLink} 해당 링크로 접속해주시면 인증이 완료되어 냥터레스트에 로그인하실 수 있습니다.`,
 	}
 
 	// 회원 가입 처리 query 
-	connection.query(`SELECT * FROM nyang_member WHERE email='${memberMail}'`, (err, rows, fields) => {
-		// 가입 이메일 중복 처리
-		if (rows[0] !== undefined) {
-			// 가입된 이메일이 있을때
-			console.log('가입된 이메일이 있음, 회원가입 불가')
+	// 회언 정보 DB저장
+	const sql = "INSERT INTO `nyang_member` (`email`, `password`, `signupdate`, `certify`, `token`) VALUES ( ?,?,?,?,? )"
+	const params = ((resistUserInfo) => {
+		let resistUserInfoArray = [];
+		for(items in resistUserInfo) {
+			resistUserInfoArray.push(resistUserInfo[items]);
+		}
 
-			// 이메일 중복 여부 front로 전송
-			res.send(
-				{ emailOverlapping: true }
-			)
+		return resistUserInfoArray;
+	})(resistUserInfo)
+
+	connection.query(sql, params, (err, rows) => {
+		if (err) {
+			console.log('회원가입 실패',err);
+			res.send(false)
 		} else {
-			// 가입된 이메일이 없을때
-			console.log('가입된 이메일이 없음, 회원가입 가능')
-
-			// 회언 정보 DB저장
-			const sql = "INSERT INTO `nyang_member` (`email`, `password`, `signupdate`, `certify`, `token`) VALUES ( ?,?,?,?,? )"
-			const params = [memberMail, passwordHash, signupdate, certify, emailToken]
-			
-			// 가입된 이메일 없을때 query 처리
-			connection.query(sql, params, (err, rows, fields) => {
-				if (err) {
-					console.log(err);
-				} else {
-					console.log(rows);
-				}
-			});
-
 			// 회원가입 인증 메일 발송
 			mailSender.sendGmail(mailSenderOption);
-
-			// 이메일 중복 여부 front로 전송
-			res.send({
-				emailOverlapping: false
-			})
+			// 회원가입 성공 여부 front로 보내기
+			res.send(true)
 		}
-	})
-});
+	});
+}
+
+router.get('/user/exists/email/:useremail', existUserEmail);
+router.post('/user/join', resistUser);
 
 // 회원가입 완료
-router.get("/welcome", (req, res) => {
+router.get('/user/join/welcome', (req, res) => {
 	// 인증메일 인증작업
 	// 1. 쿼리로 가져온 이메일로 디비의 row를 뽑아온다
 	// 2. 토큰과 db토큰 비교
