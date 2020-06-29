@@ -26,15 +26,22 @@ async function err() {
 	throw new Error('에러 발생');
 }
 
+// upkind enum
+// https://www.data.go.kr/data/15001096/openapi.do
+// select to '유기동물 정보를 조회' in select box item
+const UPKIND = {
+	DOG: 417000,
+	CAT: 422400,
+	ETC: 429900
+};
+
 
 // 기본주소
 router.get("/page/:bgnde/:endde/:numOfRows/:kind/:searchField", doAsync(async (req, res) => {
 
-	// 시작일,종료일,결과보다 큰 수,품종
-
 	const { bgnde, endde, kind, searchField } = req.params;
 
-	const baseUrl = `${api}/abandonmentPublic?ServiceKey=${serviceKey}&_type=json&bgnde=${bgnde}&endde=${endde}&numOfRows=1000000&upkind=422400&`;
+	const baseUrl = `${api}/abandonmentPublic?ServiceKey=${serviceKey}&_type=json&bgnde=${bgnde}&endde=${endde}&numOfRows=1000000&upkind=${UPKIND.CAT}&`;
 
 	const kindParam = `kind=${kind}&`
 
