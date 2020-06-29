@@ -35,37 +35,86 @@ const UPKIND = {
 	ETC: 429900
 };
 
+class OpenAPI {
+	#url
+	#serviceKey
+
+	constructor() {
+		this.#url = "http://openapi.animal.go.kr/openapi/service/rest/abandonmentPublicSrvc";
+		this.#serviceKey = process.env.SERVICE_KEY;
+	}
+
+	get Url() {
+		return this.#url;
+	}
+
+	get serviceKey() {
+		return this.#serviceKey;
+	}
+
+	get request() {
+		return ( async () => {
+			let result = {};
+			try {
+				console.log(this.Url);	// maybe call override method
+				const response = await fetch(this.Url);
+				const json = await response.json();
+				result = await json.response.body;
+
+			} catch (error) {
+				console.log(error);
+				result = error;
+			}
+			return result;
+		})();
+	}
+}
+
+class abandonmentPublicOpenAPI extends OpenAPI {
+	#abandonmentPublicUrl
+	constructor(bgnde, endde, kind) {
+		super();
+		this.#abandonmentPublicUrl = `${super.Url}/abandonmentPublic?ServiceKey=${super.serviceKey}&_type=json&bgnde=${bgnde}&endde=${endde}&numOfRows=1000000&upkind=${UPKIND.CAT}`;
+		if (kind !== "000116") {
+			this.#abandonmentPublicUrl += `&kind=${kind}`;
+		}
+	}
+
+	get Url() {
+		return this.#abandonmentPublicUrl;
+	}
+
+	get request() {
+		return super.request;
+	}
+}
+
+class KindOpenAPI extends OpenAPI {
+	#kindPublicUrl
+	constructor() {
+		super();
+		this.#kindPublicUrl = `${super.Url}/kind?ServiceKey=${super.serviceKey}&_type=json&up_kind_cd=422400`;
+	}
+
+	get Url() {
+		return this.#kindPublicUrl;
+	}
+
+	get request() {
+		return super.request;
+	}
+}
+
 
 // 기본주소
 router.get("/page/:bgnde/:endde/:numOfRows/:kind/:searchField", doAsync(async (req, res) => {
 
 	const { bgnde, endde, kind, searchField } = req.params;
 
-	const baseUrl = `${api}/abandonmentPublic?ServiceKey=${serviceKey}&_type=json&bgnde=${bgnde}&endde=${endde}&numOfRows=1000000&upkind=${UPKIND.CAT}&`;
+	const apiObject = new abandonmentPublicOpenAPI(bgnde, endde, kind);
 
-	const kindParam = `kind=${kind}&`
-
-	const KINDENUM = (kind === "000116");
-
-	const SEARCHENUM = searchField === "keyword";
-
-	const per = 100;
-
-	const getData = async (url) => {
-		try {
-			const response = await fetch(url);
-			const json = await response.json();
-			const body = await json.response.body;
-			return body;
-
-		} catch (error) {
-			console.log(error);
-		}
-	};
-
-	let url = (KINDENUM) ? `${baseUrl}` : `${baseUrl}${kindParam}`;
-
-	const defaultRes = await getData(url)
+	const defaultRes = await apiObject.request;
+	console.log(defaultRes);
 
 	let defaultItem = defaultRes.items.item || []
 
@@ -73,11 +122,11 @@ router.get("/page/:bgnde/:endde/:numOfRows/:kind/:searchField", doAsync(async (r
 
 	const filteredItems = await filterArr(defaultItem, searchField)
 
-	let selectItems = (SEARCHENUM) ? defaultItem : filteredItems;
+	let selectItems = searchField === "keyword" ? defaultItem : filteredItems;
 
 	let typeItems = (Array.isArray(selectItems)) ? selectItems : [selectItems];
 
-	let items = typeItems.addArr(per);
+	let items = typeItems.addArr(100);
 
 	if (items.length === 0) items = [[]]
 
@@ -89,20 +138,11 @@ router.get("/page/:bgnde/:endde/:numOfRows/:kind/:searchField", doAsync(async (r
 
 
 // 품종
-router.get("/search/kind", (req, res) => {
-	const url = `${api}/kind?ServiceKey=${serviceKey}&_type=json&up_kind_cd=422400`;
-
-	fetch(url)
-		.then(response => response.json())
-		.then(json => {
-			res.send(json.response.body.items);
-			// console.log(json.response.body.items.item[0].kindCd)
-
-		})
-		.catch(() => {
-			res.send(JSON.stringify({ message: "System Error" }));
-		});
-})
+router.get("/search/kind", async (req, res) => {
+	let response = await new KindOpenAPI().request;
+	//console.log(response);
+	res.send(response.items);
+});
 
 
 // db접속
