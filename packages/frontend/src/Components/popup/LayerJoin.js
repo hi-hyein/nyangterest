@@ -7,11 +7,7 @@ import Checkbox from '@material-ui/core/Checkbox';
 import AgreeLink from "../agree/AgreeLink";
 import Service from "../agree/Service";
 import Privacy from "../agree/Privacy";
-
-
-// eslint-disable-next-line
-const MAIL_FORMAT = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
-const PASSWORD_FORMAT = /^(?=[a-zA-Z0-9!@$%^*#])(?!.*[^a-zA-Z0-9!@$%^*#]).{6,15}$/
+import Validate from "../Validate";
 
 class LayerJoin extends Component {
 	state = {
@@ -43,15 +39,9 @@ class LayerJoin extends Component {
 		}
 	}
 
-	validate = (format, value) => {
-		const reg = format;
-		const validate = reg.test(value);
-		return validate;
-	}
-
 	emailOnChange = (e) => {
 		const value = e.target.value
-		const Validate = this.validate(MAIL_FORMAT, value)
+		const validate = new Validate(value,'MAIL').getValidate()
 
 		this.setState(prevState => ({
 			email: {
@@ -60,21 +50,12 @@ class LayerJoin extends Component {
 			}
 		}))
 		
-		if (Validate) {
-			this.setState(prevState => ({
-				email: {
-					...prevState.email,
-					validate: true,
-				}
-			}));
-		} else {
-			this.setState(prevState => ({
-				email: {
-					...prevState.email,
-					validate: false,
-				}
-			}))
-		}
+		this.setState(prevState => ({
+			email: {
+				...prevState.email,
+				validate: validate,
+			}
+		}));
 
 		// 입력된 이메일값이 공백이 아닐때
 		if(value !== '' ) {
@@ -100,7 +81,7 @@ class LayerJoin extends Component {
 
 	passwordOnChange = (e) => {
 		const value = e.target.value
-		const Validate = this.validate(PASSWORD_FORMAT, value)
+		const validate = new Validate(value,'PASSWORD').getValidate()
 
 		this.setState(prevState => ({
 			password: {
@@ -109,21 +90,12 @@ class LayerJoin extends Component {
 			}
 		}))
 
-		if (Validate) {
-			this.setState(prevState=>({
-				password: {
-					...prevState.password,
-					validate: true
-				}
-			}))
-		} else {
-			this.setState(prevState => ({
-				password: {
-					...prevState.password,
-					validate: false
-				}
-			}))
-		}
+		this.setState(prevState=>({
+			password: {
+				...prevState.password,
+				validate: validate
+			}
+		}))
 	}
 
 	passwordCheckOnChange = (e) => {
@@ -271,6 +243,8 @@ class LayerJoin extends Component {
 		)
 
 	}
+
+	
 }
 
 export default LayerJoin;

@@ -3,12 +3,7 @@ import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import { observer, inject } from "mobx-react";
-
-// eslint-disable-next-line
-const MAIL_FORMAT = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
-const PASSWORD_FORMAT =  /^(?=[a-zA-Z0-9!@$%^*#])(?!.*[^a-zA-Z0-9!@$%^*#]).{6,15}$/
-
-
+import Validate from "../Validate";
 
 @inject('loginStore')
 @observer
@@ -24,48 +19,30 @@ class LayerLogin extends Component {
 		userPasswordNotMatchText: "6자이상 15자 이하 입력해주세요",
 	}
 
-	validate = (format, value) => {
-		const reg = format;
-		const validate = reg.test(value);
-		return validate;
-	}
-
 	userIdHandler = (e) => {
 		const value = e.target.value
-		const Validate = this.validate(MAIL_FORMAT, value)
+		const validate = new Validate(value,'MAIL').getValidate();
 
 		this.setState({
 			userId: e.target.value
 		})
 
-		if (Validate) {
-			this.setState({
-				userIdValidate: true
-			})
-		} else {
-			this.setState({
-				userIdValidate: false,
-			})
-		}
+		this.setState({
+			userIdValidate: validate
+		})
 	}
 
 	userPwHandler = (e) => {
 		const value = e.target.value
-		const Validate = this.validate(PASSWORD_FORMAT, value)
+		const validate = new Validate(value,'PASSWORD').getValidate();
 
 		this.setState({
 			userPassword: e.target.value
 		})
 
-		if (Validate) {
-			this.setState({
-				userPasswordValidate: true
-			})
-		} else {
-			this.setState({
-				userPasswordValidate: false,
-			})
-		}
+		this.setState({
+			userPasswordValidate: validate
+		})
 	}
 
 	sendUserInfo = () => {
