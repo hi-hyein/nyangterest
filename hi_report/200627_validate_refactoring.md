@@ -51,6 +51,7 @@ validate = (format, value) => {
 
 ## 개선내용
 
+### 1. validate
 각각의 파일에 들어있던 validate를 연관성있는 변수, 기능들을 모아 별도의 class로 생성하였다.
 ```javascript
 class Validate {
@@ -113,6 +114,49 @@ import Validate from "../Validate";
 const validate = new Validate(value,'MAIL').getValidate(); // result validate = boolean
 ```
 
+### 2. error
+```javascript
+//before
+<TextField
+    error={email.overlapping ||( !email.validate && email.value !== '')}
+/>
+```
+
+```javascript
+//after
+<TextField
+    error={this.getError.getEmailError()}
+/>
+```
+```javascript
+getError = {
+    emailResult : false,
+    passwordResult: false,
+    passwordCheckResult: false,
+    getEmailError : () => {
+        if(this.state.email.value !== '') {
+            this.getError.emailResult = !this.state.email.validate || this.state.email.overlapping
+        }
+        return this.getError.emailResult
+    },
+
+    getPasswordError : () => {
+        if(this.state.password.value !== '') {
+            this.getError.passwordResult = !this.state.password.validate
+        }
+        return this.getError.passwordResult
+    },
+    getPasswordCheckError : () => {
+        if(this.state.password.check.value !== '') {
+            this.getError.passwordCheckResult = !this.state.password.check.validate
+        }
+        return this.getError.passwordCheckResult
+    }
+}
+```
+
 ## 궁금한점
 - ui가 아닌 기능단위의 파일은 어디에 위치하는게 좋을까
 - class에서 private가 필요한 이유
+
+
