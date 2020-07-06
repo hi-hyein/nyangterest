@@ -14,6 +14,9 @@ const logger = require('./winston')
 const unregister = require('./unregister')
 const dotenv = require('dotenv')
 
+const ArrayVal = require('./Array.js');
+Array.prototype.ToTwoDimensionalArray = ArrayVal.ToTwoDimensionalArray;
+
 dotenv.config({ path: path.join(__dirname, './.env') })
 
 const doAsync = fn => async (req, res, next) => await fn(req, res, next).catch(next);
@@ -117,7 +120,7 @@ router.get("/page/:bgnde/:endde/:numOfRows/:kind/:searchField", doAsync(async (r
 
 	let typeItems = (Array.isArray(selectItems)) ? selectItems : [selectItems];
 
-	let items = typeItems.addArr(100);
+	let items = typeItems.ToTwoDimensionalArray(100);
 
 	if (items.length === 0) items = [[]]
 
@@ -195,17 +198,6 @@ if (process.env.NODE_ENV !== 'test') {
 }
 
 const filterArr = async (defaultItem, searchField) => {
-
-	Array.prototype.addArr = n => {
-		const arr = this;
-		const length = arr.length;
-		const count = Math.ceil(length / n);
-		const item = [];
-		for (let i = 0; i < count; i++) {
-			item.push(arr.splice(0, n));
-		}
-		return item;
-	}
 
 	const strObj = {
 		"F": "암컷",
