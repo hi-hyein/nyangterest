@@ -3,7 +3,6 @@ const express = require("express");
 const path = require("path");
 const router = express.Router();
 const cors = require("cors");
-const fetch = require("node-fetch");
 const app = express();
 const PORT = 8080;
 const login = require('./login');
@@ -19,96 +18,19 @@ Array.prototype.ToTwoDimensionalArray = ArrayObject.ToTwoDimensionalArray;
 
 const filterObject = require('./Filter');
 
+const abandonmentPublicOpenAPIModule = require('./classes/abandonmentPublicOpenAPI');
+const KindOpenAPIModule = require('./classes/KindOpenAPI');
+
 dotenv.config({ path: path.join(__dirname, './.env') })
 
 const doAsync = fn => async (req, res, next) => await fn(req, res, next).catch(next);
-
-// upkind enum
-// https://www.data.go.kr/data/15001096/openapi.do
-// select to '유기동물 정보를 조회' in select box item
-const UPKIND = {
-	DOG: 417000,
-	CAT: 422400,
-	ETC: 429900
-};
-
-class OpenAPI {
-	#url
-	#serviceKey
-
-	constructor() {
-		this.#url = "http://openapi.animal.go.kr/openapi/service/rest/abandonmentPublicSrvc";
-		this.#serviceKey = process.env.SERVICE_KEY;
-	}
-
-	get Url() {
-		return this.#url;
-	}
-
-	get serviceKey() {
-		return this.#serviceKey;
-	}
-
-	get request() {
-		return ( async () => {
-			let result = {};
-			try {
-				console.log(this.Url);	// maybe call override method
-				const response = await fetch(this.Url);
-				const json = await response.json();
-				result = await json.response.body;
-
-			} catch (error) {
-				console.log(error);
-				result = error;
-			}
-			return result;
-		})();
-	}
-}
-
-class abandonmentPublicOpenAPI extends OpenAPI {
-	#abandonmentPublicUrl
-	constructor(bgnde, endde, kind) {
-		super();
-		this.#abandonmentPublicUrl = `${super.Url}/abandonmentPublic?ServiceKey=${super.serviceKey}&_type=json&bgnde=${bgnde}&endde=${endde}&numOfRows=1000000&upkind=${UPKIND.CAT}`;
-		if (kind !== "000116") {
-			this.#abandonmentPublicUrl += `&kind=${kind}`;
-		}
-	}
-
-	get Url() {
-		return this.#abandonmentPublicUrl;
-	}
-
-	get request() {
-		return super.request;
-	}
-}
-
-class KindOpenAPI extends OpenAPI {
-	#kindPublicUrl
-	constructor() {
-		super();
-		this.#kindPublicUrl = `${super.Url}/kind?ServiceKey=${super.serviceKey}&_type=json&up_kind_cd=422400`;
-	}
-
-	get Url() {
-		return this.#kindPublicUrl;
-	}
-
-	get request() {
-		return super.request;
-	}
-}
-
 
 // 기본주소
 router.get("/page/:bgnde/:endde/:numOfRows/:kind/:searchField", doAsync(async (req, res) => {
 
 	const { bgnde, endde, kind, searchField } = req.params;
 
-	const apiObject = new abandonmentPublicOpenAPI(bgnde, endde, kind);
+	const apiObject = new abandonmentPublicOpenAPIModule.abandonmentPublicOpenAPI(bgnde, endde, kind);
 	const defaultRes = await apiObject.request;
 	//console.log(defaultRes);
 
@@ -135,7 +57,7 @@ router.get("/page/:bgnde/:endde/:numOfRows/:kind/:searchField", doAsync(async (r
 
 // 품종
 router.get("/search/kind", async (req, res) => {
-	let response = await new KindOpenAPI().request;
+	let response = await new KindOpenAPIModule.KindOpenAPI().request;
 	//console.log(response);
 	res.send(response.items);
 });
