@@ -16,15 +16,7 @@ const dotenv = require('dotenv')
 
 dotenv.config({ path: path.join(__dirname, './.env') })
 
-const serviceKey = process.env.SERVICE_KEY;
-
-const api = 'http://openapi.animal.go.kr/openapi/service/rest/abandonmentPublicSrvc';
-
 const doAsync = fn => async (req, res, next) => await fn(req, res, next).catch(next);
-
-async function err() {
-	throw new Error('에러 발생');
-}
 
 // upkind enum
 // https://www.data.go.kr/data/15001096/openapi.do
@@ -112,9 +104,8 @@ router.get("/page/:bgnde/:endde/:numOfRows/:kind/:searchField", doAsync(async (r
 	const { bgnde, endde, kind, searchField } = req.params;
 
 	const apiObject = new abandonmentPublicOpenAPI(bgnde, endde, kind);
-
 	const defaultRes = await apiObject.request;
-	console.log(defaultRes);
+	//console.log(defaultRes);
 
 	let defaultItem = defaultRes.items.item || []
 
@@ -162,7 +153,10 @@ const connection = mysql.createConnection({
 connection.connect();
 
 app.get("/admin/member", (req, res) => {
-	connection.query("SELECT * FROM nyang_member", (err, rows, fields) => {
+	connection.query("SELECT * FROM nyang_member", (error, rows, fields) => {
+		if (error) {
+			console.log(error.stack);
+		}
 		res.send(rows);
 		// console.log(rows.id);
 	});
