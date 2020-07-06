@@ -188,7 +188,7 @@ app.use("/account", findAccount);
 app.use("/unregister", unregister);
 
 if (process.env.NODE_ENV !== 'test') {
-	app.listen(PORT, function () {
+	app.listen(PORT, () => {
 		logger.info("enabled web server listening !");
 		// console.log("enabled web server listening !");
 	});
@@ -196,7 +196,7 @@ if (process.env.NODE_ENV !== 'test') {
 
 const filterArr = async (defaultItem, searchField) => {
 
-	Array.prototype.addArr = function (n) {
+	Array.prototype.addArr = n => {
 		const arr = this;
 		const length = arr.length;
 		const count = Math.ceil(length / n);
