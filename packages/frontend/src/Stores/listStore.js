@@ -2,11 +2,10 @@ import { observable, action, runInAction, computed } from "mobx";
 import moment from "moment";
 
 export default class ListStore {
-
 	@observable items = [];
 	@observable loading = true;
 	@observable timer = null;
-	@observable index = [0];
+	@observable index = 0;
 	@observable numOfRows = 100;
 	@observable scrolling = false;
 	@observable hasMore = true;
@@ -27,24 +26,20 @@ export default class ListStore {
 
 			let url = `/page/${happenFrom}/${happenTo}/${numOfRows}/${selectedCategory}/${searchField}`;
 
-			const response = await fetch(url)
+			const response = await fetch(url);
 
 			const json = await response.json();
 
 			runInAction(() => {
-
 				this.setItems([...items, ...(json.items[index] || [])]);
-
 			});
-
 		} catch (err) {
 			runInAction(() => {
 				console.log(err);
 				this.isLoading = false;
-			})
+			});
 		}
 	};
-
 
 	@action
 	setItems = (items) => {
@@ -53,30 +48,27 @@ export default class ListStore {
 		this.isLoading = false;
 		this.scrolling = false;
 		this.hasMore = true;
-	}
+	};
 
 	@action
 	loadMore = () => {
-
 		const { totalPage } = this;
 
 		let message = observable({
 			return: "마지막 페이지입니다.",
-			continue: "데이터가 남아있습니다."
-		})
+			continue: "데이터가 남아있습니다.",
+		});
 
 		if (totalPage) {
-			return console.log(message.return)
-		}
-		else {
-			console.log(message.continue)
+			return console.log(message.return);
+		} else {
+			console.log(message.continue);
 			this.isLoading = true;
 			this.scrolling = true;
 			this.index++;
 			this.loadList();
 		}
-	}
-
+	};
 
 	@action
 	handleScroll = () => {
@@ -87,16 +79,21 @@ export default class ListStore {
 		const scrollTop =
 			(document.documentElement && document.documentElement.scrollTop) ||
 			document.body.scrollTop;
-		// 보이는 만큼의 높이	
+		// 보이는 만큼의 높이
 		const clientHeight =
 			document.documentElement.clientHeight || window.innerHeight;
 		// 스크롤링 없는 전체 높이
 		const scrollHeight =
 			(document.documentElement && document.documentElement.scrollHeight) ||
 			document.body.scrollHeight;
+		const scrollBottom =
+			Math.ceil(scrollTop + clientHeight) + clientHeight / 4 >= scrollHeight;
+		const scrollBottomWeb = Math.ceil(scrollTop + clientHeight) >= scrollHeight;
 		const scrolledToBottom =
-			Math.ceil(scrollTop + clientHeight) >= scrollHeight;
-		if (scrolledToBottom || window.innerWidth <= 700) {
+			window.innerWidth <= 700 ? scrollBottom : scrollBottomWeb;
+		console.log(scrolledToBottom, scrollTop + clientHeight, scrollHeight);
+
+		if (scrolledToBottom) {
 			this.loadMore();
 		}
 	};
@@ -104,7 +101,7 @@ export default class ListStore {
 	@action
 	resetList = () => {
 		this.items = [];
-		this.index = [0]
+		this.index = 0;
 		this.isLoading = true;
 	};
 
@@ -125,11 +122,7 @@ export default class ListStore {
 	@computed
 	get totalPage() {
 		const { index, numOfRows, items } = this;
-		let paging = Math.ceil(numOfRows * (index + 1)) > items.length
+		let paging = Math.ceil(numOfRows * (index + 1)) > items.length;
 		return paging;
 	}
-
 }
-
-
-
