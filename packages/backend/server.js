@@ -30,28 +30,26 @@ router.get("/page/:bgnde/:endde/:numOfRows/:kind/:searchField", doAsync(async (r
 
 	const { bgnde, endde, kind, searchField } = req.params;
 
-	const apiObject = new abandonmentPublicOpenAPIModule.abandonmentPublicOpenAPI(bgnde, endde, kind);
-	const defaultRes = await apiObject.request;
-	//console.log(defaultRes);
+	const defaultResults = await new abandonmentPublicOpenAPIModule.abandonmentPublicOpenAPI(bgnde, endde, kind).request;
+	//console.log(defaultResults);
 
-	let defaultItem = defaultRes.items.item || []
+	// item exists?
+	let defaultItem = defaultResults.items.item || [];
+	//console.log(defaultItem);
 
-	if (typeof defaultItem === 'undefined') defaultItem = defaultRes.items
+	if (typeof defaultItem === 'undefined') {
+		defaultItem = defaultResults.items;
+	}
 
-	const filteredItems = await filterObject.filter(defaultItem, searchField)
+	// search keyword exists?
+	let selectItems = searchField === "keyword" ? defaultItem : await filterObject.filter(defaultItem, searchField);
 
-	let selectItems = searchField === "keyword" ? defaultItem : filteredItems;
+	// array check
+	let typeItems = Array.isArray(selectItems) ? selectItems : [selectItems];
 
-	let typeItems = (Array.isArray(selectItems)) ? selectItems : [selectItems];
-
+	// To two-dimensional array
 	let items = typeItems.ToTwoDimensionalArray(100);
-
-	if (items.length === 0) items = [[]]
-
-	let arrRes = { items }
-
-	res.json(arrRes)
-
+	res.json({ items });
 }))
 
 

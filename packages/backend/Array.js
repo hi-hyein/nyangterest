@@ -6,7 +6,7 @@ const ToTwoDimensionalArray = function (divideBy) {
     for (let i = 0; i < count; i++) {
         items.push(array.splice(0, divideBy));
     }
-    return items;
+    return items.length == 0 ? [[]] : items;
 }
 
 exports.ToTwoDimensionalArray = ToTwoDimensionalArray;
