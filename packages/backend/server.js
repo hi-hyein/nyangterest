@@ -14,8 +14,10 @@ const logger = require('./winston')
 const unregister = require('./unregister')
 const dotenv = require('dotenv')
 
-const ArrayVal = require('./Array.js');
-Array.prototype.ToTwoDimensionalArray = ArrayVal.ToTwoDimensionalArray;
+const ArrayObject = require('./Array');
+Array.prototype.ToTwoDimensionalArray = ArrayObject.ToTwoDimensionalArray;
+
+const filterObject = require('./Filter');
 
 dotenv.config({ path: path.join(__dirname, './.env') })
 
@@ -114,7 +116,7 @@ router.get("/page/:bgnde/:endde/:numOfRows/:kind/:searchField", doAsync(async (r
 
 	if (typeof defaultItem === 'undefined') defaultItem = defaultRes.items
 
-	const filteredItems = await filterArr(defaultItem, searchField)
+	const filteredItems = await filterObject.filter(defaultItem, searchField)
 
 	let selectItems = searchField === "keyword" ? defaultItem : filteredItems;
 
@@ -197,47 +199,7 @@ if (process.env.NODE_ENV !== 'test') {
 	});
 }
 
-const filterArr = async (defaultItem, searchField) => {
-
-	const strObj = {
-		"F": "암컷",
-		"M": "수컷",
-		"Q": "성별 미상",
-		"Y": "중성화O",
-		"N": "중성화X",
-		"U": "중성화 미상",
-		"한국 고양이": "코리안숏헤어"
-	}
-
-	let defaultValue = Object.values(defaultItem)
-
-	if (typeof defaultValue[0] === 'string') defaultValue = [defaultItem]
-
-	let filteredItems = defaultValue.filter(item => {
-		let re = new RegExp(Object.keys(strObj).join("|"), "gi");
-		let regExp = /[()]/gi;
-		let searchKeyword = searchField.toUpperCase().trim()
-		if (typeof item === "object") {
-			return (
-				Object.keys(item).some(
-					key =>
-						typeof item[key] === "string" &&
-						item[key].replace(re, (matched => {
-							return strObj[matched]
-						})).replace(regExp, "").toUpperCase().includes(searchKeyword)
-				)
-			);
-		} else {
-			return null;
-		}
-
-	})
-
-	return filteredItems;
-
-}
-
 module.exports = {
 	app: app,
-	filterArr: filterArr
+	filterArr: filterObject.filter
 }
