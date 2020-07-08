@@ -7,11 +7,7 @@ import Checkbox from '@material-ui/core/Checkbox';
 import AgreeLink from "../agree/AgreeLink";
 import Service from "../agree/Service";
 import Privacy from "../agree/Privacy";
-
-
-// eslint-disable-next-line
-const MAIL_FORMAT = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
-const PASSWORD_FORMAT = /^(?=[a-zA-Z0-9!@$%^*#])(?!.*[^a-zA-Z0-9!@$%^*#]).{6,15}$/
+import Validate from "../Validate";
 
 class LayerJoin extends Component {
 	state = {
@@ -40,18 +36,55 @@ class LayerJoin extends Component {
 		helper: {
 			complete: "회원가입이 완료되었습니다! 이메일 인증을 완료해주세요!",
 			failed: "회원가입에 실패했습니다. 고객센터에 문의주세요."
+		},
+	}
+
+	// Todo : helper text 빼기
+	helperText = {
+		email: {
+			available : "사용 가능한 이메일 주소입니다",
+			notAvailable : "잘못된 이메일 형식 입니다",
+			overlapping: "이미 가입된 이메일입니다. 다른 이메일을 입력해주세요",
+		},
+		password: {
+			available: "사용 가능한 비밀번호입니다",
+			notAvailable: "6자이상 15자 이하 입력해주세요",
+		},
+		result: {
+			complete: "회원가입이 완료되었습니다! 이메일 인증을 완료해주세요!",
+			failed: "회원가입에 실패했습니다. 고객센터에 문의주세요."
 		}
 	}
 
-	validate = (format, value) => {
-		const reg = format;
-		const validate = reg.test(value);
-		return validate;
+	// input error 체크
+	getError = {
+		emailResult : false,
+		passwordResult: false,
+		passwordCheckResult: false,
+		getEmailError : () => {
+			if(this.state.email.value !== '') {
+				this.getError.emailResult = !this.state.email.validate || this.state.email.overlapping
+			}
+			return this.getError.emailResult
+		},
+
+		getPasswordError : () => {
+			if(this.state.password.value !== '') {
+				this.getError.passwordResult = !this.state.password.validate
+			}
+			return this.getError.passwordResult
+		},
+		getPasswordCheckError : () => {
+			if(this.state.password.check.value !== '') {
+				this.getError.passwordCheckResult = !this.state.password.check.validate
+			}
+			return this.getError.passwordCheckResult
+		}
 	}
 
 	emailOnChange = (e) => {
 		const value = e.target.value
-		const Validate = this.validate(MAIL_FORMAT, value)
+		const validate = new Validate(value,'MAIL').getValidate()
 
 		this.setState(prevState => ({
 			email: {
@@ -60,21 +93,12 @@ class LayerJoin extends Component {
 			}
 		}))
 		
-		if (Validate) {
-			this.setState(prevState => ({
-				email: {
-					...prevState.email,
-					validate: true,
-				}
-			}));
-		} else {
-			this.setState(prevState => ({
-				email: {
-					...prevState.email,
-					validate: false,
-				}
-			}))
-		}
+		this.setState(prevState => ({
+			email: {
+				...prevState.email,
+				validate: validate,
+			}
+		}));
 
 		// 입력된 이메일값이 공백이 아닐때
 		if(value !== '' ) {
@@ -100,7 +124,7 @@ class LayerJoin extends Component {
 
 	passwordOnChange = (e) => {
 		const value = e.target.value
-		const Validate = this.validate(PASSWORD_FORMAT, value)
+		const validate = new Validate(value,'PASSWORD').getValidate()
 
 		this.setState(prevState => ({
 			password: {
@@ -109,21 +133,12 @@ class LayerJoin extends Component {
 			}
 		}))
 
-		if (Validate) {
-			this.setState(prevState=>({
-				password: {
-					...prevState.password,
-					validate: true
-				}
-			}))
-		} else {
-			this.setState(prevState => ({
-				password: {
-					...prevState.password,
-					validate: false
-				}
-			}))
-		}
+		this.setState(prevState=>({
+			password: {
+				...prevState.password,
+				validate: validate
+			}
+		}))
 	}
 
 	passwordCheckOnChange = (e) => {
@@ -203,7 +218,7 @@ class LayerJoin extends Component {
 						margin="normal"
 						variant="outlined"
 						onChange={this.emailOnChange}
-						error={email.overlapping ||( !email.validate && email.value !== '')}
+						error={this.getError.getEmailError()}
 						fullWidth={true}
 					/>
 					<FormHelperText id="component-helper-text">
@@ -223,7 +238,7 @@ class LayerJoin extends Component {
 						type="password"
 						onChange={this.passwordOnChange}
 						fullWidth={true}
-						error={!password.validate && password.value !== ''}
+						error={this.getError.getPasswordError()}
 					/>
 					<FormHelperText id="component-helper-text">
 						{password.validate && password.helper.available}
@@ -241,7 +256,7 @@ class LayerJoin extends Component {
 						type="password"
 						onChange={this.passwordCheckOnChange}
 						fullWidth={true}
-						error={password.check.value !== password.value && password.check.value !== ""}
+						error={this.getError.getPasswordCheckError()}
 					/>
 					<FormHelperText id="component-helper-text">
 						{password.check.value === password.value && password.check.value !== "" && "비밀번호가 일치합니다"}
@@ -271,6 +286,8 @@ class LayerJoin extends Component {
 		)
 
 	}
+
+	
 }
 
 export default LayerJoin;

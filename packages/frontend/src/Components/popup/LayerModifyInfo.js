@@ -3,10 +3,7 @@ import React, { Component } from "react";
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import FormHelperText from '@material-ui/core/FormHelperText';
-
-// eslint-disable-next-line
-const NAME_FORMAT = /^[가-힣a-zA-Z]{2,20}$/;
-const PASSWORD_FORMAT = /^(?=[a-zA-Z0-9!@$%^*#])(?!.*[^a-zA-Z0-9!@$%^*#]).{6,15}$/;
+import Validate from "../Validate";
 
 class LayerModifyInfo extends Component {
 	state = {
@@ -25,13 +22,15 @@ class LayerModifyInfo extends Component {
 
 	// 이름 유효성 검사, state 저장
 	nameOnChange = (e) => {
+		const value = e.target.value;
 		// 이름저장
 		this.setState({
-			name: e.target.value
+			name: value
 		})
 
 		// 이름 유효성검사
-		const validate = NAME_FORMAT.test(e.target.value);
+		const validate = new Validate(value,'NAME').getValidate();
+
 		if (!validate) {
 			if (e.target.value.length <= 0) {
 				this.setState({
@@ -63,13 +62,14 @@ class LayerModifyInfo extends Component {
 
 	// 비밀번호 유효성 검사, state 저장
 	passwordOnChange = (e) => {
+		const value = e.target.value;
 		// 이름저장
 		this.setState({
-			password: e.target.value
+			password: value
 		})
 
-		// 이름 유효성검사
-		const validate = PASSWORD_FORMAT.test(e.target.value);
+		// 비밀번호 유효성검사
+		const validate = new Validate(value,'PASSWORD').getValidate();
 		if (!validate) {
 			if (e.target.value.length <= 0) {
 				this.setState({
