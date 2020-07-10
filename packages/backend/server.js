@@ -31,11 +31,9 @@ router.get("/page/:bgnde/:endde/:numOfRows/:kind/:searchField", doAsync(async (r
 	const { bgnde, endde, kind, searchField } = req.params;
 
 	const defaultResults = await new abandonmentPublicOpenAPIModule.abandonmentPublicOpenAPI(bgnde, endde, kind).request;
-	//console.log(defaultResults);
 
 	// item exists?
 	let defaultItem = defaultResults.items.item || [];
-	//console.log(defaultItem);
 
 	if (typeof defaultItem === 'undefined') {
 		defaultItem = defaultResults.items;
