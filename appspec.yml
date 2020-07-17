@@ -7,4 +7,8 @@ files:
     # source는 프로젝트 기준, destination은 instance 기준으로 입력해주고,
     # source가 destination안에 복사됨
     - source: /
-      destination: /home/ubuntu/nyangterest
+      destination: /home/ubuntu/deploy/nyangterest/
+hooks:
+  AfterInstall: # 배포가 끝나면 아래 명령어를 실행
+    - location: execute-deploy.sh
+      timeout: 180
