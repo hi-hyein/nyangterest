@@ -5,7 +5,7 @@ const router = express.Router();
 const cors = require("cors");
 const fetch = require("node-fetch");
 const app = express();
-const PORT = 8080;
+const PORT = process.env.PORT || 8080;
 const login = require('./login');
 const memberInfo = require('./memberInfo');
 const findAccount = require('./findAccount');
@@ -19,6 +19,16 @@ dotenv.config({ path: path.join(__dirname, './.env') })
 const serviceKey = process.env.SERVICE_KEY;
 
 const api = 'http://openapi.animal.go.kr/openapi/service/rest/abandonmentPublicSrvc';
+
+// production (정적파일 서비스)
+
+if (process.env.NODE_ENV === "production") {
+	app.use(express.static("../frontend/build"));
+}
+
+app.get("/", (req, res) => {
+	res.sendFile(path.join(__dirname, "../frontend/build", "index.html"));
+});
 
 const doAsync = fn => async (req, res, next) => await fn(req, res, next).catch(next);
 
@@ -125,10 +135,6 @@ app.use(express.json());
 
 // // 중첩된 객체표현 허용여부
 app.use(express.urlencoded({ extended: false }));
-
-// 정적파일 서비스
-app.use(express.static(path.join(__dirname, "public")));
-console.log(__dirname);
 
 app.use(cors());
 app.use("/", router);
