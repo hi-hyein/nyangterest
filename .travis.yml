@@ -1,13 +1,22 @@
 language: node_js 
 node_js:
-    - "10.15.3" 
+    - "10.15.3"
 before_install: 
     - npm install -g yarn 
+install:
+  - npm --prefix packages/backend install
+  - npm --prefix packages/frontend install
+  - npm --prefix packages/frontend run build	
+  - git add -f packages/frontend/build
+  - git commit -am "Add react build directory"
+  - npm install
 branches:
     only:
         - master
 before_deploy: # 배포하기전 하는 작업들
   - rm -rf node_modules # travis가 설치한 node_moduels를 삭제
+  - rm -rf packages/frontend/node_modules
+  - rm -rf packages/backend/node_modules
   - zip -r nyangterest * 
   - mkdir -p deploy # deploy 라는 디렉터리를 만듬
   - mv nyangterest.zip deploy/nyangterest.zip # deploy 디렉터리로 nyangterest.zip 파일을 이동

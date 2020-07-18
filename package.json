@@ -9,10 +9,10 @@
 	},
 	"devDependencies": {},
 	"scripts": {
+		"start": "node packages/backend/server",
 		"backend": "nodemon packages/backend/server",
 		"frontend": "cd packages/frontend && npm start",
 		"dev": "concurrently \"npm run backend\" \"npm run frontend\"",
-		"build": "npm install --prefix packages/frontend && npm run build --prefix packages/frontend",
 		"test": "exit"
 	},
 	"repository": {
