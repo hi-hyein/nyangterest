@@ -24,7 +24,7 @@
 		"winston-daily-rotate-file": "^4.4.1"
 	},
 	"scripts": {
-		"start": "node server.js",
+		"start": "cross-env NODE_ENV=production PORT=80 pm2 start server.js -i -1",
 		"test": "cross-env NODE_ENV=test jest --setupFiles dotenv/config --watch --runInBand --detectOpenHandles --forceExit"
 	},
 	"name": "backend",
