@@ -3,6 +3,7 @@ import SearchStore from "./searchStore";
 import BtnStore from "./btnStore";
 import loginStore from "./loginStore";
 import PopupStore from "./popupStore";
+import validateStore from "./validateStore";
 
 class RootStore {
 	constructor() {
@@ -11,6 +12,7 @@ class RootStore {
 		this.btnStore = new BtnStore(this);
 		this.loginStore = new loginStore(this);
 		this.popupStore = new PopupStore(this);
+		this.validateStore = new validateStore(this);
 	}
 }
 
