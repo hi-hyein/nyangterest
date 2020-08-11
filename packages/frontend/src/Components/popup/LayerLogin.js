@@ -10,12 +10,35 @@ class LayerLogin extends Component {
 	state = {
 		userId: "",
 		userIdValidate: false,
-		userIdMatchText: "사용 가능한 이메일 주소입니다",
-		userIdNotMatchText: "잘못된 이메일 형식 입니다",
 		userPassword: '',
 		userPasswordValidate: false,
-		userPasswordMatchText: "사용 가능한 비밀번호입니다",
-		userPasswordNotMatchText: "6자이상 15자 이하 입력해주세요",
+	}
+
+	getHelperText = {
+		id: () => {
+			if(this.state.userIdValidate) {
+				return '사용 가능한 이메일 주소입니다'
+			}else {
+				return '잘못된 이메일 형식 입니다'
+			}
+		},
+
+		password: () => {
+			if(this.state.userPasswordValidate) {
+				return '사용 가능한 비밀번호입니다'
+			}else {
+				return '6자이상 15자 이하 입력해주세요'
+			}
+		}
+	}
+
+	// helper text 보여주기
+	showHelperText = (state, type) => {
+		if(state) {
+			return <FormHelperText id="component-helper-text">
+						{type()}
+					</FormHelperText>
+		}
 	}
 
 	userIdHandler = (e) => {
@@ -90,7 +113,7 @@ class LayerLogin extends Component {
 	}
 
 	render() {
-		const { userId, userIdValidate, userIdMatchText, userIdNotMatchText, userPassword, userPasswordValidate, userPasswordMatchText, userPasswordNotMatchText } = this.state
+		const { userId, userIdValidate, userPassword, userPasswordValidate } = this.state
 		return (
 			<div>
 				<div>
@@ -104,10 +127,7 @@ class LayerLogin extends Component {
 						onChange={this.userIdHandler}
 						error={!userIdValidate && userId !== ""}
 					/>
-					<FormHelperText id="component-helper-text">
-						{userIdValidate && userIdMatchText}
-						{!userIdValidate && userId !== "" && userIdNotMatchText}
-					</FormHelperText>
+					{this.showHelperText(userId, this.getHelperText.id)}
 				</div>
 				<div>
 					<TextField
@@ -121,10 +141,7 @@ class LayerLogin extends Component {
 						onChange={this.userPwHandler}
 						error={!userPasswordValidate && userPassword !== ""}
 					/>
-					<FormHelperText id="component-helper-text">
-						{userPasswordValidate && userPasswordMatchText}
-						{!userPasswordValidate && userPassword !== "" && userPasswordNotMatchText}
-					</FormHelperText>
+					{this.showHelperText(userPassword, this.getHelperText.password)}
 				</div>
 				<div>
 					<button type="button" style={{ fontSize: "16px", color: "#808080", fontWeight: "bold" }} onClick={this.findPasswordHandler}>

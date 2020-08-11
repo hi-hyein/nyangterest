@@ -10,8 +10,35 @@ import { observer, inject } from "mobx-react";
 class LayerFindPassword extends Component {
 	state = {
 		email: "",
-		emailValidate: undefined,
-		emailValidateMessage: "가입된 이메일 주소로 임시 비밀번호를 보내드립니다. 비밀번호는 회원정보 수정에서 변경 가능합니다.",
+		emailValidate: false,
+		emailMatch: null,
+	}
+
+	// helper text 얻기
+	getHelperText = {
+		email: () => {
+			if(this.state.emailValidate) {
+				if(this.state.emailMatch) {
+					return '등록된 이메일로 확인되었습니다. 해당 이메일로 임시비밀번호 변경페이지를 발송하였습니다.'
+				}else if(!this.state.emailMatch && this.state.emailMatch !== null) {
+					return '등록되지 않은 이메일로 확인되었습니다. 회원가입을 진행해주세요.'
+				}else {
+					return '가입된 이메일 주소로 임시 비밀번호를 보내드립니다. 비밀번호는 회원정보 수정에서 변경 가능합니다.'
+				}
+
+			} else {
+				return '잘못된 이메일 형식 입니다'
+			}
+		}
+	}
+
+	// helper text 보여주기
+	showHelperText = (state, type) => {
+		if(state) {
+			return <FormHelperText id="component-helper-text">
+						{type()}
+					</FormHelperText>
+		}
 	}
 
 	emailOnchange = (e) => {
@@ -23,27 +50,9 @@ class LayerFindPassword extends Component {
 		})
 
 		// 메일 유효성검사
-		const validate = this.props.validateStore.getValidate('MAIL')
-
-		if (!validate) {
-			// 입력값이 없을 경우
-			if (value.length <= 0) {
-				this.setState({
-					emailValidate: undefined,
-					emailValidateMessage: "가입된 이메일 주소로 임시 비밀번호를 보내드립니다. 비밀번호는 회원정보 수정에서 변경 가능합니다."
-				})
-			} else {
-				this.setState({
-					emailValidate: false,
-					emailValidateMessage: "잘못된 이메일 형식 입니다.",
-				})
-			}
-		} else {
-			this.setState({
-				emailValidate: true,
-				emailValidateMessage: "가입된 이메일 주소로 임시 비밀번호를 보내드립니다. 비밀번호는 회원정보 수정에서 변경 가능합니다."
-			})
-		}
+		this.setState({
+			emailValidate: this.props.validateStore.getValidate('MAIL')
+		})
 	}
 
 
@@ -68,18 +77,18 @@ class LayerFindPassword extends Component {
 				const matchState = json
 				if (matchState.emailMatch) {
 					this.setState({
-						emailValidateMessage: "등록된 이메일입니다. 해당이메일로 임시비밀번호를 발송하였습니다."
+						emailMatch: true
 					})
 				} else {
 					this.setState({
-						emailValidateMessage: "등록되지 않은 이메일입니다."
+						emailMatch: false
 					})
 				}
 			})
 	}
 
 	render() {
-		const { email, emailValidate, emailValidateMessage } = this.state
+		const { email, emailValidate } = this.state
 		return (
 			<div>
 				<div>
@@ -93,11 +102,9 @@ class LayerFindPassword extends Component {
 						type="text"
 						onChange={this.emailOnchange}
 						fullWidth={true}
-						error={!emailValidate && emailValidate !== undefined}
+						error={!emailValidate && email != ""}
 					/>
-					<FormHelperText id="component-helper-text">
-						{emailValidateMessage}
-					</FormHelperText>
+					{this.showHelperText(email, this.getHelperText.email)}
 				</div>
 				<div style={{ marginTop: "20px" }}>
 					<Button fullWidth={true} size="large" variant="contained" style={{ background: '#a1ceab', color: '#fff' }} onClick={this.findEmailOnclick}>
