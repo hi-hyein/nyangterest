@@ -30,9 +30,13 @@ class LayerJoin extends Component {
 		password: {
 			value: '',
 			validate: false,
+			getValidateText: () => {
+			},
 			check: {
 				value: '',
 				validate: false,
+				getValidateText: () => {
+				}
 			},
 		},
 	}
@@ -42,7 +46,7 @@ class LayerJoin extends Component {
 		email: () => {
 			if(this.state.email.validate && !this.state.email.overlapping) {
 				return "사용 가능한 이메일 주소입니다"
-			} else if (this.state.email.overlapping) {
+			} else if (this.state.email.overlagipping) {
 				return "이미 가입된 이메일입니다. 다른 이메일을 입력해주세요"
 			} else {
 				return "잘못된 이메일 형식 입니다"
@@ -67,10 +71,10 @@ class LayerJoin extends Component {
 	}
 
 	// helper text 보여주기
-	showHelperText = (state, type) => {
-		if(state) {
+	showHelperText = (state) => {
+		if(state.value) {
 			return <FormHelperText id="component-helper-text">
-						{type()}
+						{state.getValidateText()}
 					</FormHelperText>
 		}
 	}
@@ -231,7 +235,7 @@ class LayerJoin extends Component {
 						error={this.getError.getEmailError()}
 						fullWidth={true}
 					/>
-					{this.showHelperText(email.value, this.getHelperText.email)}
+					{this.showHelperText(email)}
 				</div>
 				<div>
 					<TextField
@@ -246,7 +250,7 @@ class LayerJoin extends Component {
 						fullWidth={true}
 						error={this.getError.getPasswordError()}
 					/>
-					{this.showHelperText(password.value, this.getHelperText.password)}
+					{this.showHelperText(password)}
 				</div>
 				<div>
 					<TextField
@@ -261,7 +265,7 @@ class LayerJoin extends Component {
 						fullWidth={true}
 						error={this.getError.getPasswordCheckError()}
 					/>
-					{this.showHelperText(password.check.value, this.getHelperText.passwordCheck)}
+					{this.showHelperText(password.check)}
 				</div>
 				<div className="check-area" style={{ marginTop: "10px", paddingTop: "10px", borderTop: "1px solid #eee" }}>
 					<Router>
