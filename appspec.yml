@@ -1,0 +1,14 @@
+#/appspec.yml
+# version은 0.0을 적어준다.
+version: 0.0
+# 선택한 ec2 가 window server가 아니라면 linux를 적어준다.
+os: linux
+files:
+    # source는 프로젝트 기준, destination은 instance 기준으로 입력해주고,
+    # source가 destination안에 복사됨
+    - source: /
+      destination: /home/ubuntu/deploy/nyangterest/
+hooks:
+  AfterInstall: # 배포가 끝나면 아래 명령어를 실행
+    - location: execute-deploy.sh
+      timeout: 180

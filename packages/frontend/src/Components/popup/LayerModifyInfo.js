@@ -3,17 +3,16 @@ import React, { Component } from "react";
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import FormHelperText from '@material-ui/core/FormHelperText';
+import { observer, inject } from "mobx-react";
 
-// eslint-disable-next-line
-const NAME_FORMAT = /^[가-힣a-zA-Z]{2,20}$/;
-const PASSWORD_FORMAT = /^(?=[a-zA-Z0-9!@$%^*#])(?!.*[^a-zA-Z0-9!@$%^*#]).{6,15}$/;
-
+@inject('validateStore')
+@observer
 class LayerModifyInfo extends Component {
 	state = {
-		name: "",
+		name: '',
 		userEmail: JSON.parse(localStorage.getItem("userInfo")),
 		signupDate: "",
-		nameValidate: null,
+		nameValidate: false,
 		nameValidateMessage: "",
 		password: "",
 		passwordValidate: null,
@@ -25,51 +24,32 @@ class LayerModifyInfo extends Component {
 
 	// 이름 유효성 검사, state 저장
 	nameOnChange = (e) => {
+		const value = e.target.value;
+		this.props.validateStore.validateValue = value
+
 		// 이름저장
 		this.setState({
-			name: e.target.value
+			name: value
 		})
 
 		// 이름 유효성검사
-		const validate = NAME_FORMAT.test(e.target.value);
-		if (!validate) {
-			if (e.target.value.length <= 0) {
-				this.setState({
-					nameValidate: null,
-				})
-			} else {
-				this.setState({
-					nameValidate: false,
-				})
-
-				if (e.target.value.length > 20) {
-					this.setState({
-						nameValidateMessage: "20자 이하로 입력해주세요."
-					})
-				}
-
-				if (e.target.value.length < 2) {
-					this.setState({
-						nameValidateMessage: "최소 2자이상 입력해주세요"
-					})
-				}
-			}
-		} else {
-			this.setState({
-				nameValidate: true
-			})
-		}
+		this.setState({
+			nameValidate: this.props.validateStore.getValidate('NAME'),
+		})
 	}
 
 	// 비밀번호 유효성 검사, state 저장
 	passwordOnChange = (e) => {
+		const value = e.target.value;
+		this.props.validateStore.validateValue = value
+		
 		// 이름저장
 		this.setState({
-			password: e.target.value
+			password: value
 		})
 
-		// 이름 유효성검사
-		const validate = PASSWORD_FORMAT.test(e.target.value);
+		// 비밀번호 유효성검사
+		const validate = this.props.validateStore.getValidate('PASSWORD')
 		if (!validate) {
 			if (e.target.value.length <= 0) {
 				this.setState({
@@ -193,6 +173,42 @@ class LayerModifyInfo extends Component {
 		this.getMemberData()
 	}
 
+	// input error check
+	getError = {
+		nameResult : false,
+		passwordResult: false,
+		passwordCheckResult: false,
+
+		getNameError : () => {
+			if(this.state.name !== '') {
+				this.getError.nameResult = !this.state.nameValidate
+			}else {
+				this.getError.nameResult = false
+			}
+
+			return this.getError.nameResult
+		},
+
+		getPasswordError : () => {
+			if(this.state.password.value !== '') {
+				this.getError.passwordResult = !this.state.password.validate
+			}else {
+				this.getError.passwordResult = false
+			}
+			return this.getError.passwordResult
+		},
+
+		getPasswordCheckError : () => {
+			if(this.state.password.check.value !== '') {
+				this.getError.passwordCheckResult = !this.state.password.check.validate
+			}else {
+				this.getError.passwordCheckResult = false
+			}
+			return this.getError.passwordCheckResult
+		}
+	}
+	
+
 	render() {
 		const { name, userEmail, signupDate, nameValidate, nameValidateMessage, password, passwordValidate, passwordValidateMessage, passwordCheck, passwordCheckValidate, passwordCheckValidateMessage, } = this.state
 		return (
@@ -209,7 +225,7 @@ class LayerModifyInfo extends Component {
 						type="text"
 						onChange={this.nameOnChange}
 						fullWidth={true}
-						error={!nameValidate && nameValidate !== null}
+						error= {this.getError.getNameError()}
 					/>
 					{nameValidateMessage.length > 0 && !nameValidate && nameValidate !== null &&
 						<FormHelperText id="component-helper-text">

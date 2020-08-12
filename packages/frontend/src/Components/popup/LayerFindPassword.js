@@ -3,10 +3,10 @@ import React, { Component } from "react";
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import FormHelperText from '@material-ui/core/FormHelperText';
+import { observer, inject } from "mobx-react";
 
-// eslint-disable-next-line
-const MAIL_FORMAT = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
-
+@inject('validateStore')
+@observer
 class LayerFindPassword extends Component {
 	state = {
 		email: "",
@@ -16,13 +16,14 @@ class LayerFindPassword extends Component {
 
 	emailOnchange = (e) => {
 		const value = e.target.value
-
+		this.props.validateStore.validateValue = value
+		
 		this.setState({
 			email: value
 		})
 
 		// 메일 유효성검사
-		const validate = MAIL_FORMAT.test(value)
+		const validate = this.props.validateStore.getValidate('MAIL')
 
 		if (!validate) {
 			// 입력값이 없을 경우

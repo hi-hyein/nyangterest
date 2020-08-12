@@ -9,9 +9,11 @@
 	},
 	"devDependencies": {},
 	"scripts": {
+		"start": "node packages/backend/server",
 		"backend": "nodemon packages/backend/server",
 		"frontend": "cd packages/frontend && npm start",
-		"dev": "concurrently \"npm run backend\" \"npm run frontend\""
+		"dev": "concurrently \"npm run backend\" \"npm run frontend\"",
+		"test": "exit"
 	},
 	"repository": {
 		"type": "git",
