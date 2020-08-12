@@ -17,6 +17,15 @@ class LayerJoin extends Component {
 			value: '',
 			validate: false,
 			overlapping: null,
+			getValidateText: () => {
+				let message = "잘못된 이메일 형식 입니다";
+				if (this.state.email.overlapping) {
+					message = "이미 가입된 이메일입니다. 다른 이메일을 입력해주세요";
+				} else if (this.state.email.validate) {
+					message = "사용 가능한 이메일 주소입니다";
+				}
+				return message;
+			},
 		},
 		password: {
 			value: '',
