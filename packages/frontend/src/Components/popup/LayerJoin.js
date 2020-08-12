@@ -82,7 +82,7 @@ class LayerJoin extends Component {
 		this.props.validateStore.validateValue = value;
 
 		// 입력된 이메일값이 공백이 아닐때
-		if (value !== '' ) {
+		if (value == '' ) {
 			return;
 		}
 		
