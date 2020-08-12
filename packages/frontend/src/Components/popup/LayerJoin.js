@@ -30,43 +30,17 @@ class LayerJoin extends Component {
 		password: {
 			value: '',
 			validate: false,
-			getValidateText: () => {
-			},
+			getValidateText: () => this.state.password.validate == true ? "사용 가능한 비밀번호입니다" : "6자이상 15자 이하 입력해주세요",
 			check: {
 				value: '',
 				validate: false,
 				getValidateText: () => {
-				}
+					if (this.state.password.check.value === this.state.password.value) {
+						return "비밀번호가 일치합니다"
+					}else {
+						return "비밀번호가 일치하지 않습니다"
+					}
 			},
-		},
-	}
-
-	// helper text 얻기
-	getHelperText = {
-		email: () => {
-			if(this.state.email.validate && !this.state.email.overlapping) {
-				return "사용 가능한 이메일 주소입니다"
-			} else if (this.state.email.overlagipping) {
-				return "이미 가입된 이메일입니다. 다른 이메일을 입력해주세요"
-			} else {
-				return "잘못된 이메일 형식 입니다"
-			}
-		},
-
-		password: () => {
-			if (this.state.password.validate) {
-				return "사용 가능한 비밀번호입니다"
-			}else {
-				return "6자이상 15자 이하 입력해주세요"
-			}
-		},
-
-		passwordCheck: () => {
-			if (this.state.password.check.value === this.state.password.value) {
-				return "비밀번호가 일치합니다"
-			}else {
-				return "비밀번호가 일치하지 않습니다"
-			}
 		},
 	}
 
