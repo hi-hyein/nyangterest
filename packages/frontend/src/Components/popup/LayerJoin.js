@@ -112,26 +112,21 @@ class LayerJoin extends Component {
 		}));
 
 		// 입력된 이메일값이 공백이 아닐때
-		if(value !== '' ) {
-			// 이메일 중복 여부 체크
-			fetch(`/user/exists/email/${value}`)
-			.then(res => res.json())
-			.then(json => {
-				this.setState(prevState => ({
-					email: {
-						...prevState.email,
-						overlapping: json,
-					}
-				}));
-			})
-		}else {
+		if (value !== '' ) {
+			return;
+		}
+		
+		// 이메일 중복 여부 체크
+		fetch(`/user/exists/email/${value}`)
+		.then(res => res.json())
+		.then(json => {
 			this.setState(prevState => ({
 				email: {
 					...prevState.email,
-					overlapping: null,
+					overlapping: json,
 				}
 			}));
-		}
+		});
 	}
 
 	passwordOnChange = (e) => {
