@@ -99,17 +99,9 @@ class LayerJoin extends Component {
 		}
 	}
 
-	emailOnChange = (e) => {
-		const value = e.target.value
-		this.props.validateStore.validateValue = value
-
-		this.setState(prevState => ({
-			email: {
-				...prevState.email,
-				value: value,
-				validate: this.props.validateStore.getValidate('MAIL')
-			}
-		}));
+	emailOnChange = e => {
+		const value = e.target.value;
+		this.props.validateStore.validateValue = value;
 
 		// 입력된 이메일값이 공백이 아닐때
 		if (value !== '' ) {
@@ -124,6 +116,8 @@ class LayerJoin extends Component {
 				email: {
 					...prevState.email,
 					overlapping: json,
+					value: value,
+					validate: this.props.validateStore.getValidate('MAIL')
 				}
 			}));
 		});
