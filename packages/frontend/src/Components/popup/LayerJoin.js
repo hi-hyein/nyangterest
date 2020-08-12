@@ -106,14 +106,8 @@ class LayerJoin extends Component {
 		this.setState(prevState => ({
 			email: {
 				...prevState.email,
-				value: value
-			}
-		}))
-		
-		this.setState(prevState => ({
-			email: {
-				...prevState.email,
-				validate: this.props.validateStore.getValidate('MAIL'),
+				value: value,
+				validate: this.props.validateStore.getValidate('MAIL')
 			}
 		}));
 
