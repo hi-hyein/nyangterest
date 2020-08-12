@@ -26,23 +26,47 @@ class LayerJoin extends Component {
 				}
 				return message;
 			},
+			getError: () => {
+				let error = false;
+
+				if (this.state.email.value !== '') {
+					error = !this.state.email.validate || this.state.email.overlapping;
+				}
+	
+				return error;
+			}
 		},
 		password: {
 			value: '',
 			validate: false,
 			getValidateText: () => this.state.password.validate == true ? "사용 가능한 비밀번호입니다" : "6자이상 15자 이하 입력해주세요",
+			getError: () => {
+				let error = false;
+				if(this.state.password.value !== '') {
+					error = !this.state.password.validate;
+				}
+				return error;
+			},
 			check: {
 				value: '',
 				validate: false,
 				getValidateText: () => {
 					if (this.state.password.check.value === this.state.password.value) {
-						return "비밀번호가 일치합니다"
+						return "비밀번호가 일치합니다";
 					}else {
-						return "비밀번호가 일치하지 않습니다"
+						return "비밀번호가 일치하지 않습니다";
 					}
+				},
+				getError: () => {
+					let error = false;
+					if(this.state.password.check.value !== '') {
+						error = !this.state.password.check.validate;
+					}
+					return error;
+				}
 			},
-		},
-	}
+		}
+	};
 
 	// helper text 보여주기
 	showHelperText = (state) => {
@@ -51,40 +75,7 @@ class LayerJoin extends Component {
 						{state.getValidateText()}
 					</FormHelperText>
 		}
-	}
-
-	// input error 체크
-	getError = {
-		emailResult : false,
-		passwordResult: false,
-		passwordCheckResult: false,
-		getEmailError : () => {
-			if(this.state.email.value !== '') {
-				this.getError.emailResult = !this.state.email.validate || this.state.email.overlapping
-			}else {
-				this.getError.emailResult = false
-			}
-
-			return this.getError.emailResult
-		},
-
-		getPasswordError : () => {
-			if(this.state.password.value !== '') {
-				this.getError.passwordResult = !this.state.password.validate
-			}else {
-				this.getError.passwordResult = false
-			}
-			return this.getError.passwordResult
-		},
-		getPasswordCheckError : () => {
-			if(this.state.password.check.value !== '') {
-				this.getError.passwordCheckResult = !this.state.password.check.validate
-			}else {
-				this.getError.passwordCheckResult = false
-			}
-			return this.getError.passwordCheckResult
-		}
-	}
+	};
 
 	emailOnChange = e => {
 		const value = e.target.value;
@@ -108,7 +99,7 @@ class LayerJoin extends Component {
 				}
 			}));
 		});
-	}
+	};
 
 	passwordOnChange = (e) => {
 		const value = e.target.value
@@ -127,7 +118,7 @@ class LayerJoin extends Component {
 				validate: this.props.validateStore.getValidate('PASSWORD'),
 			}
 		}))
-	}
+	};
 
 	passwordCheckOnChange = (e) => {
 		const value = e.target.value
@@ -163,7 +154,7 @@ class LayerJoin extends Component {
 				}
 			}))
 		}
-	}
+	};
 
 	sendJoinInfo = () => {
 		const {email, password} = this.state;
@@ -191,7 +182,7 @@ class LayerJoin extends Component {
 		} else {
 			alert("모든 입력사항을 알맞게 입력해주세요")
 		}
-	}
+	};
 
 	render() {
 		const { email, password } = this.state
@@ -206,7 +197,7 @@ class LayerJoin extends Component {
 						margin="normal"
 						variant="outlined"
 						onChange={this.emailOnChange}
-						error={this.getError.getEmailError()}
+						error={email.getError()}
 						fullWidth={true}
 					/>
 					{this.showHelperText(email)}
@@ -222,7 +213,7 @@ class LayerJoin extends Component {
 						type="password"
 						onChange={this.passwordOnChange}
 						fullWidth={true}
-						error={this.getError.getPasswordError()}
+						error={password.getError()}
 					/>
 					{this.showHelperText(password)}
 				</div>
@@ -237,7 +228,7 @@ class LayerJoin extends Component {
 						type="password"
 						onChange={this.passwordCheckOnChange}
 						fullWidth={true}
-						error={this.getError.getPasswordCheckError()}
+						error={password.check.getError()}
 					/>
 					{this.showHelperText(password.check)}
 				</div>
