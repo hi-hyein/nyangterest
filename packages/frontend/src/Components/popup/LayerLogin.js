@@ -22,10 +22,10 @@ class LayerLogin extends Component {
 	}
 
 	// helper text 보여주기
-	showHelperText = (state, type) => {
-		if(state) {
+	showHelperText = (state) => {
+		if(state.value) {
 			return <FormHelperText id="component-helper-text">
-						{type()}
+						{state.getValidateText()}
 					</FormHelperText>
 		}
 	}
@@ -116,7 +116,7 @@ class LayerLogin extends Component {
 						onChange={this.userIdHandler}
 						error={!email.validate && email.value !== ''}
 					/>
-					{this.showHelperText(email.value, email.getValidateText)}
+					{this.showHelperText(email)}
 				</div>
 				<div>
 					<TextField
@@ -130,7 +130,7 @@ class LayerLogin extends Component {
 						onChange={this.userPwHandler}
 						error={!password.validate && password.value !== ''}
 					/>
-					{this.showHelperText(password.value, password.getValidateText)}
+					{this.showHelperText(password)}
 				</div>
 				<div>
 					<button type="button" style={{ fontSize: "16px", color: "#808080", fontWeight: "bold" }} onClick={this.findPasswordHandler}>
