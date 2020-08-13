@@ -8,15 +8,19 @@ import { observer, inject } from "mobx-react";
 @observer
 class LayerLogin extends Component {
 	state = {
-		userId: "",
-		userIdValidate: false,
-		userPassword: '',
-		userPasswordValidate: false,
+		email: {
+			value: '',
+			validate: false,
+		},
+		password: {
+			value: '',
+			validate: false,
+		}
 	}
 
 	getHelperText = {
 		id: () => {
-			if(this.state.userIdValidate) {
+			if(this.state.email.validate) {
 				return '사용 가능한 이메일 주소입니다'
 			}else {
 				return '잘못된 이메일 형식 입니다'
@@ -24,7 +28,7 @@ class LayerLogin extends Component {
 		},
 
 		password: () => {
-			if(this.state.userPasswordValidate) {
+			if(this.state.password.validate) {
 				return '사용 가능한 비밀번호입니다'
 			}else {
 				return '6자이상 15자 이하 입력해주세요'
@@ -45,26 +49,26 @@ class LayerLogin extends Component {
 		const value = e.target.value
 		this.props.validateStore.validateValue = value
 
-		this.setState({
-			userId: e.target.value
-		})
-
-		this.setState({
-			userIdValidate: this.props.validateStore.getValidate('MAIL'),
-		})
+		this.setState(prevState => ({
+			email: {
+				...prevState.email,
+				value: value,
+				validate: this.props.validateStore.getValidate('MAIL'),
+			}
+		}))
 	}
 
 	userPwHandler = (e) => {
 		const value = e.target.value
 		this.props.validateStore.validateValue = value
 
-		this.setState({
-			userPassword: e.target.value
-		})
-
-		this.setState({
-			userPasswordValidate: this.props.validateStore.getValidate('PASSWORD'),
-		})
+		this.setState(prevState => ({
+			password: {
+				...prevState.password,
+				value: value,
+				validate: this.props.validateStore.getValidate('PASSWORD'),
+			}
+		}))
 	}
 
 	sendUserInfo = () => {
@@ -73,7 +77,7 @@ class LayerLogin extends Component {
 		const stateTojson = JSON.stringify(state)
 		const { changeUserId, changeUserState } = this.props.loginStore
 
-		if (state.userIdValidate && state.userPasswordValidate) {
+		if (state.email.validate && state.password.validate) {
 			fetch('/login', {
 				headers: {
 					'Accept': 'application/json',
@@ -113,7 +117,7 @@ class LayerLogin extends Component {
 	}
 
 	render() {
-		const { userId, userIdValidate, userPassword, userPasswordValidate } = this.state
+		const { email, password } = this.state
 		return (
 			<div>
 				<div>
@@ -125,9 +129,9 @@ class LayerLogin extends Component {
 						variant="outlined"
 						fullWidth={true}
 						onChange={this.userIdHandler}
-						error={!userIdValidate && userId !== ""}
+						error={!email.validate && email.value !== ''}
 					/>
-					{this.showHelperText(userId, this.getHelperText.id)}
+					{this.showHelperText(email.value, this.getHelperText.id)}
 				</div>
 				<div>
 					<TextField
@@ -139,9 +143,9 @@ class LayerLogin extends Component {
 						type="password"
 						fullWidth={true}
 						onChange={this.userPwHandler}
-						error={!userPasswordValidate && userPassword !== ""}
+						error={!password.validate && password.value !== ''}
 					/>
-					{this.showHelperText(userPassword, this.getHelperText.password)}
+					{this.showHelperText(password.value, this.getHelperText.password)}
 				</div>
 				<div>
 					<button type="button" style={{ fontSize: "16px", color: "#808080", fontWeight: "bold" }} onClick={this.findPasswordHandler}>
