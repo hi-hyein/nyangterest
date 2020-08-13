@@ -11,28 +11,13 @@ class LayerLogin extends Component {
 		email: {
 			value: '',
 			validate: false,
+			getValidateText: () => this.state.email.validate ? '사용 가능한 이메일 주소입니다' : '잘못된 이메일 형식 입니다'
+			,
 		},
 		password: {
 			value: '',
 			validate: false,
-		}
-	}
-
-	getHelperText = {
-		id: () => {
-			if(this.state.email.validate) {
-				return '사용 가능한 이메일 주소입니다'
-			}else {
-				return '잘못된 이메일 형식 입니다'
-			}
-		},
-
-		password: () => {
-			if(this.state.password.validate) {
-				return '사용 가능한 비밀번호입니다'
-			}else {
-				return '6자이상 15자 이하 입력해주세요'
-			}
+			getValidateText: () => this.state.password.validate ? '사용 가능한 비밀번호입니다' : '6자이상 15자 이하 입력해주세요',
 		}
 	}
 
@@ -131,7 +116,7 @@ class LayerLogin extends Component {
 						onChange={this.userIdHandler}
 						error={!email.validate && email.value !== ''}
 					/>
-					{this.showHelperText(email.value, this.getHelperText.id)}
+					{this.showHelperText(email.value, email.getValidateText)}
 				</div>
 				<div>
 					<TextField
@@ -145,7 +130,7 @@ class LayerLogin extends Component {
 						onChange={this.userPwHandler}
 						error={!password.validate && password.value !== ''}
 					/>
-					{this.showHelperText(password.value, this.getHelperText.password)}
+					{this.showHelperText(password.value, password.getValidateText)}
 				</div>
 				<div>
 					<button type="button" style={{ fontSize: "16px", color: "#808080", fontWeight: "bold" }} onClick={this.findPasswordHandler}>
