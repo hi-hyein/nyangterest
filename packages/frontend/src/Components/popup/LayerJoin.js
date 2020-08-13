@@ -17,128 +17,89 @@ class LayerJoin extends Component {
 			value: '',
 			validate: false,
 			overlapping: null,
+			getValidateText: () => {
+				let message = "잘못된 이메일 형식 입니다";
+				if (this.state.email.overlapping) {
+					message = "이미 가입된 이메일입니다. 다른 이메일을 입력해주세요";
+				} else if (this.state.email.validate) {
+					message = "사용 가능한 이메일 주소입니다";
+				}
+				return message;
+			},
+			getError: () => {
+				let error = false;
+
+				if (this.state.email.value !== '') {
+					error = !this.state.email.validate || this.state.email.overlapping;
+				}
+	
+				return error;
+			}
 		},
 		password: {
 			value: '',
 			validate: false,
+			getValidateText: () => this.state.password.validate == true ? "사용 가능한 비밀번호입니다" : "6자이상 15자 이하 입력해주세요",
+			getError: () => {
+				let error = false;
+				if(this.state.password.value !== '') {
+					error = !this.state.password.validate;
+				}
+				return error;
+			},
 			check: {
 				value: '',
 				validate: false,
+				getValidateText: () => {
+					if (this.state.password.check.value === this.state.password.value) {
+						return "비밀번호가 일치합니다";
+					}else {
+						return "비밀번호가 일치하지 않습니다";
+					}
+				},
+				getError: () => {
+					let error = false;
+					if(this.state.password.check.value !== '') {
+						error = !this.state.password.check.validate;
+					}
+					return error;
+				}
 			},
-		},
-	}
-
-	// helper text 얻기
-	getHelperText = {
-		email: () => {
-			if(this.state.email.validate && !this.state.email.overlapping) {
-				return "사용 가능한 이메일 주소입니다"
-			} else if (this.state.email.overlapping) {
-				return "이미 가입된 이메일입니다. 다른 이메일을 입력해주세요"
-			} else {
-				return "잘못된 이메일 형식 입니다"
-			}
-		},
-
-		password: () => {
-			if (this.state.password.validate) {
-				return "사용 가능한 비밀번호입니다"
-			}else {
-				return "6자이상 15자 이하 입력해주세요"
-			}
-		},
-
-		passwordCheck: () => {
-			if (this.state.password.check.value === this.state.password.value) {
-				return "비밀번호가 일치합니다"
-			}else {
-				return "비밀번호가 일치하지 않습니다"
-			}
-		},
-	}
+		}
+	};
 
 	// helper text 보여주기
-	showHelperText = (state, type) => {
-		if(state) {
+	showHelperText = (state) => {
+		if(state.value) {
 			return <FormHelperText id="component-helper-text">
-						{type()}
+						{state.getValidateText()}
 					</FormHelperText>
 		}
-	}
+	};
 
-	// input error 체크
-	getError = {
-		emailResult : false,
-		passwordResult: false,
-		passwordCheckResult: false,
-		getEmailError : () => {
-			if(this.state.email.value !== '') {
-				this.getError.emailResult = !this.state.email.validate || this.state.email.overlapping
-			}else {
-				this.getError.emailResult = false
-			}
-
-			return this.getError.emailResult
-		},
-
-		getPasswordError : () => {
-			if(this.state.password.value !== '') {
-				this.getError.passwordResult = !this.state.password.validate
-			}else {
-				this.getError.passwordResult = false
-			}
-			return this.getError.passwordResult
-		},
-		getPasswordCheckError : () => {
-			if(this.state.password.check.value !== '') {
-				this.getError.passwordCheckResult = !this.state.password.check.validate
-			}else {
-				this.getError.passwordCheckResult = false
-			}
-			return this.getError.passwordCheckResult
-		}
-	}
-
-	emailOnChange = (e) => {
-		const value = e.target.value
-		this.props.validateStore.validateValue = value
-
-		this.setState(prevState => ({
-			email: {
-				...prevState.email,
-				value: value
-			}
-		}))
-		
-		this.setState(prevState => ({
-			email: {
-				...prevState.email,
-				validate: this.props.validateStore.getValidate('MAIL'),
-			}
-		}));
+	emailOnChange = e => {
+		const value = e.target.value;
+		this.props.validateStore.validateValue = value;
 
 		// 입력된 이메일값이 공백이 아닐때
-		if(value !== '' ) {
-			// 이메일 중복 여부 체크
-			fetch(`/user/exists/email/${value}`)
-			.then(res => res.json())
-			.then(json => {
-				this.setState(prevState => ({
-					email: {
-						...prevState.email,
-						overlapping: json,
-					}
-				}));
-			})
-		}else {
+		if (value == '' ) {
+			return;
+		}
+		
+		// 이메일 중복 여부 체크
+		fetch(`/user/exists/email/${value}`)
+		.then(res => res.json())
+		.then(json => {
 			this.setState(prevState => ({
 				email: {
 					...prevState.email,
-					overlapping: null,
+					overlapping: json,
+					value: value,
+					validate: this.props.validateStore.getValidate('MAIL')
 				}
 			}));
-		}
-	}
+		});
+	};
 
 	passwordOnChange = (e) => {
 		const value = e.target.value
@@ -157,7 +118,7 @@ class LayerJoin extends Component {
 				validate: this.props.validateStore.getValidate('PASSWORD'),
 			}
 		}))
-	}
+	};
 
 	passwordCheckOnChange = (e) => {
 		const value = e.target.value
@@ -193,7 +154,7 @@ class LayerJoin extends Component {
 				}
 			}))
 		}
-	}
+	};
 
 	sendJoinInfo = () => {
 		const {email, password} = this.state;
@@ -221,7 +182,7 @@ class LayerJoin extends Component {
 		} else {
 			alert("모든 입력사항을 알맞게 입력해주세요")
 		}
-	}
+	};
 
 	render() {
 		const { email, password } = this.state
@@ -236,10 +197,10 @@ class LayerJoin extends Component {
 						margin="normal"
 						variant="outlined"
 						onChange={this.emailOnChange}
-						error={this.getError.getEmailError()}
+						error={email.getError()}
 						fullWidth={true}
 					/>
-					{this.showHelperText(email.value, this.getHelperText.email)}
+					{this.showHelperText(email)}
 				</div>
 				<div>
 					<TextField
@@ -252,9 +213,9 @@ class LayerJoin extends Component {
 						type="password"
 						onChange={this.passwordOnChange}
 						fullWidth={true}
-						error={this.getError.getPasswordError()}
+						error={password.getError()}
 					/>
-					{this.showHelperText(password.value, this.getHelperText.password)}
+					{this.showHelperText(password)}
 				</div>
 				<div>
 					<TextField
@@ -267,9 +228,9 @@ class LayerJoin extends Component {
 						type="password"
 						onChange={this.passwordCheckOnChange}
 						fullWidth={true}
-						error={this.getError.getPasswordCheckError()}
+						error={password.check.getError()}
 					/>
-					{this.showHelperText(password.check.value, this.getHelperText.passwordCheck)}
+					{this.showHelperText(password.check)}
 				</div>
 				<div className="check-area" style={{ marginTop: "10px", paddingTop: "10px", borderTop: "1px solid #eee" }}>
 					<Router>
