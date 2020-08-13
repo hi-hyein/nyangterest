@@ -22,7 +22,7 @@ class LayerLogin extends Component {
 	}
 
 	// helper text 보여주기
-	showHelperText = (state) => {
+	showHelperText = state => {
 		if(state.value) {
 			return <FormHelperText id="component-helper-text">
 						{state.getValidateText()}
@@ -30,7 +30,7 @@ class LayerLogin extends Component {
 		}
 	}
 
-	userIdHandler = (e) => {
+	userIdHandler = e => {
 		const value = e.target.value
 		this.props.validateStore.validateValue = value
 
@@ -43,7 +43,7 @@ class LayerLogin extends Component {
 		}))
 	}
 
-	userPwHandler = (e) => {
+	userPwHandler = e => {
 		const value = e.target.value
 		this.props.validateStore.validateValue = value
 
