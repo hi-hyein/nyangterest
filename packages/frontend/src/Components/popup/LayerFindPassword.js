@@ -51,13 +51,6 @@ class LayerFindPassword extends Component {
 			email: {
 				...prevState.email,
 				value: value,
-			}
-		}))
-
-		// 메일 유효성검사
-		this.setState(prevState => ({
-			email: {
-				...prevState.email,
 				validate: this.props.validateStore.getValidate('MAIL'),
 			}
 		}))
@@ -82,25 +75,13 @@ class LayerFindPassword extends Component {
 		})
 			.then((res) => res.json())
 			.then((json) => {
-				const matchState = json
-				
-				if (matchState.emailMatch) {
-					this.setState(prevState => ({
-						email: {
-							...prevState.email,
-							match: true
-							
-						}
-					}))
-				} else {
-					this.setState(prevState => ({
-						email: {
-							...prevState.email,
-							match: false
-							
-						}
-					}))
-				}
+				this.setState(prevState => ({
+					email: {
+						...prevState.email,
+						match: json
+						
+					}
+				}))
 			})
 	}
 
