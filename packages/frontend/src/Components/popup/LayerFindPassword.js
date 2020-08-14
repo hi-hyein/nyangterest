@@ -9,18 +9,20 @@ import { observer, inject } from "mobx-react";
 @observer
 class LayerFindPassword extends Component {
 	state = {
-		email: "",
-		emailValidate: false,
-		emailMatch: null,
+		email: {
+			value: '',
+			validate: false,
+			match: false,
+		}
 	}
 
 	// helper text 얻기
 	getHelperText = {
 		email: () => {
-			if(this.state.emailValidate) {
-				if(this.state.emailMatch) {
+			if(this.state.email.validate) {
+				if(this.state.email.match) {
 					return '등록된 이메일로 확인되었습니다. 해당 이메일로 임시비밀번호 변경페이지를 발송하였습니다.'
-				}else if(!this.state.emailMatch && this.state.emailMatch !== null) {
+				}else if(!this.state.email.match && this.state.email.match !== null) {
 					return '등록되지 않은 이메일로 확인되었습니다. 회원가입을 진행해주세요.'
 				}else {
 					return '가입된 이메일 주소로 임시 비밀번호를 보내드립니다. 비밀번호는 회원정보 수정에서 변경 가능합니다.'
@@ -44,25 +46,31 @@ class LayerFindPassword extends Component {
 	emailOnchange = (e) => {
 		const value = e.target.value
 		this.props.validateStore.validateValue = value
-		
-		this.setState({
-			email: value
-		})
+
+		this.setState(prevState => ({
+			email: {
+				...prevState.email,
+				value: value,
+			}
+		}))
 
 		// 메일 유효성검사
-		this.setState({
-			emailValidate: this.props.validateStore.getValidate('MAIL')
-		})
+		this.setState(prevState => ({
+			email: {
+				...prevState.email,
+				validate: this.props.validateStore.getValidate('MAIL'),
+			}
+		}))
 	}
 
 
 	// 계속 버튼 : 이메일 주소 전송
 	findEmailOnclick = () => {
 		const dataJson = JSON.stringify({
-			email: this.state.email
+			email: this.state.email.value
 		})
 
-		console.log(this.state.email)
+		console.log(this.state.email.value)
 
 		fetch("/account/password/find", {
 			headers: {
@@ -75,36 +83,45 @@ class LayerFindPassword extends Component {
 			.then((res) => res.json())
 			.then((json) => {
 				const matchState = json
+				
 				if (matchState.emailMatch) {
-					this.setState({
-						emailMatch: true
-					})
+					this.setState(prevState => ({
+						email: {
+							...prevState.email,
+							match: true
+							
+						}
+					}))
 				} else {
-					this.setState({
-						emailMatch: false
-					})
+					this.setState(prevState => ({
+						email: {
+							...prevState.email,
+							match: false
+							
+						}
+					}))
 				}
 			})
 	}
 
 	render() {
-		const { email, emailValidate } = this.state
+		const { email } = this.state
 		return (
 			<div>
 				<div>
 					<TextField
 						id="member-name"
 						label="가입한 이메일 주소"
-						value={email}
+						value={email.value}
 						placeholder="nyangterest@email.com"
 						margin="normal"
 						variant="outlined"
 						type="text"
 						onChange={this.emailOnchange}
 						fullWidth={true}
-						error={!emailValidate && email != ""}
+						error={!email.validate && email.value != ""}
 					/>
-					{this.showHelperText(email, this.getHelperText.email)}
+					{this.showHelperText(email.value, this.getHelperText.email)}
 				</div>
 				<div style={{ marginTop: "20px" }}>
 					<Button fullWidth={true} size="large" variant="contained" style={{ background: '#a1ceab', color: '#fff' }} onClick={this.findEmailOnclick}>
