@@ -30,10 +30,10 @@ class LayerFindPassword extends Component {
 	}
 
 	// helper text 보여주기
-	showHelperText = (state, type) => {
-		if(state) {
+	showHelperText = (state) => {
+		if(state.value) {
 			return <FormHelperText id="component-helper-text">
-						{type()}
+						{state.getValidateText()}
 					</FormHelperText>
 		}
 	}
@@ -97,7 +97,7 @@ class LayerFindPassword extends Component {
 						fullWidth={true}
 						error={!email.validate && email.value != ""}
 					/>
-					{this.showHelperText(email.value, this.getHelperText.email)}
+					{this.showHelperText(email)}
 				</div>
 				<div style={{ marginTop: "20px" }}>
 					<Button fullWidth={true} size="large" variant="contained" style={{ background: '#a1ceab', color: '#fff' }} onClick={this.findEmailOnclick}>
