@@ -13,23 +13,18 @@ class LayerFindPassword extends Component {
 			value: '',
 			validate: false,
 			match: false,
-		}
-	}
-
-	// helper text 얻기
-	getHelperText = {
-		email: () => {
-			if(this.state.email.validate) {
+			getValidateText: () => {
+				let error = '등록되지 않은 이메일로 확인되었습니다. 회원가입을 진행해주세요'
+			
 				if(this.state.email.match) {
-					return '등록된 이메일로 확인되었습니다. 해당 이메일로 임시비밀번호 변경페이지를 발송하였습니다.'
-				}else if(!this.state.email.match && this.state.email.match !== null) {
-					return '등록되지 않은 이메일로 확인되었습니다. 회원가입을 진행해주세요.'
+					error = '등록된 이메일로 확인되었습니다. 해당 이메일로 임시비밀번호 변경페이지를 발송하였습니다.'
+				}else if(this.state.email.validate) {
+					error = '가입된 이메일 주소로 임시 비밀번호를 보내드립니다. 비밀번호는 회원정보 수정에서 변경 가능합니다.'
 				}else {
-					return '가입된 이메일 주소로 임시 비밀번호를 보내드립니다. 비밀번호는 회원정보 수정에서 변경 가능합니다.'
+					error ='잘못된 이메일 형식 입니다'
 				}
-
-			} else {
-				return '잘못된 이메일 형식 입니다'
+			
+				return error
 			}
 		}
 	}
