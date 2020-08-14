@@ -11,13 +11,30 @@ class LayerLogin extends Component {
 		email: {
 			value: '',
 			validate: false,
-			getValidateText: () => this.state.email.validate ? '사용 가능한 이메일 주소입니다' : '잘못된 이메일 형식 입니다'
-			,
+			getValidateText: () => this.state.email.validate ? '사용 가능한 이메일 주소입니다' : '잘못된 이메일 형식 입니다',
+			getError: () => {
+				let error = false;
+
+				if(this.state.email.value !== ''){
+					error = !this.state.email.validate
+				}
+
+				return error
+			}
 		},
 		password: {
 			value: '',
 			validate: false,
 			getValidateText: () => this.state.password.validate ? '사용 가능한 비밀번호입니다' : '6자이상 15자 이하 입력해주세요',
+			getError: () => {
+				let error = false;
+
+				if(this.state.password.value !== ''){
+					error = !this.state.password.validate
+				}
+
+				return error
+			}
 		}
 	}
 
@@ -114,7 +131,7 @@ class LayerLogin extends Component {
 						variant="outlined"
 						fullWidth={true}
 						onChange={this.userIdHandler}
-						error={!email.validate && email.value !== ''}
+						error={email.getError()}
 					/>
 					{this.showHelperText(email)}
 				</div>
@@ -128,7 +145,7 @@ class LayerLogin extends Component {
 						type="password"
 						fullWidth={true}
 						onChange={this.userPwHandler}
-						error={!password.validate && password.value !== ''}
+						error={password.getError()}
 					/>
 					{this.showHelperText(password)}
 				</div>
