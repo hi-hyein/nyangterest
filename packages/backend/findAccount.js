@@ -62,6 +62,9 @@ router.post('/password/find',(req, res)=>{
 				// 비밀번호 재설정 이메일 전송
 				mailSender.sendGmail(mailSenderOption);
 
+				res.json({
+					emailMatch: true
+				})
 			}
 		}
 	})
