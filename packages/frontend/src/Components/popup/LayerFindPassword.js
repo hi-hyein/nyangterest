@@ -73,7 +73,7 @@ class LayerFindPassword extends Component {
 				this.setState(prevState => ({
 					email: {
 						...prevState.email,
-						match: json
+						match: json.emailMatch
 						
 					}
 				}))
