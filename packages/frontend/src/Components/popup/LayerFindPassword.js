@@ -12,18 +12,18 @@ class LayerFindPassword extends Component {
 		email: {
 			value: '',
 			validate: false,
-			match: false,
+			match: null,
 			getValidateText: () => {
-				let error = '등록되지 않은 이메일로 확인되었습니다. 회원가입을 진행해주세요'
-			
-				if(this.state.email.match) {
-					error = '등록된 이메일로 확인되었습니다. 해당 이메일로 임시비밀번호 변경페이지를 발송하였습니다.'
-				}else if(this.state.email.validate) {
+				let error = '등록되지 않은 이메일로 확인되었습니다. 회원가입을 진행해주세요.'
+
+				if(!this.state.email.validate) {
+					error = '잘못된 이메일 형식 입니다.'
+				} else if (this.state.email.match === null){
 					error = '가입된 이메일 주소로 임시 비밀번호를 보내드립니다. 비밀번호는 회원정보 수정에서 변경 가능합니다.'
-				}else {
-					error ='잘못된 이메일 형식 입니다'
+				} else if (this.state.email.match) {
+					error = '등록된 이메일로 확인되었습니다. 해당 이메일로 임시비밀번호 변경페이지를 발송하였습니다.'
 				}
-			
+
 				return error
 			}
 		}
@@ -47,6 +47,7 @@ class LayerFindPassword extends Component {
 				...prevState.email,
 				value: value,
 				validate: this.props.validateStore.getValidate('MAIL'),
+				match: this.state.email.value ? null : null,
 			}
 		}))
 	}
