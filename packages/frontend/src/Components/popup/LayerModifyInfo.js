@@ -27,13 +27,8 @@ class LayerModifyInfo extends Component {
         const value = e.target.value;
         this.props.validateStore.validateValue = value;
 
-        // 이름저장
         this.setState({
             name: value,
-        });
-
-        // 이름 유효성검사
-        this.setState({
             nameValidate: this.props.validateStore.getValidate("NAME"),
         });
     };
