@@ -9,17 +9,27 @@ import { observer, inject } from "mobx-react";
 @observer
 class LayerModifyInfo extends Component {
     state = {
-        name: "",
         userEmail: JSON.parse(localStorage.getItem("userInfo")),
         signupDate: "",
         nameValidate: false,
         nameValidateMessage: "",
-        password: "",
         passwordValidate: null,
         passwordValidateMessage: "",
         passwordCheck: "",
         passwordCheckValidate: null,
         passwordCheckValidateMessage: "",
+        name: {
+            validate: false,
+            message: "",
+        },
+        password: {
+            validate: null,
+            message: "",
+            check: {
+                validate: null,
+                message: "",
+            },
+        },
     };
 
     // 이름 유효성 검사, state 저장
@@ -27,10 +37,13 @@ class LayerModifyInfo extends Component {
         const value = e.target.value;
         this.props.validateStore.validateValue = value;
 
-        this.setState({
-            name: value,
-            nameValidate: this.props.validateStore.getValidate("NAME"),
-        });
+        this.setState((prevState) => ({
+            name: {
+                ...prevState.name,
+                value: value,
+                validate: this.props.validateStore.getValidate("NAME"),
+            },
+        }));
     };
 
     // 비밀번호 유효성 검사, state 저장
@@ -38,60 +51,94 @@ class LayerModifyInfo extends Component {
         const value = e.target.value;
         this.props.validateStore.validateValue = value;
 
-        // 이름저장
-        this.setState({
-            password: value,
-        });
+        this.setState((prevState) => ({
+            password: {
+                ...prevState.password,
+                value: value,
+            },
+        }));
 
         // 비밀번호 유효성검사
         const validate = this.props.validateStore.getValidate("PASSWORD");
         if (!validate) {
             if (e.target.value.length <= 0) {
-                this.setState({
-                    passwordValidate: null,
-                });
+                this.setState((prevState) => ({
+                    password: {
+                        ...prevState.password,
+                        validate: null,
+                    },
+                }));
             } else {
-                this.setState({
-                    passwordValidate: false,
-                });
+                this.setState((prevState) => ({
+                    password: {
+                        ...prevState.password,
+                        validate: false,
+                    },
+                }));
 
                 if (e.target.value.length > 15) {
-                    this.setState({
-                        passwordValidateMessage: "15자 이하로 입력해주세요.",
-                    });
+                    this.setState((prevState) => ({
+                        password: {
+                            ...prevState.password,
+                            message: "15자 이하로 입력해주세요.",
+                        },
+                    }));
                 }
 
                 if (e.target.value.length < 6) {
-                    this.setState({
-                        passwordValidateMessage: "최소 6자이상 입력해주세요",
-                    });
+                    this.setState((prevState) => ({
+                        password: {
+                            ...prevState.password,
+                            message: "최소 6자이상 입력해주세요.",
+                        },
+                    }));
                 }
             }
         } else {
-            this.setState({
-                passwordValidate: true,
-            });
+            this.setState((prevState) => ({
+                password: {
+                    ...prevState.password,
+                    validate: true,
+                },
+            }));
         }
     };
 
     passwordCheckOnChange = (e) => {
         const value = e.target.value;
 
-        this.setState({
-            passwordCheck: value,
-        });
+        this.setState((prevState) => ({
+            password: {
+                ...prevState.password,
+                check: {
+                    ...prevState.password.check,
+                    value: value,
+                },
+            },
+        }));
 
         if (this.state.password === value) {
-            this.setState({
-                passwordCheckValidate: true,
-                passwordCheckValidateMessage: "입력된 비밀번호와 일치합니다.",
-            });
+            this.setState((prevState) => ({
+                password: {
+                    ...prevState.password,
+                    check: {
+                        ...prevState.password.check,
+                        validate: true,
+                        message: "입력된 비밀번호와 일치합니다.",
+                    },
+                },
+            }));
         } else {
-            this.setState({
-                passwordCheckValidate: false,
-                passwordCheckValidateMessage:
-                    "입력된 비밀번호와 일치하지 않습니다.",
-            });
+            this.setState((prevState) => ({
+                password: {
+                    ...prevState.password,
+                    check: {
+                        ...prevState.password.check,
+                        validate: false,
+                        message: "입력된 비밀번호와 일치하지 않습니다.",
+                    },
+                },
+            }));
         }
     };
 
@@ -111,31 +158,30 @@ class LayerModifyInfo extends Component {
             .then((res) => res.json())
             .then((json) => {
                 console.log(json);
-                // 이름 셋팅
+                // 이름, 가입날짜 셋팅
                 if (json._username !== null) {
-                    this.setState({
-                        name: json._username,
-                    });
+                    this.setState((prevState) => ({
+                        name: {
+                            ...prevState.name,
+                            value: json._username,
+                        },
+                        signupDate: json._signupDate,
+                    }));
                 }
-
-                // 가입날짜 셋팅
-                this.setState({
-                    signupDate: json._signupDate,
-                });
             });
     };
 
     //회원정보수정 버튼
     modifyOnClick = () => {
         if (
-            this.state.nameValidate !== null ||
-            this.state.passwordValidate !== null ||
-            this.state.passwordCheckValidate !== null
+            this.state.name.validate !== null ||
+            this.state.password.validate !== null ||
+            this.state.password.check.validate !== null
         ) {
             if (
-                this.state.nameValidate ||
-                (this.state.passwordValidate &&
-                    this.state.passwordCheckValidate)
+                this.state.name.validate ||
+                (this.state.password.validate &&
+                    this.state.password.check.validate)
             ) {
                 fetch("/modifyMemberInfo", {
                     headers: {
@@ -145,11 +191,11 @@ class LayerModifyInfo extends Component {
                     method: "POST",
                     body: JSON.stringify({
                         userEmail: this.state.userEmail,
-                        modifyName: this.state.name,
+                        modifyName: this.state.name.value,
                         modifyPassword:
-                            this.state.passwordValidate &&
-                            this.state.passwordCheckValidate
-                                ? this.state.password
+                            this.state.password.validate &&
+                            this.state.password.check.validate
+                                ? this.state.password.value
                                 : undefined,
                     }),
                 })
@@ -158,13 +204,22 @@ class LayerModifyInfo extends Component {
                         if (json.modifyState) {
                             alert("수정이 완료되었습니다.");
                             // 변경상태 , 비밀번호 초기값으로 돌려주자
-                            this.setState({
-                                nameValidate: null,
-                                passwordValidate: null,
-                                passwordCheckValidate: null,
-                                paswword: "",
-                                passwordCheck: "",
-                            });
+                            this.setState((prevState) => ({
+                                name: {
+                                    ...prevState.name,
+                                    validate: null,
+                                },
+                                password: {
+                                    ...prevState.password,
+                                    value: "",
+                                    validate: null,
+                                    check: {
+                                        ...prevState.password.check,
+                                        value: "",
+                                        validate: null,
+                                    },
+                                },
+                            }));
                         } else {
                             alert("오류로 인해 수정이 완료되지 않았습니다.");
                         }
@@ -189,8 +244,8 @@ class LayerModifyInfo extends Component {
         passwordCheckResult: false,
 
         getNameError: () => {
-            if (this.state.name !== "") {
-                this.getError.nameResult = !this.state.nameValidate;
+            if (this.state.name.value !== "") {
+                this.getError.nameResult = !this.state.name.validate;
             } else {
                 this.getError.nameResult = false;
             }
@@ -219,26 +274,14 @@ class LayerModifyInfo extends Component {
     };
 
     render() {
-        const {
-            name,
-            userEmail,
-            signupDate,
-            nameValidate,
-            nameValidateMessage,
-            password,
-            passwordValidate,
-            passwordValidateMessage,
-            passwordCheck,
-            passwordCheckValidate,
-            passwordCheckValidateMessage,
-        } = this.state;
+        const { name, userEmail, signupDate, password } = this.state;
         return (
             <div>
                 <div>
                     <TextField
                         id='member-name'
                         label='이름'
-                        value={name}
+                        value={name.value}
                         placeholder='홍길동'
                         margin='normal'
                         variant='outlined'
@@ -247,11 +290,11 @@ class LayerModifyInfo extends Component {
                         fullWidth={true}
                         error={this.getError.getNameError()}
                     />
-                    {nameValidateMessage.length > 0 &&
-                        !nameValidate &&
-                        nameValidate !== null && (
+                    {name.message.length > 0 &&
+                        !name.validate &&
+                        name.validate !== null && (
                             <FormHelperText id='component-helper-text'>
-                                {nameValidateMessage}
+                                {name.message}
                             </FormHelperText>
                         )}
                 </div>
@@ -270,20 +313,20 @@ class LayerModifyInfo extends Component {
                     <TextField
                         id='member-password'
                         label='비밀번호'
-                        value={password}
+                        value={password.value}
                         placeholder='6자 이상 15자이하'
                         margin='normal'
                         variant='outlined'
                         type='password'
                         onChange={this.passwordOnChange}
                         fullWidth={true}
-                        error={!passwordValidate && passwordValidate !== null}
+                        error={!password.validate && password.validate !== null}
                     />
-                    {passwordValidateMessage.length > 0 &&
-                        !passwordValidate &&
-                        passwordValidate !== null && (
+                    {password.message.length > 0 &&
+                        !password.validate &&
+                        password.validate !== null && (
                             <FormHelperText id='component-helper-text'>
-                                {passwordValidateMessage}
+                                {password.message}
                             </FormHelperText>
                         )}
                 </div>
@@ -291,7 +334,7 @@ class LayerModifyInfo extends Component {
                     <TextField
                         id='member-password-check'
                         label='비밀번호 확인'
-                        value={passwordCheck}
+                        value={password.check.value}
                         placeholder='비밀번호를 다시한번 입력해주세요'
                         margin='normal'
                         variant='outlined'
@@ -299,14 +342,14 @@ class LayerModifyInfo extends Component {
                         onChange={this.passwordCheckOnChange}
                         fullWidth={true}
                         error={
-                            !passwordCheckValidate &&
-                            passwordCheckValidate !== null
+                            !password.check.validate &&
+                            password.check.validate !== null
                         }
                     />
-                    {passwordCheckValidateMessage.length > 0 &&
-                        passwordCheckValidate !== null && (
+                    {password.check.value.length > 0 &&
+                        password.check.vaidate !== null && (
                             <FormHelperText id='component-helper-text'>
-                                {passwordCheckValidateMessage}
+                                {password.check.message}
                             </FormHelperText>
                         )}
                 </div>
