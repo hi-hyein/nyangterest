@@ -80,3 +80,12 @@ showHelperText = (state, type) => {
     }
 }
 ```
+
+# issue
+## 반복되는 코드
+helper text의 내부반복을 개선하기위해 수정하고보니 `getHelperText`와 `showHelperText`가 js파일 단위로 반복이 된다. `getHelperText`같은경우는 비슷한 형식이나 조건문이나 텍스트가 다르고, `showHelperText`같은 경우는 동일하다.
+더 나은 코드 작성법은 어떤것일까..........
+
+## 남발하는 if
+`getHelperText`같은 경우 조건에 따라 return되는 텍스트가 다르고 여러 조건으로인해
+if, else if를 남발중.... 한눈에 딱 정리되어 보이는 코드를 만들려고 했는데, 조건문들로 인해 크게 정리되어보이진 않는다.....(남이 봤을때 쉽게 이해 못할 것 같은 느낌)
