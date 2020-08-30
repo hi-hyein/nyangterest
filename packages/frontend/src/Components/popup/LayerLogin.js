@@ -82,19 +82,21 @@ class LayerLogin extends Component {
     };
 
     sendUserInfo = () => {
-        const state = this.state;
         const onClose = this.props.onClose;
-        const stateTojson = JSON.stringify(state);
+        const sendAccountInfo = JSON.stringify({
+            userId: this.state.email.value,
+            userPassword: this.state.password.value,
+        });
         const { changeUserId, changeUserState } = this.props.loginStore;
 
-        if (state.email.validate && state.password.validate) {
+        if (this.state.email.validate && this.state.password.validate) {
             fetch("/login", {
                 headers: {
                     Accept: "application/json",
                     "Content-Type": "application/json",
                 },
                 method: "POST",
-                body: stateTojson,
+                body: sendAccountInfo,
             })
                 .then((res) => res.json())
                 .then((json) => {
