@@ -37,6 +37,7 @@ const mailSender = {
                 console.log(error);
             } else {
                 console.log("Email sent: " + info.response);
+                callback();
             }
         });
     },
