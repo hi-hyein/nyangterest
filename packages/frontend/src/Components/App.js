@@ -6,6 +6,7 @@ import Header from "./layout/Header";
 import Nav from "./Nav";
 import Home from "./Home";
 import MemberList from "./admin/MemberList";
+import Welcome from "./Welcome";
 
 const Wrapper = styled.div`
     position: relative;
