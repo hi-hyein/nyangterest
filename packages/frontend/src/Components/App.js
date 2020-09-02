@@ -30,7 +30,10 @@ class App extends Component {
                                 path='/admin/member'
                                 component={MemberList}
                             />
-                            <Route path='/join/welcome' component={Welcome} />
+                            <Route
+                                path='/join/welcome/:email'
+                                component={Welcome}
+                            />
                         </Wrapper>
                         <Nav />
                     </div>
