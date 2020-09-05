@@ -114,7 +114,9 @@ router.get("/user/join/welcome", (req, res) => {
 
             // 메일로 받은 토큰과 db토큰 비교 && 인증상태가 false일때
             if (dbToken === certifyInfo.token && rows[0].certify === 0) {
-                res.sendFile(path.join(__dirname + "/welcome.html"));
+                res.redirect(
+                    `http://127.0.0.1:3000/join/welcome/${certifyInfo.email}`
+                );
                 connection.query(
                     `UPDATE nyang_member SET certify=true WHERE token='${dbToken}'`
                 );
