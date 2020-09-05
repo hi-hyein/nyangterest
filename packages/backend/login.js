@@ -5,7 +5,7 @@ const passport = require("passport");
 const session = require("express-session");
 const LocalStrategy = require("passport-local").Strategy;
 const FileStore = require("session-file-store")(session);
-const hash = require("hash.js");
+const bcryptjs = require("bcryptjs");
 
 // db접속
 const data = fs.readFileSync(__dirname + "/db.json");
@@ -65,37 +65,37 @@ passport.use(
         },
         (id, password, done) => {
             console.log("id:", id, "pw:", password, "done:", done);
-            const userPwHash = hash.sha256().update(password).digest("hex");
             connection.query(
                 `SELECT * FROM nyang_member WHERE email='${id}'`,
                 function (err, result) {
                     if (err) {
-                        console.log("err :" + err);
+                        console.log("err sql query :" + err);
                         return done(false, null);
-                    } else {
-                        if (result.length === 0) {
-                            console.log("해당 유저가 없습니다");
-                            return done(false, null);
-                        } else {
-                            if (userPwHash !== result[0].password) {
+                    }
+
+                    if (result.length < 1) {
+                        console.log("해당 유저가 없습니다");
+                        return done(false, null);
+                    }
+
+                    if (!result[0].certify) {
+                        console.log("메일인증이 완료되지 않았습니다");
+                        return done(false, null);
+                    }
+
+                    bcryptjs.compare(
+                        password,
+                        result[0].password,
+                        (err, res) => {
+                            if (!res || err) {
                                 console.log("패스워드가 일치하지 않습니다");
                                 return done(false, null);
-                            } else {
-                                if (result[0].certify === 0) {
-                                    console.log(
-                                        "메일인증이 완료되지 않았습니다"
-                                    );
-                                    return done(false, null);
-                                } else {
-                                    console.log(
-                                        result[0].email,
-                                        "님 :로그인 성공"
-                                    );
-                                    return done(null, result);
-                                }
                             }
+
+                            console.log(result[0].email, "님 :로그인 성공");
+                            return done(null, result);
                         }
-                    }
+                    );
                 }
             );
         }
