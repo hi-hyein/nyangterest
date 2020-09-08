@@ -15,19 +15,14 @@ class LayerModifyInfo extends Component {
             validate: false,
             message: "",
         },
-        email: {
-            value: JSON.parse(localStorage.getItem("userInfo")),
-            validate: false,
-            message: "",
         },
+        email: JSON.parse(localStorage.getItem("userInfo")),
         password: {
             value: "",
-            validate: null,
-            message: "",
+            validate: false,
             check: {
                 value: "",
-                validate: null,
-                message: "",
+                validate: false,
             },
         },
     };
@@ -144,7 +139,7 @@ class LayerModifyInfo extends Component {
 
     // 서버에서 데이터 가져오기
     getMemberData = () => {
-        console.log(this.state.email.value);
+        console.log(this.state.email);
         fetch("/memberInfo", {
             headers: {
                 Accept: "application/json",
@@ -152,7 +147,7 @@ class LayerModifyInfo extends Component {
             },
             method: "POST",
             body: JSON.stringify({
-                email: this.state.email.value,
+                email: this.state.email,
             }),
         })
             .then((res) => res.json())
@@ -188,7 +183,7 @@ class LayerModifyInfo extends Component {
                     },
                     method: "POST",
                     body: JSON.stringify({
-                        userEmail: this.state.email.value,
+                        userEmail: this.state.email,
                         modifyName: this.state.name.value,
                         modifyPassword:
                             this.state.password.validate &&
@@ -300,7 +295,7 @@ class LayerModifyInfo extends Component {
                     <TextField
                         id='member-email'
                         label='이메일주소'
-                        value={userEmail}
+                        value={email}
                         margin='normal'
                         variant='outlined'
                         fullWidth={true}
