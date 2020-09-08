@@ -9,23 +9,23 @@ import { observer, inject } from "mobx-react";
 @observer
 class LayerModifyInfo extends Component {
     state = {
-        userEmail: JSON.parse(localStorage.getItem("userInfo")),
         signupDate: "",
-        nameValidate: false,
-        nameValidateMessage: "",
-        passwordValidate: null,
-        passwordValidateMessage: "",
-        passwordCheck: "",
-        passwordCheckValidate: null,
-        passwordCheckValidateMessage: "",
         name: {
+            value: "",
+            validate: false,
+            message: "",
+        },
+        email: {
+            value: JSON.parse(localStorage.getItem("userInfo")),
             validate: false,
             message: "",
         },
         password: {
+            value: "",
             validate: null,
             message: "",
             check: {
+                value: "",
                 validate: null,
                 message: "",
             },
@@ -144,7 +144,7 @@ class LayerModifyInfo extends Component {
 
     // 서버에서 데이터 가져오기
     getMemberData = () => {
-        console.log(this.state.userEmail);
+        console.log(this.state.email.value);
         fetch("/memberInfo", {
             headers: {
                 Accept: "application/json",
@@ -152,7 +152,7 @@ class LayerModifyInfo extends Component {
             },
             method: "POST",
             body: JSON.stringify({
-                email: this.state.userEmail,
+                email: this.state.email.value,
             }),
         })
             .then((res) => res.json())
@@ -190,7 +190,7 @@ class LayerModifyInfo extends Component {
                     },
                     method: "POST",
                     body: JSON.stringify({
-                        userEmail: this.state.userEmail,
+                        userEmail: this.state.email.value,
                         modifyName: this.state.name.value,
                         modifyPassword:
                             this.state.password.validate &&
