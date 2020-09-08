@@ -88,7 +88,7 @@ class LayerFindPassword extends Component {
                         type='text'
                         onChange={this.emailOnchange}
                         fullWidth={true}
-                        error={!email.validate && email.value != ""}
+                        error={!email.validate && email.value !== ""}
                     />
                     {ShowHelperText(email)}
                 </div>

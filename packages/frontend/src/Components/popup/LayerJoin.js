@@ -43,7 +43,7 @@ class LayerJoin extends Component {
             value: "",
             validate: false,
             getValidateText: () =>
-                this.state.password.validate == true
+                this.state.password.validate === true
                     ? "사용 가능한 비밀번호입니다"
                     : "6자이상 15자 이하 입력해주세요",
             getError: () => {
@@ -89,7 +89,7 @@ class LayerJoin extends Component {
         }));
 
         // 입력된 이메일값이 공백이 아닐때
-        if (value == "") {
+        if (value === "") {
             return;
         }
         // 이메일 중복 여부 체크
