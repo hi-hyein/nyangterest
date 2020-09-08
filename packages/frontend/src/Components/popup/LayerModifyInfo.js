@@ -159,15 +159,13 @@ class LayerModifyInfo extends Component {
             .then((json) => {
                 console.log(json);
                 // 이름, 가입날짜 셋팅
-                if (json._username !== null) {
-                    this.setState((prevState) => ({
-                        name: {
-                            ...prevState.name,
-                            value: json._username,
-                        },
-                        signupDate: json._signupDate,
-                    }));
-                }
+                this.setState((prevState) => ({
+                    signupDate: json._signupDate,
+                    name: {
+                        ...prevState.name,
+                        value: json._username ? json._username : "",
+                    },
+                }));
             });
     };
 
