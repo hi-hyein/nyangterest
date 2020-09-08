@@ -1,10 +1,11 @@
 import React, { Component } from "react";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
-import FormHelperText from "@material-ui/core/FormHelperText";
 import { observer, inject } from "mobx-react";
+import ShowHelperText from "../ShowHelperText";
+import Validate from "../../utils/validate";
 
-@inject("loginStore", "validateStore")
+@inject("loginStore")
 @observer
 class LayerLogin extends Component {
     state = {
@@ -44,39 +45,26 @@ class LayerLogin extends Component {
         },
     };
 
-    // helper text 보여주기
-    showHelperText = (state) => {
-        if (state.value) {
-            return (
-                <FormHelperText id='component-helper-text'>
-                    {state.getValidateText()}
-                </FormHelperText>
-            );
-        }
-    };
-
     userIdHandler = (e) => {
         const value = e.target.value;
-        this.props.validateStore.validateValue = value;
 
         this.setState((prevState) => ({
             email: {
                 ...prevState.email,
                 value: value,
-                validate: this.props.validateStore.getValidate("MAIL"),
+                validate: Validate.getEmalValidate(value),
             },
         }));
     };
 
     userPwHandler = (e) => {
         const value = e.target.value;
-        this.props.validateStore.validateValue = value;
 
         this.setState((prevState) => ({
             password: {
                 ...prevState.password,
                 value: value,
-                validate: this.props.validateStore.getValidate("PASSWORD"),
+                validate: Validate.getPasswordValidate(value),
             },
         }));
     };
@@ -143,7 +131,7 @@ class LayerLogin extends Component {
                         onChange={this.userIdHandler}
                         error={email.getError()}
                     />
-                    {this.showHelperText(email)}
+                    {ShowHelperText(email)}
                 </div>
                 <div>
                     <TextField
@@ -157,7 +145,7 @@ class LayerLogin extends Component {
                         onChange={this.userPwHandler}
                         error={password.getError()}
                     />
-                    {this.showHelperText(password)}
+                    {ShowHelperText(password)}
                 </div>
                 <div>
                     <button

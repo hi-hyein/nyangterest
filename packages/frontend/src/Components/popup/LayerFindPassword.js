@@ -2,11 +2,8 @@ import React, { Component } from "react";
 // import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
-import FormHelperText from "@material-ui/core/FormHelperText";
-import { observer, inject } from "mobx-react";
-
-@inject("validateStore")
-@observer
+import ShowHelperText from "../ShowHelperText";
+import Validate from "../../utils/validate";
 class LayerFindPassword extends Component {
     state = {
         email: {
@@ -32,26 +29,14 @@ class LayerFindPassword extends Component {
         },
     };
 
-    // helper text 보여주기
-    showHelperText = (state) => {
-        if (state.value) {
-            return (
-                <FormHelperText id='component-helper-text'>
-                    {state.getValidateText()}
-                </FormHelperText>
-            );
-        }
-    };
-
     emailOnchange = (e) => {
         const value = e.target.value;
-        this.props.validateStore.validateValue = value;
 
         this.setState((prevState) => ({
             email: {
                 ...prevState.email,
                 value: value,
-                validate: this.props.validateStore.getValidate("MAIL"),
+                validate: Validate.getEmalValidate(value),
                 match: this.state.email.value ? null : null,
             },
         }));
@@ -99,9 +84,9 @@ class LayerFindPassword extends Component {
                         type='text'
                         onChange={this.emailOnchange}
                         fullWidth={true}
-                        error={!email.validate && email.value != ""}
+                        error={!email.validate && email.value !== ""}
                     />
-                    {this.showHelperText(email)}
+                    {ShowHelperText(email)}
                 </div>
                 <div style={{ marginTop: "20px" }}>
                     <Button

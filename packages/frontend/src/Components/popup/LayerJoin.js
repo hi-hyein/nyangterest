@@ -2,15 +2,13 @@ import React, { Component } from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
-import FormHelperText from "@material-ui/core/FormHelperText";
 import Checkbox from "@material-ui/core/Checkbox";
 import AgreeLink from "../agree/AgreeLink";
 import Service from "../agree/Service";
 import Privacy from "../agree/Privacy";
-import { observer, inject } from "mobx-react";
+import ShowHelperText from "../ShowHelperText";
+import Validate from "../../utils/validate";
 
-@inject("validateStore")
-@observer
 class LayerJoin extends Component {
     state = {
         email: {
@@ -43,7 +41,7 @@ class LayerJoin extends Component {
             value: "",
             validate: false,
             getValidateText: () =>
-                this.state.password.validate == true
+                this.state.password.validate === true
                     ? "사용 가능한 비밀번호입니다"
                     : "6자이상 15자 이하 입력해주세요",
             getError: () => {
@@ -77,20 +75,8 @@ class LayerJoin extends Component {
         },
     };
 
-    // helper text 보여주기
-    showHelperText = (state) => {
-        if (state.value) {
-            return (
-                <FormHelperText id='component-helper-text'>
-                    {state.getValidateText()}
-                </FormHelperText>
-            );
-        }
-    };
-
     emailOnChange = (e) => {
         const value = e.target.value;
-        this.props.validateStore.validateValue = value;
 
         this.setState((prevState) => ({
             email: {
@@ -100,7 +86,7 @@ class LayerJoin extends Component {
         }));
 
         // 입력된 이메일값이 공백이 아닐때
-        if (value == "") {
+        if (value === "") {
             return;
         }
         // 이메일 중복 여부 체크
@@ -111,7 +97,7 @@ class LayerJoin extends Component {
                     email: {
                         ...prevState.email,
                         overlapping: json,
-                        validate: this.props.validateStore.getValidate("MAIL"),
+                        validate: Validate.getEmalValidate(value),
                     },
                 }));
             });
@@ -119,7 +105,6 @@ class LayerJoin extends Component {
 
     passwordOnChange = (e) => {
         const value = e.target.value;
-        this.props.validateStore.validateValue = value;
 
         this.setState((prevState) => ({
             password: {
@@ -131,7 +116,7 @@ class LayerJoin extends Component {
         this.setState((prevState) => ({
             password: {
                 ...prevState.password,
-                validate: this.props.validateStore.getValidate("PASSWORD"),
+                validate: Validate.getPasswordValidate(value),
             },
         }));
     };
@@ -226,7 +211,7 @@ class LayerJoin extends Component {
                         error={email.getError()}
                         fullWidth={true}
                     />
-                    {this.showHelperText(email)}
+                    {ShowHelperText(email)}
                 </div>
                 <div>
                     <TextField
@@ -241,7 +226,7 @@ class LayerJoin extends Component {
                         fullWidth={true}
                         error={password.getError()}
                     />
-                    {this.showHelperText(password)}
+                    {ShowHelperText(password)}
                 </div>
                 <div>
                     <TextField
@@ -256,7 +241,7 @@ class LayerJoin extends Component {
                         fullWidth={true}
                         error={password.check.getError()}
                     />
-                    {this.showHelperText(password.check)}
+                    {ShowHelperText(password.check)}
                 </div>
                 <div
                     className='check-area'
