@@ -2,12 +2,12 @@ import React, { Component } from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
-import FormHelperText from "@material-ui/core/FormHelperText";
 import Checkbox from "@material-ui/core/Checkbox";
 import AgreeLink from "../agree/AgreeLink";
 import Service from "../agree/Service";
 import Privacy from "../agree/Privacy";
 import { observer, inject } from "mobx-react";
+import ShowHelperText from "../ShowHelperText";
 
 @inject("validateStore")
 @observer
@@ -75,17 +75,6 @@ class LayerJoin extends Component {
                 },
             },
         },
-    };
-
-    // helper text 보여주기
-    showHelperText = (state) => {
-        if (state.value) {
-            return (
-                <FormHelperText id='component-helper-text'>
-                    {state.getValidateText()}
-                </FormHelperText>
-            );
-        }
     };
 
     emailOnChange = (e) => {
@@ -226,7 +215,7 @@ class LayerJoin extends Component {
                         error={email.getError()}
                         fullWidth={true}
                     />
-                    {this.showHelperText(email)}
+                    {ShowHelperText(email)}
                 </div>
                 <div>
                     <TextField
@@ -241,7 +230,7 @@ class LayerJoin extends Component {
                         fullWidth={true}
                         error={password.getError()}
                     />
-                    {this.showHelperText(password)}
+                    {ShowHelperText(password)}
                 </div>
                 <div>
                     <TextField
@@ -256,7 +245,7 @@ class LayerJoin extends Component {
                         fullWidth={true}
                         error={password.check.getError()}
                     />
-                    {this.showHelperText(password.check)}
+                    {ShowHelperText(password.check)}
                 </div>
                 <div
                     className='check-area'

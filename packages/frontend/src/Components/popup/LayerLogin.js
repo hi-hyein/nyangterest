@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
-import FormHelperText from "@material-ui/core/FormHelperText";
 import { observer, inject } from "mobx-react";
+import ShowHelperText from "../ShowHelperText";
 
 @inject("loginStore", "validateStore")
 @observer
@@ -42,17 +42,6 @@ class LayerLogin extends Component {
                 return error;
             },
         },
-    };
-
-    // helper text 보여주기
-    showHelperText = (state) => {
-        if (state.value) {
-            return (
-                <FormHelperText id='component-helper-text'>
-                    {state.getValidateText()}
-                </FormHelperText>
-            );
-        }
     };
 
     userIdHandler = (e) => {
@@ -143,7 +132,7 @@ class LayerLogin extends Component {
                         onChange={this.userIdHandler}
                         error={email.getError()}
                     />
-                    {this.showHelperText(email)}
+                    {ShowHelperText(email)}
                 </div>
                 <div>
                     <TextField
@@ -157,7 +146,7 @@ class LayerLogin extends Component {
                         onChange={this.userPwHandler}
                         error={password.getError()}
                     />
-                    {this.showHelperText(password)}
+                    {ShowHelperText(password)}
                 </div>
                 <div>
                     <button
