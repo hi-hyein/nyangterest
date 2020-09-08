@@ -2,11 +2,8 @@ import React, { Component } from "react";
 // import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
-import { observer, inject } from "mobx-react";
 import ShowHelperText from "../ShowHelperText";
-
-@inject("validateStore")
-@observer
+import Validate from "../../utils/validate";
 class LayerModifyInfo extends Component {
     state = {
         signupDate: "",
@@ -69,13 +66,12 @@ class LayerModifyInfo extends Component {
     // 이름 유효성 검사, state 저장
     nameOnChange = (e) => {
         const value = e.target.value;
-        this.props.validateStore.validateValue = value;
 
         this.setState((prevState) => ({
             name: {
                 ...prevState.name,
                 value: value,
-                validate: this.props.validateStore.getValidate("NAME"),
+                validate: Validate.getNameValidate(value),
             },
         }));
     };
@@ -83,7 +79,6 @@ class LayerModifyInfo extends Component {
     // 비밀번호 유효성 검사, state 저장
     passwordOnChange = (e) => {
         const value = e.target.value;
-        this.props.validateStore.validateValue = value;
 
         this.setState((prevState) => ({
             password: {
@@ -93,7 +88,7 @@ class LayerModifyInfo extends Component {
         }));
 
         // 비밀번호 유효성검사
-        const validate = this.props.validateStore.getValidate("PASSWORD");
+        const validate = Validate.getPasswordValidate(value);
         if (!validate) {
             if (e.target.value.length <= 0) {
                 this.setState((prevState) => ({

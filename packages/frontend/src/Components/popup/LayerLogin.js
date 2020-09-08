@@ -3,8 +3,9 @@ import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
 import { observer, inject } from "mobx-react";
 import ShowHelperText from "../ShowHelperText";
+import Validate from "../../utils/validate";
 
-@inject("loginStore", "validateStore")
+@inject("loginStore")
 @observer
 class LayerLogin extends Component {
     state = {
@@ -46,26 +47,24 @@ class LayerLogin extends Component {
 
     userIdHandler = (e) => {
         const value = e.target.value;
-        this.props.validateStore.validateValue = value;
 
         this.setState((prevState) => ({
             email: {
                 ...prevState.email,
                 value: value,
-                validate: this.props.validateStore.getValidate("MAIL"),
+                validate: Validate.getEmalValidate(value),
             },
         }));
     };
 
     userPwHandler = (e) => {
         const value = e.target.value;
-        this.props.validateStore.validateValue = value;
 
         this.setState((prevState) => ({
             password: {
                 ...prevState.password,
                 value: value,
-                validate: this.props.validateStore.getValidate("PASSWORD"),
+                validate: Validate.getPasswordValidate(value),
             },
         }));
     };

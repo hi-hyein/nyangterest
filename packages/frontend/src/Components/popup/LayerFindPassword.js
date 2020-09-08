@@ -2,11 +2,8 @@ import React, { Component } from "react";
 // import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
-import { observer, inject } from "mobx-react";
 import ShowHelperText from "../ShowHelperText";
-
-@inject("validateStore")
-@observer
+import Validate from "../../utils/validate";
 class LayerFindPassword extends Component {
     state = {
         email: {
@@ -34,13 +31,12 @@ class LayerFindPassword extends Component {
 
     emailOnchange = (e) => {
         const value = e.target.value;
-        this.props.validateStore.validateValue = value;
 
         this.setState((prevState) => ({
             email: {
                 ...prevState.email,
                 value: value,
-                validate: this.props.validateStore.getValidate("MAIL"),
+                validate: Validate.getEmalValidate(value),
                 match: this.state.email.value ? null : null,
             },
         }));

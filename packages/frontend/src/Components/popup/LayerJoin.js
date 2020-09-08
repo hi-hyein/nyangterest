@@ -6,11 +6,9 @@ import Checkbox from "@material-ui/core/Checkbox";
 import AgreeLink from "../agree/AgreeLink";
 import Service from "../agree/Service";
 import Privacy from "../agree/Privacy";
-import { observer, inject } from "mobx-react";
 import ShowHelperText from "../ShowHelperText";
+import Validate from "../../utils/validate";
 
-@inject("validateStore")
-@observer
 class LayerJoin extends Component {
     state = {
         email: {
@@ -79,7 +77,6 @@ class LayerJoin extends Component {
 
     emailOnChange = (e) => {
         const value = e.target.value;
-        this.props.validateStore.validateValue = value;
 
         this.setState((prevState) => ({
             email: {
@@ -100,7 +97,7 @@ class LayerJoin extends Component {
                     email: {
                         ...prevState.email,
                         overlapping: json,
-                        validate: this.props.validateStore.getValidate("MAIL"),
+                        validate: Validate.getEmalValidate(value),
                     },
                 }));
             });
@@ -108,7 +105,6 @@ class LayerJoin extends Component {
 
     passwordOnChange = (e) => {
         const value = e.target.value;
-        this.props.validateStore.validateValue = value;
 
         this.setState((prevState) => ({
             password: {
@@ -120,7 +116,7 @@ class LayerJoin extends Component {
         this.setState((prevState) => ({
             password: {
                 ...prevState.password,
-                validate: this.props.validateStore.getValidate("PASSWORD"),
+                validate: Validate.getPasswordValidate(value),
             },
         }));
     };
