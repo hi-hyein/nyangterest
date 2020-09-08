@@ -7,6 +7,7 @@ import Nav from "./Nav";
 import Home from "./Home";
 import MemberList from "./admin/MemberList";
 import Welcome from "./Welcome";
+import WelcomeComplete from "./WelcomeComplete";
 
 const Wrapper = styled.div`
     position: relative;
@@ -26,15 +27,19 @@ class App extends Component {
                         <Wrapper>
                             <GlobalStyle />
                             <Switch>
-                            <Route exact path='/' component={Home} />
-                            <Route
-                                path='/admin/member'
-                                component={MemberList}
-                            />
-                            <Route
-                                path='/join/welcome/:email'
-                                component={Welcome}
-                            />
+                                <Route exact path='/' component={Home} />
+                                <Route
+                                    path='/admin/member'
+                                    component={MemberList}
+                                />
+                                <Route
+                                    path='/join/welcome/complete'
+                                    component={WelcomeComplete}
+                                />
+                                <Route
+                                    path='/join/welcome/:email'
+                                    component={Welcome}
+                                />
                             </Switch>
                         </Wrapper>
                         <Nav />
