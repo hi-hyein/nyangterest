@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from "react";
-import { BrowserRouter as Router, Route } from "react-router-dom";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import styled from "styled-components";
 import GlobalStyle from "./GlobalStyles";
 import Header from "./layout/Header";
@@ -7,6 +7,7 @@ import Nav from "./Nav";
 import Home from "./Home";
 import MemberList from "./admin/MemberList";
 import Welcome from "./Welcome";
+import WelcomeComplete from "./WelcomeComplete";
 
 const Wrapper = styled.div`
     position: relative;
@@ -25,15 +26,21 @@ class App extends Component {
                         <Header />
                         <Wrapper>
                             <GlobalStyle />
-                            <Route exact path='/' component={Home} />
-                            <Route
-                                path='/admin/member'
-                                component={MemberList}
-                            />
-                            <Route
-                                path='/join/welcome/:email'
-                                component={Welcome}
-                            />
+                            <Switch>
+                                <Route exact path='/' component={Home} />
+                                <Route
+                                    path='/admin/member'
+                                    component={MemberList}
+                                />
+                                <Route
+                                    path='/join/welcome/complete'
+                                    component={WelcomeComplete}
+                                />
+                                <Route
+                                    path='/join/welcome/:email'
+                                    component={Welcome}
+                                />
+                            </Switch>
                         </Wrapper>
                         <Nav />
                     </div>

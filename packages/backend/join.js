@@ -122,7 +122,7 @@ router.get("/user/join/welcome", (req, res) => {
                 );
             } else {
                 // 인증상태가 true일때
-                res.sendFile(path.join(__dirname + "/welcome2.html"));
+                res.redirect(`http://127.0.0.1:3000/join/welcome/complete`);
             }
         }
     );
