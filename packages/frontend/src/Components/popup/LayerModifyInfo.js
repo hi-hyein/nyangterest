@@ -2,8 +2,8 @@ import React, { Component } from "react";
 // import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import TextField from "@material-ui/core/TextField";
 import Button from "@material-ui/core/Button";
-import FormHelperText from "@material-ui/core/FormHelperText";
 import { observer, inject } from "mobx-react";
+import ShowHelperText from "../ShowHelperText";
 
 @inject("validateStore")
 @observer
@@ -13,16 +13,55 @@ class LayerModifyInfo extends Component {
         name: {
             value: "",
             validate: false,
-            message: "",
-        },
+            getValidateText: () =>
+                this.state.name.validate === true
+                    ? "사용 가능한 이름 형식 입니다."
+                    : "2자이상 특수문자 사용불가",
+            getError: () => {
+                let error = false;
+
+                if (this.state.name.validate) {
+                    return (error = true);
+                }
+
+                return error;
+            },
         },
         email: JSON.parse(localStorage.getItem("userInfo")),
         password: {
             value: "",
             validate: false,
+            getValidateText: () =>
+                this.state.password.validate === true
+                    ? "사용 가능한 비밀번호입니다"
+                    : "6자이상 15자 이하 입력해주세요",
+            getError: () => {
+                let error = false;
+                if (this.state.password.value !== "") {
+                    error = !this.state.password.validate;
+                }
+                return error;
+            },
             check: {
                 value: "",
                 validate: false,
+                getValidateText: () => {
+                    if (
+                        this.state.password.check.value ===
+                        this.state.password.value
+                    ) {
+                        return "비밀번호가 일치합니다";
+                    } else {
+                        return "비밀번호가 일치하지 않습니다";
+                    }
+                },
+                getError: () => {
+                    let error = false;
+                    if (this.state.password.check.value !== "") {
+                        error = !this.state.password.check.validate;
+                    }
+                    return error;
+                },
             },
         },
     };
@@ -230,44 +269,9 @@ class LayerModifyInfo extends Component {
         this.getMemberData();
     }
 
-    // input error check
-    getError = {
-        nameResult: false,
-        passwordResult: false,
-        passwordCheckResult: false,
-
-        getNameError: () => {
-            if (this.state.name.value !== "") {
-                this.getError.nameResult = !this.state.name.validate;
-            } else {
-                this.getError.nameResult = false;
-            }
-
-            return this.getError.nameResult;
-        },
-
-        getPasswordError: () => {
-            if (this.state.password.value !== "") {
-                this.getError.passwordResult = !this.state.password.validate;
-            } else {
-                this.getError.passwordResult = false;
-            }
-            return this.getError.passwordResult;
-        },
-
-        getPasswordCheckError: () => {
-            if (this.state.password.check.value !== "") {
-                this.getError.passwordCheckResult = !this.state.password.check
-                    .validate;
-            } else {
-                this.getError.passwordCheckResult = false;
-            }
-            return this.getError.passwordCheckResult;
-        },
-    };
-
     render() {
-        const { name, userEmail, signupDate, password } = this.state;
+        const { name, email, signupDate, password } = this.state;
+
         return (
             <div>
                 <div>
@@ -281,15 +285,9 @@ class LayerModifyInfo extends Component {
                         type='text'
                         onChange={this.nameOnChange}
                         fullWidth={true}
-                        error={this.getError.getNameError()}
+                        error={name.getError()}
                     />
-                    {name.message.length > 0 &&
-                        !name.validate &&
-                        name.validate !== null && (
-                            <FormHelperText id='component-helper-text'>
-                                {name.message}
-                            </FormHelperText>
-                        )}
+                    {ShowHelperText(name)}
                 </div>
                 <div>
                     <TextField
@@ -313,15 +311,9 @@ class LayerModifyInfo extends Component {
                         type='password'
                         onChange={this.passwordOnChange}
                         fullWidth={true}
-                        error={!password.validate && password.validate !== null}
+                        error={password.getError()}
                     />
-                    {password.message.length > 0 &&
-                        !password.validate &&
-                        password.validate !== null && (
-                            <FormHelperText id='component-helper-text'>
-                                {password.message}
-                            </FormHelperText>
-                        )}
+                    {ShowHelperText(password)}
                 </div>
                 <div>
                     <TextField
@@ -334,17 +326,9 @@ class LayerModifyInfo extends Component {
                         type='password'
                         onChange={this.passwordCheckOnChange}
                         fullWidth={true}
-                        error={
-                            !password.check.validate &&
-                            password.check.validate !== null
-                        }
+                        error={password.check.getError()}
                     />
-                    {password.check.value.length > 0 &&
-                        password.check.vaidate !== null && (
-                            <FormHelperText id='component-helper-text'>
-                                {password.check.message}
-                            </FormHelperText>
-                        )}
+                    {ShowHelperText(password.check)}
                 </div>
                 <div>
                     <TextField
