@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from "react";
-import { BrowserRouter as Router, Route } from "react-router-dom";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import styled from "styled-components";
 import GlobalStyle from "./GlobalStyles";
 import Header from "./layout/Header";
@@ -25,6 +25,7 @@ class App extends Component {
                         <Header />
                         <Wrapper>
                             <GlobalStyle />
+                            <Switch>
                             <Route exact path='/' component={Home} />
                             <Route
                                 path='/admin/member'
@@ -34,6 +35,7 @@ class App extends Component {
                                 path='/join/welcome/:email'
                                 component={Welcome}
                             />
+                            </Switch>
                         </Wrapper>
                         <Nav />
                     </div>
