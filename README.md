@@ -85,13 +85,13 @@ npm run dev or yarn dev
 ### 정혜인
 
 * 문서(was) : https://github.com/hi-hyein/nyangterest/tree/master/hi_report
-* 문서(now) : https://github.com/hi-hyein/nyangterest/wiki
+* 문서(now) : https://github.com/hi-hyein/nyangterest/wiki#%EC%A0%95%ED%98%9C%EC%9D%B8-wiki
 * projects : https://github.com/hi-hyein/nyangterest/projects/2
 
 ### 조윤우
 
 * 문서(was) : https://github.com/hi-hyein/nyangterest/tree/master/yu_report 
-* 문서(now) : https://github.com/hi-hyein/nyangterest/wiki   
+* 문서(now) : https://github.com/hi-hyein/nyangterest/wiki#%EC%A1%B0%EC%9C%A4%EC%9A%B0-wiki 
 * projects : https://github.com/hi-hyein/nyangterest/projects/1
 
 
