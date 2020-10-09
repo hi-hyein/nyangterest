@@ -31,6 +31,9 @@ connection.connect();
 const existUserEmail = (req, res) => {
     // url로 받아온 유저이메일
     const useremail = req.params.useremail;
+    // default value = null
+    const snsName = req.params.snsName || null;
+
     // 유저 이메일 중복 검사
     connection.query(
         `SELECT * FROM nyang_member WHERE email='${useremail}'`,
@@ -38,10 +41,19 @@ const existUserEmail = (req, res) => {
             if (err) {
                 res.send("error");
             } else {
-                // useremail 검색한 결과가 1개라도 나오면 true 보낸다
-                // true : 중복있음
-                // false : 중복없음
-                res.send(rows.length >= 1);
+                // 같은 이메일 주소를 갖고있는 rows(array)를 가져와 params로 받은 snsName로 filtering하여 조건에 해당되는 배열을 return 한다.
+                // 해당 배열의 length가 0 보다 크면 중복이 있기때문에 true return
+                // true = 계정 있음 , false = 계정 없음
+                // 가입이 가능한 경우 (false return)
+                // 1. rows가 없는 경우
+                // 2. snsName과 일치하는 배열이 없는 경우
+                const isExist =
+                    rows.length > 0 ||
+                    rows.filter(function (item) {
+                        return item.snsName === snsName;
+                    }).length > 0;
+
+                res.send(isExist);
             }
         }
     );
