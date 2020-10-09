@@ -64,6 +64,49 @@ passport.use(
         },
         async function (accessToken, refreshToken, profile, done) {
             console.log("profile:", profile);
+
+            // profile이 있다면 (인증에 성공해 회원정보가 넘어옴)
+            if (profile) {
+                const response = await fetch(
+                    // 소셜 서비스 정보도 같이 보내야됨
+                    // post요청으로 json객체에 담아 보내기
+                    // `/user/exists/email/${profile._json.email}/${profile.provider}`
+                    `/user/exists/email/${profile._json.email}/`
+                );
+                const json = await response.json();
+            
+                // 이메일이 중복된다면
+                if (json) {
+                    // 로그인 처리 예시
+                    // const response = await fetch(
+                    //     '/login'
+                    // ,{
+                    //     headers: {
+                    //     Accept: "application/json",
+                    //     "Content-Type": "application/json",
+                    //     },
+                    //     method: "POST",
+                    //     body: sendAccountInfo,
+                    // });
+                    // const json = await response.json();
+                }
+            
+                // else 회원가입 처리 예시
+                // const response = await fetch(
+                //     '/user/join'
+                // ,{
+                //     headers: {
+                //     Accept: "application/json",
+                //     "Content-Type": "application/json",
+                //     },
+                //     method: "POST",
+                //     body: sendAccountInfo,
+                // });
+                // const json = await response.json();
+                return done(null, profile);
+            }
+            
+            return done(null);
         }
     )
 );
