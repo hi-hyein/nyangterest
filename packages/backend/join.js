@@ -62,10 +62,11 @@ const existUserEmail = (req, res) => {
 const resistUser = async (req, res) => {
     const resistUserInfo = {
         email: req.body.email,
-        password: await bcryptjs.hash(req.body.password, 10),
+        password: req.body.password ? await bcryptjs.hash(req.body.password, 10) : null,
         signupdate: moment().format("YYYYMMDD"),
-        certify: false,
+        certify: req.body.certify || false,
         emailToken: await bcryptjs.hash(EMAIL_CERTIFY_KEY, 10),
+        snsName: req.body.snsName || null
     };
 
     const emailLink = `http://localhost:8080/user/join/welcome?email=${resistUserInfo.email}&token=${resistUserInfo.emailToken}`;
@@ -80,7 +81,7 @@ const resistUser = async (req, res) => {
     // 회원 가입 처리 query
     // 회언 정보 DB저장
     const sql =
-        "INSERT INTO `nyang_member` (`email`, `password`, `signupdate`, `certify`, `token`) VALUES ( ?,?,?,?,? )";
+        "INSERT INTO `nyang_member` (`email`, `password`, `signupdate`, `certify`, `token`, `snsName`) VALUES ( ?,?,?,?,?,? )";
     const params = ((resistUserInfo) => {
         let resistUserInfoArray = [];
         for (items in resistUserInfo) {
@@ -95,8 +96,12 @@ const resistUser = async (req, res) => {
             console.log("회원가입 실패", err);
             res.send(false);
         } else {
-            // 회원가입 인증 메일 발송
-            mailSender.sendGmail(mailSenderOption);
+            if(resistUserInfo.snsName === null) {
+                 // 회원가입 인증 메일 발송
+                mailSender.sendGmail(mailSenderOption);
+                // 회원가입 성공 여부 front로 보내기
+                res.send(true);
+            }
             // 회원가입 성공 여부 front로 보내기
             res.send(true);
         }

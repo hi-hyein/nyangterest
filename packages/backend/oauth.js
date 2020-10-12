@@ -3,8 +3,9 @@
 const fs = require("fs");
 const express = require("express");
 const router = express.Router();
+const path = require("path");
 const passport = require("passport");
-const session = require("express-session");
+// const session = require("express-session");
 // const FileStore = require("session-file-store")(session);
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const dotenv = require('dotenv');
@@ -92,17 +93,30 @@ passport.use(
                 }
             
                 // else 회원가입 처리 예시
-                // const response = await fetch(
-                //     '/user/join'
-                // ,{
-                //     headers: {
-                //     Accept: "application/json",
-                //     "Content-Type": "application/json",
-                //     },
-                //     method: "POST",
-                //     body: sendAccountInfo,
-                // });
-                // const json = await response.json();
+                const joinData = {
+                    email: profile._json.email,
+                    snsName: profile.provider,
+                    // email: 'henyy1004@naver.com',
+                    // snsName: 'google',
+                    password: null,
+                    certify: true,
+                }
+                const joinResponse = await fetch(
+                    '/user/join'
+                ,{
+                    headers: {
+                    Accept: "application/json",
+                    "Content-Type": "application/json",
+                    },
+                    method: "POST",
+                    body: JSON.stringify(joinData), 
+                });
+                const joinJson = await joinResponse.json();
+
+                if(!joinJson) {
+                    return done(null);
+                }
+                
                 return done(null, profile);
             }
             
