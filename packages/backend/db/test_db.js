@@ -12,21 +12,18 @@ const config = {
     database: ''
 }
 
-const connect = mysql.createConnection(config);
-
-const test_db_connect = function(con){
-    con.connect(function(err){
-        if(err){
-            console.error('mysql connection error :' + err);
-        }else {
-            console.info('mysql is connected successfully.')
-        }
-    })
-}
-
-test_db_connect(connect);
-
-
 module.exports = {
-    text_db_connect: connect
+    connect: mysql.createConnection(config),
+    createDB: con => {
+        con.connect('CREATE DATABASE test_nyangterest',(err, result)=>{
+            if(err) console.log('mysql error create:'+err)
+            console.log('SUCCESS DATABASE TEST CREATE!')
+        })
+    },
+    dropDB: con => {
+        con.connect('DROP DATABASE test_nyangterest',(err, result)=>{
+            if(err) console.log('mysql error drop:'+err)
+            console.log('SUCCESS DATABASE TEST DROP!')
+        })
+    },
 }
