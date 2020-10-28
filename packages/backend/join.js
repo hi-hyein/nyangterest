@@ -31,9 +31,6 @@ connection.connect();
 const existUserEmail = (req, res) => {
     // url로 받아온 유저이메일
     const useremail = req.params.useremail;
-    // default value = null
-    const snsName = req.params.snsName || null;
-
     // 유저 이메일 중복 검사
     connection.query(
         `SELECT * FROM nyang_member WHERE email='${useremail}'`,
@@ -41,19 +38,10 @@ const existUserEmail = (req, res) => {
             if (err) {
                 res.send("error");
             } else {
-                // 같은 이메일 주소를 갖고있는 rows(array)를 가져와 params로 받은 snsName로 filtering하여 조건에 해당되는 배열을 return 한다.
-                // 해당 배열의 length가 0 보다 크면 중복이 있기때문에 true return
-                // true = 계정 있음 , false = 계정 없음
-                // 가입이 가능한 경우 (false return)
-                // 1. rows가 없는 경우
-                // 2. snsName과 일치하는 배열이 없는 경우
-                const isExist =
-                    rows.length > 0 ||
-                    rows.filter(function (item) {
-                        return item.snsName === snsName;
-                    }).length > 0;
-
-                res.send(isExist);
+                // useremail 검색한 결과가 1개라도 나오면 true 보낸다
+                // true : 중복있음
+                // false : 중복없음
+                res.send(rows.length >= 1);
             }
         }
     );
@@ -62,11 +50,10 @@ const existUserEmail = (req, res) => {
 const resistUser = async (req, res) => {
     const resistUserInfo = {
         email: req.body.email,
-        password: req.body.password ? await bcryptjs.hash(req.body.password, 10) : null,
+        password: await bcryptjs.hash(req.body.password, 10),
         signupdate: moment().format("YYYYMMDD"),
-        certify: req.body.certify || false,
+        certify: false,
         emailToken: await bcryptjs.hash(EMAIL_CERTIFY_KEY, 10),
-        snsName: req.body.snsName || null
     };
 
     const emailLink = `http://localhost:8080/user/join/welcome?email=${resistUserInfo.email}&token=${resistUserInfo.emailToken}`;
@@ -81,7 +68,7 @@ const resistUser = async (req, res) => {
     // 회원 가입 처리 query
     // 회언 정보 DB저장
     const sql =
-        "INSERT INTO `nyang_member` (`email`, `password`, `signupdate`, `certify`, `token`, `snsName`) VALUES ( ?,?,?,?,?,? )";
+        "INSERT INTO `nyang_member` (`email`, `password`, `signupdate`, `certify`, `token`) VALUES ( ?,?,?,?,? )";
     const params = ((resistUserInfo) => {
         let resistUserInfoArray = [];
         for (items in resistUserInfo) {
@@ -96,12 +83,8 @@ const resistUser = async (req, res) => {
             console.log("회원가입 실패", err);
             res.send(false);
         } else {
-            if(resistUserInfo.snsName === null) {
-                 // 회원가입 인증 메일 발송
-                mailSender.sendGmail(mailSenderOption);
-                // 회원가입 성공 여부 front로 보내기
-                res.send(true);
-            }
+            // 회원가입 인증 메일 발송
+            mailSender.sendGmail(mailSenderOption);
             // 회원가입 성공 여부 front로 보내기
             res.send(true);
         }
