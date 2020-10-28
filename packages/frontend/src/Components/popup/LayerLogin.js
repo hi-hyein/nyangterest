@@ -185,18 +185,6 @@ class LayerLogin extends Component {
                     >
                         회원가입
                     </Button>
-                    <a
-                        target='_blank'
-                        href='http://localhost:8080/auth/google'
-                        style={{
-                            margin: 20,
-                            padding: 10,
-                            background: "red",
-                            display: "block",
-                        }}
-                    >
-                        구글 로그인
-                    </a>
                 </div>
             </div>
         );

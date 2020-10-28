@@ -286,19 +286,6 @@ class LayerJoin extends Component {
                     >
                         계속하기
                     </Button>
-                    {/* 구글 로그인과 동일함 */}
-                    <a
-                        target='_blank'
-                        href='http://localhost:8080/auth/google'
-                        style={{
-                            margin: 20,
-                            padding: 10,
-                            background: "red",
-                            display: "block",
-                        }}
-                    >
-                        구글 회원가입
-                    </a>
                 </div>
             </div>
         );

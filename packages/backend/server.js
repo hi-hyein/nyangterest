@@ -10,10 +10,9 @@ const login = require('./login');
 const memberInfo = require('./memberInfo');
 const findAccount = require('./findAccount');
 const join = require('./join');
-const logger = require('./winston');
-const unregister = require('./unregister');
-const dotenv = require('dotenv');
-const oauth = require('./oauth');
+const logger = require('./winston')
+const unregister = require('./unregister')
+const dotenv = require('dotenv')
 
 dotenv.config({ path: path.join(__dirname, './.env') })
 
@@ -146,8 +145,6 @@ app.use("/admin/member", router);
 app.use("/", join);
 // 로그인 미들웨어
 app.use("/", login);
-// oauth 로그인 미들웨어
-app.use("/auth", oauth);
 // 회원정보 수정 미들웨어
 app.use("/", memberInfo);
 // 계정찾기 미들웨어
