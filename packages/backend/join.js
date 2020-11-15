@@ -30,33 +30,46 @@ connection.connect();
 // 이메일 중복 로직
 const existUserEmail = (req, res) => {
     // url로 받아온 유저이메일
-    const useremail = req.params.useremail;
+    const useremail = req.body.useremail;
     // default value = null
-    const snsName = req.params.snsName || null;
+    const snsName = req.body.snsName || null;
+    // true = 계정 있음 , false = 계정 없음
+    let result = false
 
-    // 유저 이메일 중복 검사
-    connection.query(
-        `SELECT * FROM nyang_member WHERE email='${useremail}'`,
-        (err, rows) => {
-            if (err) {
-                res.send("error");
-            } else {
-                // 같은 이메일 주소를 갖고있는 rows(array)를 가져와 params로 받은 snsName로 filtering하여 조건에 해당되는 배열을 return 한다.
-                // 해당 배열의 length가 0 보다 크면 중복이 있기때문에 true return
-                // true = 계정 있음 , false = 계정 없음
-                // 가입이 가능한 경우 (false return)
-                // 1. rows가 없는 경우
-                // 2. snsName과 일치하는 배열이 없는 경우
-                const isExist =
-                    rows.length > 0 ||
-                    rows.filter(function (item) {
-                        return item.snsName === snsName;
-                    }).length > 0;
-
-                res.send(isExist);
+    console.log(req.body)
+    // sns 가입자가 아니라면
+    if(!snsName) {
+        connection.query(
+            `SELECT * FROM nyang_member WHERE email='${useremail}' AND snsName IS NULL`,
+            (err, rows) => {
+                if(err) {
+                    res.send("error", err)
+                }
+                if(rows.length) {
+                    result = true
+                    res.send(result);
+                } else {
+                    res.send(result)
+                }
             }
-        }
-    );
+        );
+    } else {
+        // sns 가입자라면
+        connection.query(
+            `SELECT * FROM nyang_member WHERE email='${useremail}' AND snsName='${snsName}'`,
+            (err, rows) => {
+                if(err) {
+                    res.send("error", err)
+                }
+                if(rows.length) {
+                    result = true
+                    res.send(result);
+                } else {
+                    res.send(result)
+                }
+            }
+        );
+    }
 };
 // 회원등록
 const resistUser = async (req, res) => {
@@ -108,7 +121,7 @@ const resistUser = async (req, res) => {
     });
 };
 
-router.get("/user/exists/email/:useremail", existUserEmail);
+router.post("/user/exists/email", existUserEmail);
 router.post("/user/join", resistUser);
 
 // 회원가입 완료

@@ -90,17 +90,26 @@ class LayerJoin extends Component {
             return;
         }
         // 이메일 중복 여부 체크
-        fetch(`/user/exists/email/${value}`)
-            .then((res) => res.json())
-            .then((json) => {
-                this.setState((prevState) => ({
-                    email: {
-                        ...prevState.email,
-                        overlapping: json,
-                        validate: Validate.getEmalValidate(value),
-                    },
-                }));
-            });
+        fetch(`/user/exists/email`, {
+            headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+            },
+            method: "POST",
+            body: JSON.stringify({
+                useremail: value,
+            }),
+        })
+        .then((res) => res.json())
+        .then((json) => {
+            this.setState((prevState) => ({
+                email: {
+                    ...prevState.email,
+                    overlapping: json,
+                    validate: Validate.getEmalValidate(value),
+                },
+            }));
+        });
     };
 
     passwordOnChange = (e) => {
