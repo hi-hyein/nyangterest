@@ -15,15 +15,21 @@ const config = {
 module.exports = {
     connect: mysql.createConnection(config),
     createDB: con => {
-        con.connect('CREATE DATABASE test_nyangterest',(err, result)=>{
+        con.query('CREATE DATABASE nyangterest',(err, result)=>{
             if(err) console.log('mysql error create:'+err)
             console.log('SUCCESS DATABASE TEST CREATE!')
         })
     },
     dropDB: con => {
-        con.connect('DROP DATABASE test_nyangterest',(err, result)=>{
+        con.query('DROP DATABASE nyangterest',(err, result)=>{
             if(err) console.log('mysql error drop:'+err)
             console.log('SUCCESS DATABASE TEST DROP!')
         })
     },
+    createTable: (con, sql) => {
+        con.query(sql, (err,result)=>{
+            if (err) throw err;
+            console.log("Table created");
+        })
+    }
 }
