@@ -9,27 +9,28 @@ const config = {
     port: '3306',
     user: 'root',
     password: process.env.PASSWORD,
-    database: ''
+    database: 'nyangterest'
 }
 
+const connection = mysql.createConnection(config);
+const createDatabase = () => {
+    connection.query('CREATE DATABASE nyangterest');
+}
+const dropDatabase = () => {
+    connection.query('DROP DATABASE nyangterest');
+}
+const createTableMember = () => {
+    connection.query("CREATE TABLE nyang_member (id INT AUTO_INCREMENT PRIMARY KEY,email VARCHAR(255), password VARCHAR(255), signupdate INT(10), certify TINYINT(1), token VARCHAR(255), snsName VARCHAR(10))");
+}
+const addMember = () => {
+    const sql = "INSERT INTO `nyang_member` (`email`, `password`, `signupdate`, `certify`, `token`, `snsName`) VALUES ( ?,?,?,?,?,? )";
+    const params = ['test@naver.com','e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855', '20200101', 1, '$2a$10$lkWSgteSe6BiZUSr5QsfWOxEaFscuYZtLvio3aHolQhoRDrJ8Nt5G', null]
+    connection.query(sql,params);
+}
 module.exports = {
-    connect: mysql.createConnection(config),
-    createDB: con => {
-        con.query('CREATE DATABASE nyangterest',(err, result)=>{
-            if(err) console.log('mysql error create:'+err)
-            console.log('SUCCESS DATABASE TEST CREATE!')
-        })
-    },
-    dropDB: con => {
-        con.query('DROP DATABASE nyangterest',(err, result)=>{
-            if(err) console.log('mysql error drop:'+err)
-            console.log('SUCCESS DATABASE TEST DROP!')
-        })
-    },
-    createTable: (con, sql) => {
-        con.query(sql, (err,result)=>{
-            if (err) throw err;
-            console.log("Table created");
-        })
-    }
+    connection: connection,
+    createDatabase: createDatabase,
+    dropDatabase: dropDatabase,
+    createTableMember: createTableMember,
+    addMember: addMember,
 }
