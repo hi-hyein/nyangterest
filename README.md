@@ -1,4 +1,4 @@
-# 😼nyangterest
+# 😼nyangterest(프로젝트 종료)
 
 🐱😻유기묘 리스트를 제공, 검색이 가능한 앱만들기 프로젝트😻🐱
 
@@ -93,6 +93,9 @@ npm run dev or yarn dev
 * 문서(was) : https://github.com/hi-hyein/nyangterest/tree/master/yu_report 
 * 문서(now) : https://github.com/hi-hyein/nyangterest/wiki#%EC%A1%B0%EC%9C%A4%EC%9A%B0-wiki 
 * projects : https://github.com/hi-hyein/nyangterest/projects/1
+
+## 회고
+- [냥터레스트 회고 Link](https://github.com/hi-hyein/nyangterest/issues/282)
 
 
 ## License
