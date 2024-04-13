@@ -140,7 +140,7 @@ const filteredItems = items.filter(item => {
 
 * 예를 들어 품종 중 노르웨이숲을 검색하는 api는 이렇다.
 
-http://openapi.animal.go.kr/openapi/service/rest/abandonmentPublicSrvc/abandonmentPublic?ServiceKey=P3gvH0LsdoPkxFnZU2Ee98hGDDEwVTJndJFa8NDUhznSLlZG6OOxBopFWLBmiCPOfWXsF8Wz8LFHJguz41qJvA%3D%3D&_type=json&upkind=422400&kind=000170&bgnde=20191201&endde=20191231&pageNo=1&numOfRows=10& 
+http://openapi.animal.go.kr/openapi/service/rest/abandonmentPublicSrvc/abandonmentPublic?ServiceKey=서비스키&_type=json&upkind=422400&kind=000170&bgnde=20191201&endde=20191231&pageNo=1&numOfRows=10& 
 
 * 보기처럼 노르웨이숲의 품종 코드는 000170이다.
   
@@ -148,9 +148,9 @@ http://openapi.animal.go.kr/openapi/service/rest/abandonmentPublicSrvc/abandonme
 
 * 전체 품종을 나오게 하려면 kind=&로 하거나 아예 kind를 요청변수를 넣지 않아야 제대로 보여진다.
 
-http://openapi.animal.go.kr/openapi/service/rest/abandonmentPublicSrvc/abandonmentPublic?ServiceKey=P3gvH0LsdoPkxFnZU2Ee98hGDDEwVTJndJFa8NDUhznSLlZG6OOxBopFWLBmiCPOfWXsF8Wz8LFHJguz41qJvA%3D%3D&_type=json&upkind=422400&kind=&bgnde=20191201&endde=20191231&pageNo=1&numOfRows=10&
+http://openapi.animal.go.kr/openapi/service/rest/abandonmentPublicSrvc/abandonmentPublic?ServiceKey=서비스키&_type=json&upkind=422400&kind=&bgnde=20191201&endde=20191231&pageNo=1&numOfRows=10&
 
-http://openapi.animal.go.kr/openapi/service/rest/abandonmentPublicSrvc/abandonmentPublic?ServiceKey=P3gvH0LsdoPkxFnZU2Ee98hGDDEwVTJndJFa8NDUhznSLlZG6OOxBopFWLBmiCPOfWXsF8Wz8LFHJguz41qJvA%3D%3D&_type=json&upkind=422400&bgnde=20191201&endde=20191231&pageNo=1&numOfRows=10&
+http://openapi.animal.go.kr/openapi/service/rest/abandonmentPublicSrvc/abandonmentPublic?ServiceKey=서비스키&_type=json&upkind=422400&bgnde=20191201&endde=20191231&pageNo=1&numOfRows=10&
 
 * kind=&를 리액트로 넘기려면 어떻게 해야할지 몰라서 코드를 이렇게도 수정해보고 저렇게도 수정해보았다.
 
